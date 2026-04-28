@@ -15,8 +15,8 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	agentkeeper "github.com/axon-chain/axon/x/agent/keeper"
-	privacykeeper "github.com/axon-chain/axon/x/privacy/keeper"
+	agentkeeper "github.com/cognize/axon/x/agent/keeper"
+	privacykeeper "github.com/cognize/axon/x/privacy/keeper"
 )
 
 var (

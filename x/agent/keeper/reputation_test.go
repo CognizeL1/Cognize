@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/axon-chain/axon/x/agent/keeper"
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/keeper"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // ---------------------------------------------------------------------------

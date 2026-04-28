@@ -14,7 +14,7 @@ import (
 	"cosmossdk.io/store/metrics"
 	storetypes "cosmossdk.io/store/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 func newL2ReputationTestKeeper(t *testing.T) (Keeper, sdk.Context) {
@@ -44,8 +44,8 @@ func setTestAgent(k Keeper, ctx sdk.Context, address string, registeredAt int64)
 		Address:          address,
 		AgentId:          address,
 		Status:           types.AgentStatus_AGENT_STATUS_ONLINE,
-		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
-		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 0),
+		StakeAmount:      sdk.NewInt64Coin("acognize", 1),
+		BurnedAtRegister: sdk.NewInt64Coin("acognize", 0),
 		RegisteredAt:     registeredAt,
 		LastHeartbeat:    registeredAt,
 		Capabilities:     []string{"test"},

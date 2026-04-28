@@ -49,9 +49,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	axonapp "github.com/axon-chain/axon/app"
-	axonconfig "github.com/axon-chain/axon/app/config"
-	agentcli "github.com/axon-chain/axon/x/agent/client/cli"
+	axonapp "github.com/cognize/axon/app"
+	axonconfig "github.com/cognize/axon/app/config"
+	agentcli "github.com/cognize/axon/x/agent/client/cli"
 )
 
 func NewRootCmd() *cobra.Command {

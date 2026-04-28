@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // ---------------------------------------------------------------------------

@@ -12,8 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/axon-chain/axon/x/agent/keeper"
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/keeper"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // mockBankKeeper implements types.BankKeeper for testing

@@ -4,7 +4,7 @@ from typing import Optional, Tuple, List, Any, Dict
 from web3 import Web3
 from eth_account import Account
 
-from axon.precompiles import (
+from cognize.precompiles import (
     REGISTRY_ADDRESS, REPUTATION_ADDRESS, WALLET_ADDRESS,
     REGISTRY_ABI, REPUTATION_ABI, WALLET_ABI,
     TRUST_BLOCKED, TRUST_UNKNOWN, TRUST_LIMITED, TRUST_FULL,
@@ -20,9 +20,9 @@ class AgentClient:
 
     Usage::
 
-        client = AgentClient("https://mainnet-rpc.axonchain.ai/")
+        client = AgentClient("https://mainnet-rpc.cognizechain.ai/")
         client.set_account("0x...")
-        client.register_agent("nlp,reasoning", "axon-7b", stake_axon=100)
+        client.register_agent("nlp,reasoning", "cognize-7b", stake_cognize=100)
     """
 
     def __init__(self, rpc_url: str):
@@ -64,7 +64,7 @@ class AgentClient:
         return wei / ONE_AXON
 
     def balance_wei(self, address: Optional[str] = None) -> int:
-        """Return raw balance in aaxon (wei)."""
+        """Return raw balance in acognize (wei)."""
         addr = address or self.address
         if not addr:
             raise ValueError("No address specified")
@@ -104,20 +104,20 @@ class AgentClient:
         }
 
     def register_agent(
-        self, capabilities: str, model: str, stake_axon: int = 100
+        self, capabilities: str, model: str, stake_cognize: int = 100
     ) -> str:
         """Register as an AI Agent. Requires >= 100 AXON stake (20 burned)."""
         self._require_account()
-        stake_wei = int(stake_axon) * ONE_AXON
+        stake_wei = int(stake_cognize) * ONE_AXON
         tx = self._registry.functions.register(
             capabilities, model
         ).build_transaction(self._tx_params(value=stake_wei))
         return self._send_tx(tx)
 
-    def add_stake(self, stake_axon: int) -> str:
+    def add_stake(self, stake_cognize: int) -> str:
         """Add more stake to an existing AI Agent."""
         self._require_account()
-        stake_wei = int(stake_axon) * ONE_AXON
+        stake_wei = int(stake_cognize) * ONE_AXON
         tx = self._registry.functions.addStake().build_transaction(
             self._tx_params(value=stake_wei)
         )
@@ -168,8 +168,8 @@ class AgentClient:
         self,
         operator: str,
         guardian: str,
-        tx_limit_axon: int = 10,
-        daily_limit_axon: int = 100,
+        tx_limit_cognize: int = 10,
+        daily_limit_cognize: int = 100,
         cooldown_blocks: int = 10,
     ) -> str:
         """Create an Agent smart wallet. Caller becomes the Owner."""
@@ -177,21 +177,21 @@ class AgentClient:
         tx = self._wallet.functions.createWallet(
             Web3.to_checksum_address(operator),
             Web3.to_checksum_address(guardian),
-            int(tx_limit_axon) * ONE_AXON,
-            int(daily_limit_axon) * ONE_AXON,
+            int(tx_limit_cognize) * ONE_AXON,
+            int(daily_limit_cognize) * ONE_AXON,
             cooldown_blocks,
         ).build_transaction(self._tx_params())
         return self._send_tx(tx)
 
     def execute_wallet(
-        self, wallet: str, target: str, value_axon: int = 0, data: bytes = b""
+        self, wallet: str, target: str, value_cognize: int = 0, data: bytes = b""
     ) -> str:
         """Execute a transaction through the Agent wallet (as Operator)."""
         self._require_account()
         tx = self._wallet.functions.execute(
             Web3.to_checksum_address(wallet),
             Web3.to_checksum_address(target),
-            int(value_axon) * ONE_AXON,
+            int(value_cognize) * ONE_AXON,
             data,
         ).build_transaction(self._tx_params())
         return self._send_tx(tx)
@@ -218,8 +218,8 @@ class AgentClient:
         wallet: str,
         target: str,
         level: int = TRUST_FULL,
-        tx_limit_axon: int = 0,
-        daily_limit_axon: int = 0,
+        tx_limit_cognize: int = 0,
+        daily_limit_cognize: int = 0,
         expires_at: int = 0,
     ) -> str:
         """Authorize a contract at a trust level (Owner only).
@@ -235,8 +235,8 @@ class AgentClient:
             Web3.to_checksum_address(wallet),
             Web3.to_checksum_address(target),
             level,
-            int(tx_limit_axon) * ONE_AXON,
-            int(daily_limit_axon) * ONE_AXON,
+            int(tx_limit_cognize) * ONE_AXON,
+            int(daily_limit_cognize) * ONE_AXON,
             expires_at,
         ).build_transaction(self._tx_params())
         return self._send_tx(tx)
@@ -322,13 +322,13 @@ class AgentClient:
 
     # ─── Transfer ────────────────────────────────────────────────────
 
-    def transfer(self, to: str, amount_axon: int) -> str:
+    def transfer(self, to: str, amount_cognize: int) -> str:
         """Send AXON to an address."""
         self._require_account()
         tx = {
             **self._tx_params(),
             "to": Web3.to_checksum_address(to),
-            "value": int(amount_axon) * ONE_AXON,
+            "value": int(amount_cognize) * ONE_AXON,
             "gas": 21000,
         }
         return self._send_tx(tx)

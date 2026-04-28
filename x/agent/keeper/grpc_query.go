@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 type queryServer struct {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 func TestSubmitL2ReportUsesFullWeightOnlyForIndexedEvidence(t *testing.T) {

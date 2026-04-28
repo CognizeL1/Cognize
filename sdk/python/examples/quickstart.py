@@ -4,11 +4,11 @@ Axon SDK Quick Start Example
 Demonstrates: connect, query, register agent, heartbeat, reputation.
 """
 
-from axon import AgentClient
+from cognize import AgentClient
 
 
 def main():
-    client = AgentClient("https://mainnet-rpc.axonchain.ai/")
+    client = AgentClient("https://mainnet-rpc.cognizechain.ai/")
     print(f"Connected to Axon (chain_id={client.chain_id}, block={client.block_number})")
 
     # Create a new account
@@ -29,8 +29,8 @@ def main():
     print("\nRegistering as AI agent...")
     tx_hash = client.register_agent(
         capabilities="nlp,code-generation,reasoning",
-        model="axon-7b-v1",
-        stake_axon=100,
+        model="cognize-7b-v1",
+        stake_cognize=100,
     )
     print(f"  TX: {tx_hash}")
     receipt = client.wait_for_tx(tx_hash)

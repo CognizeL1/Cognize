@@ -6,8 +6,8 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/axon-chain/axon/x/agent/keeper"
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/keeper"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // ---------------------------------------------------------------------------
@@ -39,9 +39,9 @@ func TestRegistrationBurnAmount(t *testing.T) {
 
 	expected := new(big.Int).Mul(big.NewInt(20), new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
 	if burnAxon.BigInt().Cmp(expected) != 0 {
-		t.Errorf("burn amount = %s aaxon, want %s", burnAxon.String(), expected.String())
+		t.Errorf("burn amount = %s acognize, want %s", burnAxon.String(), expected.String())
 	}
-	t.Logf("Path 2: Agent registration burns %d AXON (%s aaxon)", params.RegisterBurnAmount, burnAxon.String())
+	t.Logf("Path 2: Agent registration burns %d AXON (%s acognize)", params.RegisterBurnAmount, burnAxon.String())
 }
 
 // ---------------------------------------------------------------------------
@@ -49,12 +49,12 @@ func TestRegistrationBurnAmount(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestContractDeployBurnConstant(t *testing.T) {
-	// 10 AXON = 10 * 10^18 aaxon
+	// 10 AXON = 10 * 10^18 acognize
 	deployBurn := new(big.Int).Mul(big.NewInt(10), new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
 	if deployBurn.Sign() <= 0 {
 		t.Fatal("deploy burn should be positive")
 	}
-	t.Logf("Path 3: Contract deploy burns 10 AXON (%s aaxon)", deployBurn.String())
+	t.Logf("Path 3: Contract deploy burns 10 AXON (%s acognize)", deployBurn.String())
 	t.Log("  Implemented in app/evm_hooks.go DeployBurnHook")
 }
 

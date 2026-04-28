@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	agentkeeper "github.com/axon-chain/axon/x/agent/keeper"
+	agentkeeper "github.com/cognize/axon/x/agent/keeper"
 )
 
 const UpgradeName = "v1.1.1"

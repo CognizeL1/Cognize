@@ -10,7 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/privacy/types"
+	"github.com/cognize/axon/x/privacy/types"
 )
 
 // Viewing Key system (P6)

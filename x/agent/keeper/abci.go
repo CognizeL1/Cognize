@@ -7,7 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -204,7 +204,7 @@ func (k Keeper) AccumulateBlockReward(ctx sdk.Context, params types.Params) {
 		reward = remaining
 	}
 
-	rewardCoin := sdk.NewCoin("aaxon", reward)
+	rewardCoin := sdk.NewCoin("acognize", reward)
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(rewardCoin)); err != nil {
 		k.Logger(ctx).Error("failed to mint block rewards", "error", err)
 		return

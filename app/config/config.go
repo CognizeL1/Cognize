@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	AxonDenom  = "aaxon" // atto-AXON (18 decimals)
+	AxonDenom  = "acognize" // atto-AXON (18 decimals)
 	HumanDenom = "AXON"
 	EVMChainID = uint64(8210) // Axon default EVM chain ID
 )

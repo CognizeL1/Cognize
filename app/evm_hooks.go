@@ -13,12 +13,12 @@ import (
 
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 
-	agentkeeper "github.com/axon-chain/axon/x/agent/keeper"
+	agentkeeper "github.com/cognize/axon/x/agent/keeper"
 )
 
 const (
-	// DeployBurnAmount is 10 AXON = 10 * 10^18 aaxon
-	DeployBurnDenom = "aaxon"
+	// DeployBurnAmount is 10 AXON = 10 * 10^18 acognize
+	DeployBurnDenom = "acognize"
 	DeployBurnAxon  = 10
 	DeployBurnExp   = 18
 )
@@ -55,7 +55,7 @@ func (h DeployBurnHook) PostTxProcessing(
 	isDeployment := receipt.ContractAddress != (common.Address{})
 
 	if isDeployment {
-		// 10 AXON = 10 * 10^18 aaxon
+		// 10 AXON = 10 * 10^18 acognize
 		burnAmount := sdkmath.NewInt(DeployBurnAxon).Mul(sdkmath.NewIntWithDecimal(1, DeployBurnExp))
 		burnCoin := sdk.NewCoin(DeployBurnDenom, burnAmount)
 

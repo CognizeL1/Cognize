@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 type mockPrivacyKeeper struct {
@@ -31,8 +31,8 @@ func TestExecuteDeregisterDeletesPrivacyIdentity(t *testing.T) {
 		Address:          address,
 		AgentId:          address,
 		Status:           types.AgentStatus_AGENT_STATUS_SUSPENDED,
-		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
-		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 1),
+		StakeAmount:      sdk.NewInt64Coin("acognize", 1),
+		BurnedAtRegister: sdk.NewInt64Coin("acognize", 1),
 		RegisteredAt:     1,
 		LastHeartbeat:    1,
 	}
@@ -69,8 +69,8 @@ func TestExecuteDeregisterSkipsPrivacyCleanupBeforeUpgrade(t *testing.T) {
 		Address:          address,
 		AgentId:          address,
 		Status:           types.AgentStatus_AGENT_STATUS_SUSPENDED,
-		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
-		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 1),
+		StakeAmount:      sdk.NewInt64Coin("acognize", 1),
+		BurnedAtRegister: sdk.NewInt64Coin("acognize", 1),
 		RegisteredAt:     1,
 		LastHeartbeat:    1,
 	}

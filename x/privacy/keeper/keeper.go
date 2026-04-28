@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/privacy/types"
+	"github.com/cognize/axon/x/privacy/types"
 )
 
 type Keeper struct {

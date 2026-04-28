@@ -8,14 +8,14 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 const (
-	// ContributionBaseYearlyStr = ~35M AXON/year in aaxon for Year 1-4
+	// ContributionBaseYearlyStr = ~35M AXON/year in acognize for Year 1-4
 	ContributionBaseYearlyStr = "35000000000000000000000000"
 
-	// MaxContributionSupplyStr: hard cap = 350,000,000 AXON = 350M × 10^18 aaxon
+	// MaxContributionSupplyStr: hard cap = 350,000,000 AXON = 350M × 10^18 acognize
 	// Whitepaper §9.4: Agent 贡献奖励 35% = 350,000,000 AXON
 	MaxContributionSupplyStr = "350000000000000000000000000"
 
@@ -61,7 +61,7 @@ func (k Keeper) MintContributionRewards(ctx sdk.Context) {
 		perBlock = remaining
 	}
 
-	coin := sdk.NewCoin("aaxon", perBlock)
+	coin := sdk.NewCoin("acognize", perBlock)
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(coin)); err != nil {
 		k.Logger(ctx).Error("failed to mint contribution rewards", "error", err)
 		return
@@ -213,18 +213,18 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 			continue
 		}
 
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("aaxon", reward))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", reward))); err != nil {
 			k.Logger(ctx).Error("failed to send contribution reward", "address", a.address, "error", err)
 			continue
 		}
 		distributed = distributed.Add(reward)
 	}
 
-	remaining := pool.Sub(sdk.NewCoin("aaxon", distributed))
+	remaining := pool.Sub(sdk.NewCoin("acognize", distributed))
 	if remaining.IsPositive() {
 		k.setContributionPool(ctx, remaining)
 	} else {
-		k.setContributionPool(ctx, sdk.NewInt64Coin("aaxon", 0))
+		k.setContributionPool(ctx, sdk.NewInt64Coin("acognize", 0))
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
@@ -335,7 +335,7 @@ func (k Keeper) getContributionPool(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(types.ContributionPoolKey))
 	if bz == nil {
-		return sdk.NewInt64Coin("aaxon", 0)
+		return sdk.NewInt64Coin("acognize", 0)
 	}
 	var coin sdk.Coin
 	k.cdc.MustUnmarshal(bz, &coin)

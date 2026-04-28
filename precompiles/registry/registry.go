@@ -15,8 +15,8 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/keeper"
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/keeper"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 var (
@@ -215,7 +215,7 @@ func (p Precompile) register(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 	}
 
 	caller := p.resolveRegisterMutationSender(ctx, evm, contract)
-	stakeAmount := sdk.NewCoin("aaxon", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
+	stakeAmount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
 
 	// Funds already transferred from sender to precompile address by EVM.
 	// Use RegisterFromPrecompile to deduct from precompile address (not sender).
@@ -241,7 +241,7 @@ func (p Precompile) addStake(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 	}
 
 	caller := p.resolveMutationSender(ctx, evm, contract)
-	stakeAmount := sdk.NewCoin("aaxon", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
+	stakeAmount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
 	precompileAddr := sdk.AccAddress(address.Bytes())
 
 	resp, err := p.keeper.AddStakeToAgent(ctx, caller.String(), stakeAmount, precompileAddr)
@@ -310,7 +310,7 @@ func (p Precompile) reduceStake(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	}
 
 	caller := p.resolveMutationSender(ctx, evm, contract)
-	amount := sdk.NewCoin("aaxon", sdkmath.NewIntFromBigInt(amountBig))
+	amount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(amountBig))
 
 	if err := p.keeper.ReduceStakeFromAgent(ctx, caller.String(), amount); err != nil {
 		return nil, err

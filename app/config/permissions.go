@@ -16,8 +16,8 @@ import (
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	corevm "github.com/ethereum/go-ethereum/core/vm"
 
-	agenttypes "github.com/axon-chain/axon/x/agent/types"
-	privacytypes "github.com/axon-chain/axon/x/privacy/types"
+	agenttypes "github.com/cognize/axon/x/agent/types"
+	privacytypes "github.com/cognize/axon/x/privacy/types"
 )
 
 func BlockedAddresses() map[string]bool {

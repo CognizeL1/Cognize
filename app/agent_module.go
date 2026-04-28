@@ -19,8 +19,8 @@ import (
 
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 
-	agentkeeper "github.com/axon-chain/axon/x/agent/keeper"
-	agenttypes "github.com/axon-chain/axon/x/agent/types"
+	agentkeeper "github.com/cognize/axon/x/agent/keeper"
+	agenttypes "github.com/cognize/axon/x/agent/types"
 )
 
 var (
@@ -108,13 +108,13 @@ func (am AgentAppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data 
 	if extra.RewardPool != "" {
 		v, ok := sdkmath.NewIntFromString(extra.RewardPool)
 		if ok && v.IsPositive() {
-			am.keeper.SetRewardPool(ctx, sdk.NewCoin("aaxon", v))
+			am.keeper.SetRewardPool(ctx, sdk.NewCoin("acognize", v))
 		}
 	}
 	if extra.ContributionPool != "" {
 		v, ok := sdkmath.NewIntFromString(extra.ContributionPool)
 		if ok && v.IsPositive() {
-			am.keeper.SetContributionPool(ctx, sdk.NewCoin("aaxon", v))
+			am.keeper.SetContributionPool(ctx, sdk.NewCoin("acognize", v))
 		}
 	}
 	if len(extra.ContractDeployers) > 0 {

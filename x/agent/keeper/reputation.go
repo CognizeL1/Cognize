@@ -8,7 +8,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // SetAIBonus stores the AIBonus percentage for a validator using signed encoding.
@@ -152,13 +152,13 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, agent types.Agent, params 
 		burnedAtRegister = agent.BurnedAtRegister
 	} else {
 		// Fallback for legacy agents without snapshot
-		burnInt := new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneAxon)
-		burnedAtRegister = sdk.NewCoin("aaxon", sdkmath.NewIntFromBigInt(burnInt))
+		burnInt := new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize)
+		burnedAtRegister = sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(burnInt))
 	}
 
 	var remaining sdk.Coin
 	if agent.StakeAmount.IsLT(burnedAtRegister) {
-		remaining = sdk.NewInt64Coin("aaxon", 0)
+		remaining = sdk.NewInt64Coin("acognize", 0)
 	} else {
 		remaining = agent.StakeAmount.Sub(burnedAtRegister)
 	}
@@ -174,7 +174,7 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, agent types.Agent, params 
 
 	agent.Status = types.AgentStatus_AGENT_STATUS_SUSPENDED
 	if burned || !remaining.IsPositive() {
-		agent.StakeAmount = sdk.NewInt64Coin("aaxon", 0)
+		agent.StakeAmount = sdk.NewInt64Coin("acognize", 0)
 	}
 	k.SetAgent(ctx, agent)
 
@@ -186,8 +186,8 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, agent types.Agent, params 
 	))
 }
 
-// oneAxon = 10^18
-var oneAxon = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
+// oneCognize = 10^18
+var oneCognize = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
 
 // Daily registration rate limiting
 

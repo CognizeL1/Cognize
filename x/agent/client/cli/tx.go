@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 func GetTxCmd() *cobra.Command {
@@ -42,7 +42,7 @@ func CmdRegister() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register [capabilities] [model] [stake]",
 		Short: "Register as an AI agent",
-		Long:  "Register as an AI agent on the Axon network.\nExample: axond tx agent register \"coding,reasoning\" \"gpt-4\" 100000000000000000000aaxon",
+		Long:  "Register as an AI agent on the Axon network.\nExample: axond tx agent register \"coding,reasoning\" \"gpt-4\" 100000000000000000000acognize",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -74,7 +74,7 @@ func CmdAddStake() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-stake [amount]",
 		Short: "Add stake to an existing AI agent",
-		Long:  "Increase the stake of an already-registered AI agent.\nExample: axond tx agent add-stake 50000000000000000000aaxon",
+		Long:  "Increase the stake of an already-registered AI agent.\nExample: axond tx agent add-stake 50000000000000000000acognize",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

@@ -23,7 +23,7 @@ import (
 // (development mode), we burn 50% as a rough approximation.
 func BurnCollectedFees(ctx sdk.Context, bankKeeper bankkeeper.Keeper, fmKeeper feemarketkeeper.Keeper) {
 	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
-	balance := bankKeeper.GetBalance(ctx, feeCollectorAddr, "aaxon")
+	balance := bankKeeper.GetBalance(ctx, feeCollectorAddr, "acognize")
 
 	if !balance.IsPositive() {
 		return
@@ -57,7 +57,7 @@ func BurnCollectedFees(ctx sdk.Context, bankKeeper bankkeeper.Keeper, fmKeeper f
 		return
 	}
 
-	burnCoin := sdk.NewCoin("aaxon", burnAmount)
+	burnCoin := sdk.NewCoin("acognize", burnAmount)
 	if err := bankKeeper.BurnCoins(ctx, authtypes.FeeCollectorName, sdk.NewCoins(burnCoin)); err != nil {
 		ctx.Logger().Error("failed to burn gas fees", "error", err)
 		return

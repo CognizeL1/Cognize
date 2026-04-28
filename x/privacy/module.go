@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/axon-chain/axon/x/privacy/keeper"
-	"github.com/axon-chain/axon/x/privacy/types"
+	"github.com/cognize/axon/x/privacy/keeper"
+	"github.com/cognize/axon/x/privacy/types"
 )
 
 var (

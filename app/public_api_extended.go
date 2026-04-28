@@ -31,7 +31,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gorilla/mux"
 
-	agenttypes "github.com/axon-chain/axon/x/agent/types"
+	agenttypes "github.com/cognize/axon/x/agent/types"
 )
 
 const maxRequestBodySize = 2 * 1024 * 1024

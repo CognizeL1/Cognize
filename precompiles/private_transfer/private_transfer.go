@@ -17,7 +17,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	privacykeeper "github.com/axon-chain/axon/x/privacy/keeper"
+	privacykeeper "github.com/cognize/axon/x/privacy/keeper"
 )
 
 var (
@@ -182,7 +182,7 @@ func (p Precompile) shield(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 	if privacyParams.PoolCapRatio > 0 {
 		currentPool := p.keeper.GetShieldedBalance(ctx)
 		newPool := currentPool.Add(depositAmount)
-		totalSupply := p.bankKeeper.GetSupply(ctx, "aaxon")
+		totalSupply := p.bankKeeper.GetSupply(ctx, "acognize")
 		if totalSupply.Amount.IsPositive() {
 			capAmount := totalSupply.Amount.MulRaw(int64(privacyParams.PoolCapRatio)).QuoRaw(100)
 			if capAmount.IsPositive() && newPool.GT(capAmount) {
@@ -191,7 +191,7 @@ func (p Precompile) shield(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 		}
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin("aaxon", depositAmount))
+	coins := sdk.NewCoins(sdk.NewCoin("acognize", depositAmount))
 	precompileAddr := sdk.AccAddress(address.Bytes())
 
 	if err := p.bankKeeper.SendCoinsFromAccountToModule(ctx, precompileAddr, ModuleName, coins); err != nil {
@@ -281,7 +281,7 @@ func (p Precompile) unshield(ctx sdk.Context, method *abi.Method, args []interfa
 		return nil, fmt.Errorf("failed to subtract from shielded pool: %w", err)
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin("aaxon", withdrawAmount))
+	coins := sdk.NewCoins(sdk.NewCoin("acognize", withdrawAmount))
 	recipientAddr := sdk.AccAddress(recipient.Bytes())
 	if err := p.bankKeeper.SendCoinsFromModuleToAccount(ctx, ModuleName, recipientAddr, coins); err != nil {
 		return nil, fmt.Errorf("failed to send coins to recipient: %w", err)

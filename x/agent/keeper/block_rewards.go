@@ -7,7 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 const (
@@ -17,11 +17,11 @@ const (
 	// HalvingInterval = 4 years in blocks
 	HalvingInterval int64 = BlocksPerYear * 4
 
-	// BaseBlockReward in aaxon: ~12.367 AXON/block for year 1-4 → ~78M/year
-	// 78M * 1e18 / 6_307_200 ≈ 12.367e18 aaxon/block
+	// BaseBlockReward in acognize: ~12.367 AXON/block for year 1-4 → ~78M/year
+	// 78M * 1e18 / 6_307_200 ≈ 12.367e18 acognize/block
 	BaseBlockRewardStr = "12367000000000000000"
 
-	// MaxBlockRewardSupplyStr: hard cap = 650,000,000 AXON = 650M × 10^18 aaxon
+	// MaxBlockRewardSupplyStr: hard cap = 650,000,000 AXON = 650M × 10^18 acognize
 	// Whitepaper §8.2: 区块奖励（验证者挖矿）65% = 650,000,000 AXON
 	MaxBlockRewardSupplyStr = "650000000000000000000000000"
 
@@ -117,7 +117,7 @@ func (k Keeper) distributeProposerReward(ctx sdk.Context, amount sdkmath.Int) sd
 	}
 	accAddr := sdk.AccAddress(valAddr)
 
-	coins := sdk.NewCoins(sdk.NewCoin("aaxon", amount))
+	coins := sdk.NewCoins(sdk.NewCoin("acognize", amount))
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, accAddr, coins); err != nil {
 		k.Logger(ctx).Error("failed to send proposer reward", "error", err)
 		return amount
@@ -199,7 +199,7 @@ func (k Keeper) distributeValidatorRewards(ctx sdk.Context, totalAmount sdkmath.
 		if reward.IsZero() {
 			continue
 		}
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, v.accAddr, sdk.NewCoins(sdk.NewCoin("aaxon", reward))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, v.accAddr, sdk.NewCoins(sdk.NewCoin("acognize", reward))); err != nil {
 			k.Logger(ctx).Error("failed to send validator reward", "address", v.accAddr.String(), "error", err)
 			continue
 		}
@@ -263,7 +263,7 @@ func (k Keeper) distributeReputationRewards(ctx sdk.Context, totalAmount sdkmath
 		if err != nil {
 			continue
 		}
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("aaxon", reward))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", reward))); err != nil {
 			k.Logger(ctx).Error("failed to send reputation reward", "address", a.address, "error", err)
 			continue
 		}

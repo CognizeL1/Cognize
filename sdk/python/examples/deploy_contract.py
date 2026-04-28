@@ -3,7 +3,7 @@
 Example: Deploy an ERC-20 token contract on Axon.
 """
 
-from axon import AgentClient
+from cognize import AgentClient
 
 # Minimal ERC-20 bytecode (stores 42 in slot 0)
 SIMPLE_STORAGE_BYTECODE = (
@@ -15,7 +15,7 @@ SIMPLE_STORAGE_BYTECODE = (
 
 
 def main():
-    client = AgentClient("https://mainnet-rpc.axonchain.ai/")
+    client = AgentClient("https://mainnet-rpc.cognizechain.ai/")
     print(f"Chain ID: {client.chain_id}")
 
     # Set account (replace with your private key)

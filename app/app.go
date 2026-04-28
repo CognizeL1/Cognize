@@ -125,20 +125,20 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	axonconfig "github.com/axon-chain/axon/app/config"
-	poseidonprecompile "github.com/axon-chain/axon/precompiles/poseidon"
-	privateidentityprecompile "github.com/axon-chain/axon/precompiles/private_identity"
-	privatetransferprecompile "github.com/axon-chain/axon/precompiles/private_transfer"
-	registryprecompile "github.com/axon-chain/axon/precompiles/registry"
-	reportprecompile "github.com/axon-chain/axon/precompiles/report"
-	reputationprecompile "github.com/axon-chain/axon/precompiles/reputation"
-	walletprecompile "github.com/axon-chain/axon/precompiles/wallet"
-	zkverifierprecompile "github.com/axon-chain/axon/precompiles/zk_verifier"
-	agentkeeper "github.com/axon-chain/axon/x/agent/keeper"
-	agenttypes "github.com/axon-chain/axon/x/agent/types"
-	"github.com/axon-chain/axon/x/privacy"
-	privacykeeper "github.com/axon-chain/axon/x/privacy/keeper"
-	privacytypes "github.com/axon-chain/axon/x/privacy/types"
+	axonconfig "github.com/cognize/axon/app/config"
+	poseidonprecompile "github.com/cognize/axon/precompiles/poseidon"
+	privateidentityprecompile "github.com/cognize/axon/precompiles/private_identity"
+	privatetransferprecompile "github.com/cognize/axon/precompiles/private_transfer"
+	registryprecompile "github.com/cognize/axon/precompiles/registry"
+	reportprecompile "github.com/cognize/axon/precompiles/report"
+	reputationprecompile "github.com/cognize/axon/precompiles/reputation"
+	walletprecompile "github.com/cognize/axon/precompiles/wallet"
+	zkverifierprecompile "github.com/cognize/axon/precompiles/zk_verifier"
+	agentkeeper "github.com/cognize/axon/x/agent/keeper"
+	agenttypes "github.com/cognize/axon/x/agent/types"
+	"github.com/cognize/axon/x/privacy"
+	privacykeeper "github.com/cognize/axon/x/privacy/keeper"
+	privacytypes "github.com/cognize/axon/x/privacy/types"
 )
 
 func init() {
@@ -841,12 +841,12 @@ func (app *AxonApp) TxConfig() client.TxConfig                  { return app.txC
 func (app *AxonApp) DefaultGenesis() map[string]json.RawMessage {
 	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
 
-	// Mint: use aaxon denom
+	// Mint: use acognize denom
 	mintGenState := minttypes.DefaultGenesisState()
 	mintGenState.Params.MintDenom = axonconfig.AxonDenom
 	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
 
-	// Staking: use aaxon as bond denom
+	// Staking: use acognize as bond denom
 	stakingGenState := stakingtypes.DefaultGenesisState()
 	stakingGenState.Params.BondDenom = axonconfig.AxonDenom
 	genesis[stakingtypes.ModuleName] = app.appCodec.MustMarshalJSON(stakingGenState)

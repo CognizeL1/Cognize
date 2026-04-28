@@ -7,7 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 // reputationBonusPercent is kept for legacy reward logic and tests.
@@ -72,13 +72,13 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 	}
 
 	poolBig := pool.Amount.BigInt()
-	distributed := sdk.NewInt64Coin("aaxon", 0)
+	distributed := sdk.NewInt64Coin("acognize", 0)
 
 	for _, wa := range agents {
 		share := new(big.Int).Mul(poolBig, wa.weight)
 		share.Div(share, totalWeight)
 
-		reward := sdk.NewCoin("aaxon", sdkmath.NewIntFromBigInt(share))
+		reward := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(share))
 		if reward.IsZero() {
 			continue
 		}
@@ -100,7 +100,7 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 	if distributed.Amount.GT(pool.Amount) {
 		k.Logger(ctx).Error("distributed exceeds pool — clamping to zero",
 			"pool", pool, "distributed", distributed)
-		remaining = sdk.NewInt64Coin("aaxon", 0)
+		remaining = sdk.NewInt64Coin("acognize", 0)
 	} else {
 		remaining = pool.Sub(distributed)
 	}
@@ -119,7 +119,7 @@ func (k Keeper) getRewardPool(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(types.RewardPoolKey))
 	if bz == nil {
-		return sdk.NewInt64Coin("aaxon", 0)
+		return sdk.NewInt64Coin("acognize", 0)
 	}
 	var coin sdk.Coin
 	k.cdc.MustUnmarshal(bz, &coin)

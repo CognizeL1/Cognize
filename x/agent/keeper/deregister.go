@@ -8,7 +8,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/x/agent/types"
+	"github.com/cognize/axon/x/agent/types"
 )
 
 func (k Keeper) SetDeregisterRequest(ctx sdk.Context, address string, blockHeight int64) {
@@ -82,12 +82,12 @@ func (k Keeper) executeDeregister(ctx sdk.Context, address string, params types.
 	if agent.BurnedAtRegister.Denom != "" && agent.BurnedAtRegister.IsPositive() {
 		burnedAmount = agent.BurnedAtRegister
 	} else {
-		burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneAxon))
-		burnedAmount = sdk.NewCoin("aaxon", burnInt)
+		burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize))
+		burnedAmount = sdk.NewCoin("acognize", burnInt)
 	}
 	var moduleHeld sdk.Coin
 	if agent.StakeAmount.IsLT(burnedAmount) {
-		moduleHeld = sdk.NewInt64Coin("aaxon", 0)
+		moduleHeld = sdk.NewInt64Coin("acognize", 0)
 	} else {
 		moduleHeld = agent.StakeAmount.Sub(burnedAmount)
 	}

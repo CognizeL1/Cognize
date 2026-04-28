@@ -7,8 +7,8 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/axon-chain/axon/app/config"
-	"github.com/axon-chain/axon/cmd/axond/cmd"
+	"github.com/cognize/axon/app/config"
+	"github.com/cognize/axon/cmd/axond/cmd"
 )
 
 func main() {

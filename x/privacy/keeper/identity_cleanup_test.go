@@ -14,7 +14,7 @@ import (
 	"cosmossdk.io/store/metrics"
 	storetypes "cosmossdk.io/store/types"
 
-	"github.com/axon-chain/axon/x/privacy/types"
+	"github.com/cognize/axon/x/privacy/types"
 )
 
 func newPrivacyTestKeeper(t *testing.T) (Keeper, sdk.Context) {

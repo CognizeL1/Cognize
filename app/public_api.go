@@ -37,8 +37,8 @@ import (
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	axonconfig "github.com/axon-chain/axon/app/config"
-	agenttypes "github.com/axon-chain/axon/x/agent/types"
+	axonconfig "github.com/cognize/axon/app/config"
+	agenttypes "github.com/cognize/axon/x/agent/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 )
 

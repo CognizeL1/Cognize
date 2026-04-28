@@ -16,7 +16,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	privacykeeper "github.com/axon-chain/axon/x/privacy/keeper"
+	privacykeeper "github.com/cognize/axon/x/privacy/keeper"
 )
 
 var (
@@ -47,7 +47,7 @@ const (
 	GasRegisterVerifyingKey = 100000
 	GasIsKeyRegistered      = 1000
 
-	RegistrationCostAaxon = "100000000000000000000" // 100 * 10^18 aaxon = 100 AXON
+	RegistrationCostAaxon = "100000000000000000000" // 100 * 10^18 acognize = 100 AXON
 )
 
 type Precompile struct {
@@ -213,7 +213,7 @@ func (p Precompile) registerVerifyingKey(ctx sdk.Context, evm *vm.EVM, contract 
 	}
 	sent := sdkmath.NewIntFromBigInt(msgValue.ToBig())
 	if sent.LT(minCost) {
-		return nil, fmt.Errorf("insufficient payment: need %s aaxon, got %s", minCost, sent)
+		return nil, fmt.Errorf("insufficient payment: need %s acognize, got %s", minCost, sent)
 	}
 
 	keyId := sha256.Sum256(vkBytes)
