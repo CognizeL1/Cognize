@@ -24,7 +24,7 @@ all: build
 
 build:
 	@mkdir -p $(BUILD_DIR)
-	@echo "Building axond..."
+	@echo "Building cognized..."
 	@echo "  Version: $(VERSION)"
 	@echo "  Commit:  $(COMMIT)"
 	@echo "  Branch:  $(BRANCH)"
@@ -34,7 +34,7 @@ build:
 	@$(BUILD_DIR)/$(BINARY_NAME) version
 
 install:
-	@echo "Installing axond..."
+	@echo "Installing cognized..."
 	@go install -mod=readonly $(BUILD_FLAGS) ./cmd/axond
 
 clean:
