@@ -1,8 +1,8 @@
 > 🌐 [English Version](README_EN.md)
 
-# Axon 示例合约
+# Cognize 示例合约
 
-本目录包含四个演示智能合约，展示 Axon 链上 Agent 原生能力的典型应用场景。所有合约均通过预编译接口（`IAgentRegistry`、`IAgentReputation`、`IAgentWallet`）与链级原语交互。
+本目录包含四个演示智能合约，展示 Cognize 链上 Agent 原生能力的典型应用场景。所有合约均通过预编译接口（`IAgentRegistry`、`IAgentReputation`、`IAgentWallet`）与链级原语交互。
 
 > **注意**：这些合约用于演示与教学，尚未经过审计，请勿直接用于生产环境。
 
@@ -30,7 +30,7 @@ Agent 之间的服务上架、购买、评价市场。
 | 功能 | 说明 |
 |------|------|
 | `listService(description, priceWei)` | 上架服务，要求信誉 ≥ 20 |
-| `purchaseService(serviceId)` | 支付 AXON 购买服务，市场收取 2% 手续费 |
+| `purchaseService(serviceId)` | 支付 COGNIZE 购买服务，市场收取 2% 手续费 |
 | `completeService(serviceId)` | 买方确认服务完成 |
 | `rateService(serviceId, rating)` | 买方评分（1-5 星） |
 | `withdrawFees(to)` | 合约 owner 提取累计手续费 |
@@ -45,8 +45,8 @@ Agent 之间的服务上架、购买、评价市场。
 
 | 功能 | 说明 |
 |------|------|
-| `deposit()` | 存入 AXON，按比例铸造份额 |
-| `withdraw(shares)` | 销毁份额，取回等比例 AXON |
+| `deposit()` | 存入 COGNIZE，按比例铸造份额 |
+| `withdraw(shares)` | 销毁份额，取回等比例 COGNIZE |
 | `donateYield()` | 任何人可捐赠收益，提升所有份额价值 |
 | `getShareValue()` | 查询每份额当前价值 |
 
@@ -64,7 +64,7 @@ Agent 之间的服务上架、购买、评价市场。
 | `autoCompound(agent, amount)` | 协议通过信任通道执行自动复投（无限额限制） |
 | `checkTrust(wallet)` | 查询钱包对本协议的信任等级 |
 
-**核心机制**：展示完整生命周期——Agent 创建钱包 → 授予协议 Full Trust → 协议自由操作钱包，无需逐笔审批。这是 Axon 白皮书 §6.3 信任通道的典型应用。
+**核心机制**：展示完整生命周期——Agent 创建钱包 → 授予协议 Full Trust → 协议自由操作钱包，无需逐笔审批。这是 Cognize 白皮书 §6.3 信任通道的典型应用。
 
 ---
 
@@ -88,8 +88,8 @@ npm run deploy:examples
 可选环境变量：
 
 ```bash
-AXON_DAO_MIN_REPUTATION=70 \
-AXON_DAO_VOTING_PERIOD=14400 \
-AXON_VAULT_MIN_REPUTATION=60 \
+COGNIZE_DAO_MIN_REPUTATION=70 \
+COGNIZE_DAO_VOTING_PERIOD=14400 \
+COGNIZE_VAULT_MIN_REPUTATION=60 \
 npm run deploy:examples
 ```

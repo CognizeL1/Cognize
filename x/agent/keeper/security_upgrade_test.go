@@ -272,7 +272,7 @@ func TestEvaluateEpochChallengesScoresCorrectlyBeforeUpgrade(t *testing.T) {
 	// Store a response with arbitrary wrong reveal data — scoring should produce
 	// score=10 (wrong answer), NOT score=0 (broken empty-hash path).
 	wrongResp := types.AIResponse{
-		ValidatorAddress: "axon1validator1",
+		ValidatorAddress: "cognize1validator1",
 		RevealData:       "some_wrong_answer",
 		CommitHash:       "commit1",
 	}
@@ -335,7 +335,7 @@ func TestEvaluateEpochChallengesScoresCorrectlyAfterUpgrade(t *testing.T) {
 	}
 
 	wrongResp := types.AIResponse{
-		ValidatorAddress: "axon1validator1",
+		ValidatorAddress: "cognize1validator1",
 		RevealData:       "wrong_answer",
 		CommitHash:       "commit1",
 	}
@@ -404,7 +404,7 @@ func TestHistoricalReplayConsistency(t *testing.T) {
 	expectedHash1 := getChallengeAnswerHash(challenge1)
 
 	resp1 := types.AIResponse{
-		ValidatorAddress: "axon1replay1",
+		ValidatorAddress: "cognize1replay1",
 		RevealData:       "some_answer",
 		CommitHash:       "c1",
 	}
@@ -432,7 +432,7 @@ func TestHistoricalReplayConsistency(t *testing.T) {
 	_ = expectedHash2
 
 	resp2 := types.AIResponse{
-		ValidatorAddress: "axon1replay2",
+		ValidatorAddress: "cognize1replay2",
 		RevealData:       "another_answer",
 		CommitHash:       "c2",
 	}

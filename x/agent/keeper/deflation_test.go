@@ -25,7 +25,7 @@ func TestGasBurnPercentages(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Deflation Path 2: Agent Registration Burn (20 AXON)
+// Deflation Path 2: Agent Registration Burn (20 COGNIZE)
 // ---------------------------------------------------------------------------
 
 func TestRegistrationBurnAmount(t *testing.T) {
@@ -34,27 +34,27 @@ func TestRegistrationBurnAmount(t *testing.T) {
 		t.Fatalf("RegisterBurnAmount = %d, want 20", params.RegisterBurnAmount)
 	}
 
-	burnAxon := sdkmath.NewInt(int64(params.RegisterBurnAmount)).
+	burnCognize := sdkmath.NewInt(int64(params.RegisterBurnAmount)).
 		Mul(sdkmath.NewIntWithDecimal(1, 18))
 
 	expected := new(big.Int).Mul(big.NewInt(20), new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
-	if burnAxon.BigInt().Cmp(expected) != 0 {
-		t.Errorf("burn amount = %s acognize, want %s", burnAxon.String(), expected.String())
+	if burnCognize.BigInt().Cmp(expected) != 0 {
+		t.Errorf("burn amount = %s cognize, want %s", burnCognize.String(), expected.String())
 	}
-	t.Logf("Path 2: Agent registration burns %d AXON (%s acognize)", params.RegisterBurnAmount, burnAxon.String())
+	t.Logf("Path 2: Agent registration burns %d COGNIZE (%s cognize)", params.RegisterBurnAmount, burnCognize.String())
 }
 
 // ---------------------------------------------------------------------------
-// Deflation Path 3: Contract Deploy Burn (10 AXON, app/evm_hooks.go)
+// Deflation Path 3: Contract Deploy Burn (10 COGNIZE, app/evm_hooks.go)
 // ---------------------------------------------------------------------------
 
 func TestContractDeployBurnConstant(t *testing.T) {
-	// 10 AXON = 10 * 10^18 acognize
+	// 10 COGNIZE = 10 * 10^18 cognize
 	deployBurn := new(big.Int).Mul(big.NewInt(10), new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
 	if deployBurn.Sign() <= 0 {
 		t.Fatal("deploy burn should be positive")
 	}
-	t.Logf("Path 3: Contract deploy burns 10 AXON (%s acognize)", deployBurn.String())
+	t.Logf("Path 3: Contract deploy burns 10 COGNIZE (%s cognize)", deployBurn.String())
 	t.Log("  Implemented in app/evm_hooks.go DeployBurnHook")
 }
 
@@ -78,25 +78,25 @@ func TestCheatDetectionDuplicateAnswers(t *testing.T) {
 	k, _, _ := setupTestKeeper(t)
 
 	responses := []types.AIResponse{
-		{ValidatorAddress: "axon1aaa", CommitHash: "hash1", RevealData: "PBFT"},
-		{ValidatorAddress: "axon1bbb", CommitHash: "hash2", RevealData: "pbft"},
-		{ValidatorAddress: "axon1ccc", CommitHash: "hash3", RevealData: "  PBFT  "},
-		{ValidatorAddress: "axon1ddd", CommitHash: "hash4", RevealData: "RAFT"},
+		{ValidatorAddress: "cognize1aaa", CommitHash: "hash1", RevealData: "PBFT"},
+		{ValidatorAddress: "cognize1bbb", CommitHash: "hash2", RevealData: "pbft"},
+		{ValidatorAddress: "cognize1ccc", CommitHash: "hash3", RevealData: "  PBFT  "},
+		{ValidatorAddress: "cognize1ddd", CommitHash: "hash4", RevealData: "RAFT"},
 	}
 
 	cheaters := keeper.DetectCheatersForTest(k, responses, "")
 
-	if !cheaters["axon1aaa"] {
-		t.Error("axon1aaa should be flagged as cheater (duplicate normalized answer)")
+	if !cheaters["cognize1aaa"] {
+		t.Error("cognize1aaa should be flagged as cheater (duplicate normalized answer)")
 	}
-	if !cheaters["axon1bbb"] {
-		t.Error("axon1bbb should be flagged as cheater (duplicate normalized answer)")
+	if !cheaters["cognize1bbb"] {
+		t.Error("cognize1bbb should be flagged as cheater (duplicate normalized answer)")
 	}
-	if !cheaters["axon1ccc"] {
-		t.Error("axon1ccc should be flagged as cheater (duplicate normalized answer)")
+	if !cheaters["cognize1ccc"] {
+		t.Error("cognize1ccc should be flagged as cheater (duplicate normalized answer)")
 	}
-	if cheaters["axon1ddd"] {
-		t.Error("axon1ddd should NOT be flagged (unique answer)")
+	if cheaters["cognize1ddd"] {
+		t.Error("cognize1ddd should NOT be flagged (unique answer)")
 	}
 	if len(cheaters) != 3 {
 		t.Errorf("expected 3 cheaters, got %d", len(cheaters))
@@ -107,9 +107,9 @@ func TestCheatDetectionNoDuplicates(t *testing.T) {
 	k, _, _ := setupTestKeeper(t)
 
 	responses := []types.AIResponse{
-		{ValidatorAddress: "axon1aaa", CommitHash: "hash1", RevealData: "a"},
-		{ValidatorAddress: "axon1bbb", CommitHash: "hash2", RevealData: "b"},
-		{ValidatorAddress: "axon1ccc", CommitHash: "hash3", RevealData: "c"},
+		{ValidatorAddress: "cognize1aaa", CommitHash: "hash1", RevealData: "a"},
+		{ValidatorAddress: "cognize1bbb", CommitHash: "hash2", RevealData: "b"},
+		{ValidatorAddress: "cognize1ccc", CommitHash: "hash3", RevealData: "c"},
 	}
 
 	cheaters := keeper.DetectCheatersForTest(k, responses, "")
@@ -122,8 +122,8 @@ func TestCheatDetectionEmptyRevealIgnored(t *testing.T) {
 	k, _, _ := setupTestKeeper(t)
 
 	responses := []types.AIResponse{
-		{ValidatorAddress: "axon1aaa", CommitHash: "hash1", RevealData: ""},
-		{ValidatorAddress: "axon1bbb", CommitHash: "hash2", RevealData: ""},
+		{ValidatorAddress: "cognize1aaa", CommitHash: "hash1", RevealData: ""},
+		{ValidatorAddress: "cognize1bbb", CommitHash: "hash2", RevealData: ""},
 	}
 
 	cheaters := keeper.DetectCheatersForTest(k, responses, "")
@@ -183,7 +183,7 @@ func TestBlockRewardHalving(t *testing.T) {
 	tests := []struct {
 		name        string
 		blockHeight int64
-		wantAxon    string
+		wantCognize string
 	}{
 		{"Year 1 block 2", 2, "12.367"},
 		{"Year 1 block 1000", 1000, "12.367"},
@@ -199,13 +199,13 @@ func TestBlockRewardHalving(t *testing.T) {
 			if reward.IsZero() {
 				t.Fatalf("expected non-zero reward at block %d", tt.blockHeight)
 			}
-			axon := new(big.Float).Quo(
+			cognize := new(big.Float).Quo(
 				new(big.Float).SetInt(reward.BigInt()),
 				new(big.Float).SetFloat64(1e18),
 			)
-			axonStr := axon.Text('f', 3)
-			if axonStr != tt.wantAxon {
-				t.Errorf("block %d: got %s AXON, want %s AXON", tt.blockHeight, axonStr, tt.wantAxon)
+			cognizeStr := cognize.Text('f', 3)
+			if cognizeStr != tt.wantCognize {
+				t.Errorf("block %d: got %s COGNIZE, want %s COGNIZE", tt.blockHeight, cognizeStr, tt.wantCognize)
 			}
 		})
 	}
@@ -228,13 +228,13 @@ func TestContributionPerBlock(t *testing.T) {
 		t.Fatal("expected non-zero contribution per-block")
 	}
 
-	axon := new(big.Float).Quo(
+	cognize := new(big.Float).Quo(
 		new(big.Float).SetInt(reward.BigInt()),
 		new(big.Float).SetFloat64(1e18),
 	)
-	val, _ := axon.Float64()
+	val, _ := cognize.Float64()
 	if val < 5.0 || val > 6.0 {
-		t.Errorf("expected ~5.5 AXON/block contribution, got %f", val)
+		t.Errorf("expected ~5.5 COGNIZE/block contribution, got %f", val)
 	}
 }
 
@@ -336,8 +336,8 @@ func TestAllDeflationPathsDocumented(t *testing.T) {
 		location string
 	}{
 		{1, "Gas Base Fee Burn (80%/50% of FeeCollector)", "app/fee_burn.go + app/agent_module.go BeginBlock"},
-		{2, "Agent Registration Burn (20 AXON)", "x/agent/keeper/msg_server.go Register()"},
-		{3, "Contract Deploy Burn (10 AXON)", "app/evm_hooks.go DeployBurnHook"},
+		{2, "Agent Registration Burn (20 COGNIZE)", "x/agent/keeper/msg_server.go Register()"},
+		{3, "Contract Deploy Burn (10 COGNIZE)", "app/evm_hooks.go DeployBurnHook"},
 		{4, "Reputation Zero → Full Stake Burn", "x/agent/keeper/reputation.go handleZeroReputation()"},
 		{5, "AI Challenge Cheat Penalty (20% stake)", "x/agent/keeper/challenge.go penalizeCheater()"},
 	}

@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	// ContributionBaseYearlyStr = ~35M AXON/year in acognize for Year 1-4
+	// ContributionBaseYearlyStr = ~35M COGNIZE/year in cognize for Year 1-4
 	ContributionBaseYearlyStr = "35000000000000000000000000"
 
-	// MaxContributionSupplyStr: hard cap = 350,000,000 AXON = 350M × 10^18 acognize
-	// Whitepaper §9.4: Agent 贡献奖励 35% = 350,000,000 AXON
+	// MaxContributionSupplyStr: hard cap = 350,000,000 COGNIZE = 350M × 10^18 cognize
+	// Whitepaper §9.4: Agent 贡献奖励 35% = 350,000,000 COGNIZE
 	MaxContributionSupplyStr = "350000000000000000000000000"
 
 	// ContributionPhaseBlocks = 4 years per phase
@@ -38,7 +38,7 @@ const (
 )
 
 // MintContributionRewards mints tokens for the contribution pool each block.
-// Hard-capped at 350M AXON total (whitepaper §9.4).
+// Hard-capped at 350M COGNIZE total (whitepaper §9.4).
 func (k Keeper) MintContributionRewards(ctx sdk.Context) {
 	blockHeight := ctx.BlockHeight()
 	if blockHeight <= 1 {
@@ -61,7 +61,7 @@ func (k Keeper) MintContributionRewards(ctx sdk.Context) {
 		perBlock = remaining
 	}
 
-	coin := sdk.NewCoin("acognize", perBlock)
+	coin := sdk.NewCoin("cognize", perBlock)
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(coin)); err != nil {
 		k.Logger(ctx).Error("failed to mint contribution rewards", "error", err)
 		return
@@ -103,22 +103,22 @@ func (k Keeper) addTotalContributionMinted(ctx sdk.Context, amount sdkmath.Int) 
 // calculateContributionPerBlock returns per-block contribution reward matching
 // the whitepaper §8.4 custom declining schedule (NOT equal halving):
 //
-//	Year 1-4:  35M AXON/year
-//	Year 5-8:  25M AXON/year
-//	Year 9-12: 15M AXON/year
-//	Year 12+:   5M AXON/year (long tail until 350M cap)
+//	Year 1-4:  35M COGNIZE/year
+//	Year 5-8:  25M COGNIZE/year
+//	Year 9-12: 15M COGNIZE/year
+//	Year 12+:   5M COGNIZE/year (long tail until 350M cap)
 func calculateContributionPerBlock(blockHeight int64) sdkmath.Int {
 	year := blockHeight / BlocksPerYear
 	var yearlyStr string
 	switch {
 	case year < 4:
-		yearlyStr = "35000000000000000000000000" // 35M AXON
+		yearlyStr = "35000000000000000000000000" // 35M COGNIZE
 	case year < 8:
-		yearlyStr = "25000000000000000000000000" // 25M AXON
+		yearlyStr = "25000000000000000000000000" // 25M COGNIZE
 	case year < 12:
-		yearlyStr = "15000000000000000000000000" // 15M AXON
+		yearlyStr = "15000000000000000000000000" // 15M COGNIZE
 	default:
-		yearlyStr = "5000000000000000000000000" // 5M AXON
+		yearlyStr = "5000000000000000000000000" // 5M COGNIZE
 	}
 
 	yearly, ok := new(big.Int).SetString(yearlyStr, 10)
@@ -213,18 +213,18 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 			continue
 		}
 
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", reward))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("cognize", reward))); err != nil {
 			k.Logger(ctx).Error("failed to send contribution reward", "address", a.address, "error", err)
 			continue
 		}
 		distributed = distributed.Add(reward)
 	}
 
-	remaining := pool.Sub(sdk.NewCoin("acognize", distributed))
+	remaining := pool.Sub(sdk.NewCoin("cognize", distributed))
 	if remaining.IsPositive() {
 		k.setContributionPool(ctx, remaining)
 	} else {
-		k.setContributionPool(ctx, sdk.NewInt64Coin("acognize", 0))
+		k.setContributionPool(ctx, sdk.NewInt64Coin("cognize", 0))
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
@@ -335,7 +335,7 @@ func (k Keeper) getContributionPool(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(types.ContributionPoolKey))
 	if bz == nil {
-		return sdk.NewInt64Coin("acognize", 0)
+		return sdk.NewInt64Coin("cognize", 0)
 	}
 	var coin sdk.Coin
 	k.cdc.MustUnmarshal(bz, &coin)

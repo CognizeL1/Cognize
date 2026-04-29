@@ -193,10 +193,10 @@ func (k Keeper) PurchaseServiceAccessKey(ctx sdk.Context, serviceID, buyer, paym
 	sellerAmt := payAmt.Sub(fee)
 
 	sellerAddr := sdk.MustAccAddressFromBech32(service.AgentAddress)
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", sellerAmt))); err != nil {
+	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", sellerAmt))); err != nil {
 		return "", err
 	}
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sellerAddr, sdk.NewCoins(sdk.NewCoin("acognize", sellerAmt))); err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sellerAddr, sdk.NewCoins(sdk.NewCoin("cognize", sellerAmt))); err != nil {
 		return "", err
 	}
 
@@ -317,10 +317,10 @@ func (k Keeper) WithdrawFromMix(ctx sdk.Context, poolID, recipient, commitment, 
 	fee := rewardAmt.Mul(math.NewInt(PrivacyMixFeeBps)).Quo(math.NewInt(10000))
 	payout := rewardAmt.Sub(fee)
 
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", payout))); err != nil {
+	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", payout))); err != nil {
 		return err
 	}
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("acognize", payout))); err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("cognize", payout))); err != nil {
 		return err
 	}
 

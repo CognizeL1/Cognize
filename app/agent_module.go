@@ -108,13 +108,13 @@ func (am AgentAppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data 
 	if extra.RewardPool != "" {
 		v, ok := sdkmath.NewIntFromString(extra.RewardPool)
 		if ok && v.IsPositive() {
-			am.keeper.SetRewardPool(ctx, sdk.NewCoin("acognize", v))
+			am.keeper.SetRewardPool(ctx, sdk.NewCoin("cognize", v))
 		}
 	}
 	if extra.ContributionPool != "" {
 		v, ok := sdkmath.NewIntFromString(extra.ContributionPool)
 		if ok && v.IsPositive() {
-			am.keeper.SetContributionPool(ctx, sdk.NewCoin("acognize", v))
+			am.keeper.SetContributionPool(ctx, sdk.NewCoin("cognize", v))
 		}
 	}
 	if len(extra.ContractDeployers) > 0 {

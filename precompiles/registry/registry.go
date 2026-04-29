@@ -47,7 +47,7 @@ const (
 	GasHeartbeat         = 5000
 	GasDeregister        = 20000
 
-	mainnetChainID                   = "axon_8210-1"
+	mainnetChainID                   = "cognize_8210-1"
 	legacyMutationSenderCompatHeight = int64(18392)
 )
 
@@ -211,11 +211,11 @@ func (p Precompile) register(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 
 	msgValue := contract.Value()
 	if msgValue == nil || msgValue.IsZero() {
-		return nil, fmt.Errorf("must send AXON as msg.value for staking")
+		return nil, fmt.Errorf("must send COGNIZE as msg.value for staking")
 	}
 
 	caller := p.resolveRegisterMutationSender(ctx, evm, contract)
-	stakeAmount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
+	stakeAmount := sdk.NewCoin("cognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
 
 	// Funds already transferred from sender to precompile address by EVM.
 	// Use RegisterFromPrecompile to deduct from precompile address (not sender).
@@ -237,11 +237,11 @@ func (p Precompile) register(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 func (p Precompile) addStake(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, method *abi.Method) ([]byte, error) {
 	msgValue := contract.Value()
 	if msgValue == nil || msgValue.IsZero() {
-		return nil, fmt.Errorf("must send AXON as msg.value for addStake")
+		return nil, fmt.Errorf("must send COGNIZE as msg.value for addStake")
 	}
 
 	caller := p.resolveMutationSender(ctx, evm, contract)
-	stakeAmount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
+	stakeAmount := sdk.NewCoin("cognize", sdkmath.NewIntFromBigInt(msgValue.ToBig()))
 	precompileAddr := sdk.AccAddress(address.Bytes())
 
 	resp, err := p.keeper.AddStakeToAgent(ctx, caller.String(), stakeAmount, precompileAddr)
@@ -310,7 +310,7 @@ func (p Precompile) reduceStake(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	}
 
 	caller := p.resolveMutationSender(ctx, evm, contract)
-	amount := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(amountBig))
+	amount := sdk.NewCoin("cognize", sdkmath.NewIntFromBigInt(amountBig))
 
 	if err := p.keeper.ReduceStakeFromAgent(ctx, caller.String(), amount); err != nil {
 		return nil, err

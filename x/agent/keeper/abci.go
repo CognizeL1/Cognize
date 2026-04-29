@@ -204,7 +204,7 @@ func (k Keeper) AccumulateBlockReward(ctx sdk.Context, params types.Params) {
 		reward = remaining
 	}
 
-	rewardCoin := sdk.NewCoin("acognize", reward)
+	rewardCoin := sdk.NewCoin("cognize", reward)
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(rewardCoin)); err != nil {
 		k.Logger(ctx).Error("failed to mint block rewards", "error", err)
 		return

@@ -21,7 +21,7 @@ import (
 // accept wallet writes and relay executable transactions to validators.
 const mempoolOperateExclusively = false
 
-func (app *AxonApp) configureEVMMempool(appOpts servertypes.AppOptions, logger log.Logger) error {
+func (app *CognizeApp) configureEVMMempool(appOpts servertypes.AppOptions, logger log.Logger) error {
 	if evmtypes.GetChainConfig() == nil {
 		logger.Debug("evm chain config is not set, skipping mempool configuration")
 		return nil
@@ -73,7 +73,7 @@ func (app *AxonApp) configureEVMMempool(appOpts servertypes.AppOptions, logger l
 	return nil
 }
 
-func (app *AxonApp) createMempoolConfig(appOpts servertypes.AppOptions, logger log.Logger) (*evmmempool.EVMMempoolConfig, error) {
+func (app *CognizeApp) createMempoolConfig(appOpts servertypes.AppOptions, logger log.Logger) (*evmmempool.EVMMempoolConfig, error) {
 	return &evmmempool.EVMMempoolConfig{
 		AnteHandler:              app.GetAnteHandler(),
 		LegacyPoolConfig:         server.GetLegacyPoolConfig(appOpts, logger),
@@ -87,7 +87,7 @@ func (app *AxonApp) createMempoolConfig(appOpts servertypes.AppOptions, logger l
 
 const CodeTypeNoRetry = 1
 
-func (app *AxonApp) NewInsertTxHandler(evmMempool *evmmempool.ExperimentalEVMMempool) sdk.InsertTxHandler {
+func (app *CognizeApp) NewInsertTxHandler(evmMempool *evmmempool.ExperimentalEVMMempool) sdk.InsertTxHandler {
 	return func(req *abci.RequestInsertTx) (*abci.ResponseInsertTx, error) {
 		txBytes := req.GetTx()
 
@@ -111,7 +111,7 @@ func (app *AxonApp) NewInsertTxHandler(evmMempool *evmmempool.ExperimentalEVMMem
 	}
 }
 
-func (app *AxonApp) NewReapTxsHandler(evmMempool *evmmempool.ExperimentalEVMMempool) sdk.ReapTxsHandler {
+func (app *CognizeApp) NewReapTxsHandler(evmMempool *evmmempool.ExperimentalEVMMempool) sdk.ReapTxsHandler {
 	return func(req *abci.RequestReapTxs) (*abci.ResponseReapTxs, error) {
 		maxBytes, maxGas := req.GetMaxBytes(), req.GetMaxGas()
 		txs, err := evmMempool.ReapNewValidTxs(maxBytes, maxGas)

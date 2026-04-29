@@ -238,10 +238,10 @@ func (k Keeper) PurchaseDataset(ctx sdk.Context, datasetID, buyer, amount string
 	fee := payAmt.Mul(math.NewInt(25)).Quo(math.NewInt(10000))
 	sellerPayout := payAmt.Sub(fee)
 
-	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", sellerPayout))); err != nil {
+	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", sellerPayout))); err != nil {
 		return err
 	}
-	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sellerAddr, sdk.NewCoins(sdk.NewCoin("acognize", sellerPayout)))
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sellerAddr, sdk.NewCoins(sdk.NewCoin("cognize", sellerPayout)))
 }
 
 func (k Keeper) CreatePrediction(ctx sdk.Context, creator, question string, outcomes []string, stakeAmount string, durationBlocks int64) (string, error) {

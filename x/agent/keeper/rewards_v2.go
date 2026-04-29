@@ -186,10 +186,10 @@ func (k Keeper) distributeReputationPoolV2(ctx sdk.Context) error {
 	for _, rec := range distribution {
 		addr := sdk.MustAccAddressFromBech32(rec.Address)
 		amt, _ := math.NewIntFromString(rec.Amount)
-		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", amt))); err != nil {
+		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", amt))); err != nil {
 			continue
 		}
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", amt)))
+		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("cognize", amt)))
 	}
 
 	pool.TotalAmount = "0"
@@ -236,8 +236,8 @@ func (k Keeper) distributePrivacyPoolV2(ctx sdk.Context) error {
 
 	for _, p := range participants {
 		addr := sdk.MustAccAddressFromBech32(p)
-		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", eachReward)))
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", eachReward)))
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", eachReward)))
+		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("cognize", eachReward)))
 	}
 
 	pool.TotalAmount = "0"
@@ -288,8 +288,8 @@ func (k Keeper) distributeGovernancePoolV2(ctx sdk.Context) error {
 
 	for _, agent := range agents {
 		addr := sdk.MustAccAddressFromBech32(agent.Address)
-		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", rewardPerAgent)))
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("acognize", rewardPerAgent)))
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", rewardPerAgent)))
+		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin("cognize", rewardPerAgent)))
 	}
 
 	pool.TotalAmount = "0"

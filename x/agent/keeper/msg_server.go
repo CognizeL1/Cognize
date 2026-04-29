@@ -33,11 +33,11 @@ func (k msgServer) Register(goCtx context.Context, msg *types.MsgRegister) (*typ
 		return nil, types.ErrAgentAlreadyRegistered
 	}
 
-	if msg.Stake.Denom != "acognize" {
-		return nil, fmt.Errorf("invalid stake denom: expected acognize, got %s", msg.Stake.Denom)
+	if msg.Stake.Denom != "cognize" {
+		return nil, fmt.Errorf("invalid stake denom: expected cognize, got %s", msg.Stake.Denom)
 	}
 	minStakeInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.MinRegisterStake)), oneCognize))
-	minStake := sdk.NewCoin("acognize", minStakeInt)
+	minStake := sdk.NewCoin("cognize", minStakeInt)
 	if msg.Stake.IsLT(minStake) {
 		return nil, types.ErrInsufficientStake
 	}
@@ -58,7 +58,7 @@ func (k msgServer) Register(goCtx context.Context, msg *types.MsgRegister) (*typ
 	}
 
 	burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize))
-	burnAmount := sdk.NewCoin("acognize", burnInt)
+	burnAmount := sdk.NewCoin("cognize", burnInt)
 	burnCoins := sdk.NewCoins(burnAmount)
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
 		return nil, err

@@ -1,6 +1,6 @@
-# Contributing to Axon
+# Contributing to Cognize
 
-Thank you for your interest in contributing to Axon!
+Thank you for your interest in contributing to Cognize!
 
 ## How to Contribute
 
@@ -37,12 +37,11 @@ Thank you for your interest in contributing to Axon!
 Primary public documentation lives in:
 
 - `README.md`
-- `README_CN.md`
+- `README_FR.md`
 
 Supplementary references live in:
 
 - `docs/whitepaper*.md`
-- `docs/MAINNET_PARAMS*.md`
 - `docs/SECURITY_AUDIT*.md`
 
 ### Areas for Contribution

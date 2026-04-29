@@ -50,7 +50,7 @@ New v1.1.1 consensus changes activate at block 295500. Non-mainnet chains (`chai
 
 ### Core Chain
 - Cosmos SDK v0.54 with official Cosmos EVM integration
-- CometBFT consensus with Axon `x/agent` module
+- CometBFT consensus with Cognize `x/agent` module
 - Full EVM compatibility and JSON-RPC support
 - EIP-1559 fee market with fee burn logic
 - Agent-native registry, reputation, and wallet precompiles

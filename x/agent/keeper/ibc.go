@@ -231,10 +231,10 @@ func (k Keeper) SignMultisigTx(ctx sdk.Context, txID, signer string) error {
 		amount, _ := math.NewIntFromString(tx.Amount)
 		recipientAddr := sdk.MustAccAddressFromBech32(tx.To)
 
-		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", amount))); err != nil {
+		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", amount))); err != nil {
 			return err
 		}
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("acognize", amount))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("cognize", amount))); err != nil {
 			return err
 		}
 
@@ -358,7 +358,7 @@ func (k Keeper) CreateStreamingPlan(ctx sdk.Context, sender, recipient, totalAmo
 	store.Set(types.KeyStreamingPlan(planID), bz)
 
 	senderAddr := sdk.MustAccAddressFromBech32(sender)
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAddr, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", total))); err != nil {
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAddr, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", total))); err != nil {
 		return "", err
 	}
 
@@ -390,7 +390,7 @@ func (k Keeper) ProcessStreamingPayments(ctx sdk.Context) {
 		}
 
 		recipientAddr := sdk.MustAccAddressFromBech32(plan.Recipient)
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("acognize", perBlockAmt))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, sdk.NewCoins(sdk.NewCoin("cognize", perBlockAmt))); err != nil {
 			iter.Next()
 			continue
 		}

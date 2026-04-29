@@ -20,9 +20,9 @@ import (
 )
 
 var (
-	reputationProofVKID = sha256.Sum256([]byte("axon/circuit/reputation_proof/v1"))
-	capabilityProofVKID = sha256.Sum256([]byte("axon/circuit/capability_proof/v1"))
-	stakeProofVKID      = sha256.Sum256([]byte("axon/circuit/stake_proof/v1"))
+	reputationProofVKID = sha256.Sum256([]byte("cognize/circuit/reputation_proof/v1"))
+	capabilityProofVKID = sha256.Sum256([]byte("cognize/circuit/capability_proof/v1"))
+	stakeProofVKID      = sha256.Sum256([]byte("cognize/circuit/stake_proof/v1"))
 )
 
 var (

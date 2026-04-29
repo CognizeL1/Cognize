@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v6.33.1
-// source: axon/agent/v1/tx.proto
+// source: cognize/agent/v1/tx.proto
 
 package types
 
@@ -19,15 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_Register_FullMethodName                  = "/axon.agent.v1.Msg/Register"
-	Msg_AddStake_FullMethodName                  = "/axon.agent.v1.Msg/AddStake"
-	Msg_UpdateAgent_FullMethodName               = "/axon.agent.v1.Msg/UpdateAgent"
-	Msg_Heartbeat_FullMethodName                 = "/axon.agent.v1.Msg/Heartbeat"
-	Msg_Deregister_FullMethodName                = "/axon.agent.v1.Msg/Deregister"
-	Msg_ReduceStake_FullMethodName               = "/axon.agent.v1.Msg/ReduceStake"
-	Msg_ClaimReducedStake_FullMethodName         = "/axon.agent.v1.Msg/ClaimReducedStake"
-	Msg_SubmitAIChallengeResponse_FullMethodName = "/axon.agent.v1.Msg/SubmitAIChallengeResponse"
-	Msg_RevealAIChallengeResponse_FullMethodName = "/axon.agent.v1.Msg/RevealAIChallengeResponse"
+	Msg_Register_FullMethodName                  = "/cognize.agent.v1.Msg/Register"
+	Msg_AddStake_FullMethodName                  = "/cognize.agent.v1.Msg/AddStake"
+	Msg_UpdateAgent_FullMethodName               = "/cognize.agent.v1.Msg/UpdateAgent"
+	Msg_Heartbeat_FullMethodName                 = "/cognize.agent.v1.Msg/Heartbeat"
+	Msg_Deregister_FullMethodName                = "/cognize.agent.v1.Msg/Deregister"
+	Msg_ReduceStake_FullMethodName               = "/cognize.agent.v1.Msg/ReduceStake"
+	Msg_ClaimReducedStake_FullMethodName         = "/cognize.agent.v1.Msg/ClaimReducedStake"
+	Msg_SubmitAIChallengeResponse_FullMethodName = "/cognize.agent.v1.Msg/SubmitAIChallengeResponse"
+	Msg_RevealAIChallengeResponse_FullMethodName = "/cognize.agent.v1.Msg/RevealAIChallengeResponse"
 )
 
 // MsgClient is the client API for Msg service.
@@ -380,7 +380,7 @@ func _Msg_RevealAIChallengeResponse_Handler(srv interface{}, ctx context.Context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "axon.agent.v1.Msg",
+	ServiceName: "cognize.agent.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -421,5 +421,5 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "axon/agent/v1/tx.proto",
+	Metadata: "cognize/agent/v1/tx.proto",
 }

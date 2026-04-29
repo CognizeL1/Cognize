@@ -19,7 +19,7 @@ func TestUseLegacyMutationSenderCompat(t *testing.T) {
 	}{
 		{name: "mainnet before cutoff", chainID: mainnetChainID, height: 18392, want: true},
 		{name: "mainnet after cutoff", chainID: mainnetChainID, height: 18393, want: false},
-		{name: "other chain before cutoff", chainID: "axon-local-1", height: 100, want: false},
+		{name: "other chain before cutoff", chainID: "cognize-local-1", height: 100, want: false},
 	}
 
 	for _, tt := range tests {

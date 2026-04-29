@@ -26,11 +26,11 @@ var (
 
 // Pre-registered verifying key IDs for built-in privacy circuits.
 var (
-	UNSHIELD_KEY         = sha256Key("axon/circuit/unshield/v1")
-	PRIVATE_TRANSFER_KEY = sha256Key("axon/circuit/private_transfer/v1")
-	REPUTATION_PROOF_KEY = sha256Key("axon/circuit/reputation_proof/v1")
-	CAPABILITY_PROOF_KEY = sha256Key("axon/circuit/capability_proof/v1")
-	STAKE_PROOF_KEY      = sha256Key("axon/circuit/stake_proof/v1")
+	UNSHIELD_KEY         = sha256Key("cognize/circuit/unshield/v1")
+	PRIVATE_TRANSFER_KEY = sha256Key("cognize/circuit/private_transfer/v1")
+	REPUTATION_PROOF_KEY = sha256Key("cognize/circuit/reputation_proof/v1")
+	CAPABILITY_PROOF_KEY = sha256Key("cognize/circuit/capability_proof/v1")
+	STAKE_PROOF_KEY      = sha256Key("cognize/circuit/stake_proof/v1")
 )
 
 func sha256Key(label string) [32]byte {
@@ -47,7 +47,7 @@ const (
 	GasRegisterVerifyingKey = 100000
 	GasIsKeyRegistered      = 1000
 
-	RegistrationCostAaxon = "100000000000000000000" // 100 * 10^18 acognize = 100 AXON
+	RegistrationCostCognize = "100000000000000000000" // 100 * 10^18 cognize = 100 COGNIZE
 )
 
 type Precompile struct {
@@ -206,14 +206,14 @@ func (p Precompile) registerVerifyingKey(ctx sdk.Context, evm *vm.EVM, contract 
 		return nil, fmt.Errorf("verifying key must not be empty")
 	}
 
-	minCost, _ := sdkmath.NewIntFromString(RegistrationCostAaxon)
+	minCost, _ := sdkmath.NewIntFromString(RegistrationCostCognize)
 	msgValue := contract.Value()
 	if msgValue == nil || msgValue.IsZero() {
-		return nil, fmt.Errorf("must send >= 100 AXON as msg.value to register a verifying key")
+		return nil, fmt.Errorf("must send >= 100 COGNIZE as msg.value to register a verifying key")
 	}
 	sent := sdkmath.NewIntFromBigInt(msgValue.ToBig())
 	if sent.LT(minCost) {
-		return nil, fmt.Errorf("insufficient payment: need %s acognize, got %s", minCost, sent)
+		return nil, fmt.Errorf("insufficient payment: need %s cognize, got %s", minCost, sent)
 	}
 
 	keyId := sha256.Sum256(vkBytes)

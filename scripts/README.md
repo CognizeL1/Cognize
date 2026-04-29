@@ -7,13 +7,13 @@ Public node startup scripts:
 
 Each script is self-contained and resolves paths relative to its own directory.
 
-- `axond` is expected at `./axond`; for mainnet or production nodes, pre-download it from the latest GitHub Release asset and verify the checksum before first run
-- if `./axond` is missing, the script falls back to downloading it automatically from the latest GitHub Release asset
+- `cognized` is expected at `./cognized`; for mainnet or production nodes, pre-download it from the latest GitHub Release asset and verify the checksum before first run
+- if `./cognized` is missing, the script falls back to downloading it automatically from the latest GitHub Release asset
 - downloaded binaries are verified against the matching `.sha256` sidecar file before use
 - `genesis.json` is expected at `./genesis.json`
 - `bootstrap_peers.txt` is expected at `./bootstrap_peers.txt`
 - runtime data is stored under `./data/`
-- the published mainnet files use Cosmos chain ID `axon_8210-1`
+- the published mainnet files use Cosmos chain ID `cognize_8210-1`
 - if you generate a brand-new network genesis, the script `CHAIN_ID` must match the `chain_id` written into `genesis.json`
 - leave `P2P_EXTERNAL_ADDRESS` unset on ordinary outbound-only nodes to avoid advertising an unresolvable local hostname
 - set `P2P_EXTERNAL_ADDRESS=host:26656` only on publicly reachable nodes that should be dialed by other peers
@@ -23,7 +23,7 @@ Validator-specific behavior:
 - the default validator keyring backend is `file`; set `KEYRING_PASSWORD_FILE=/path/to/passphrase` before running validator commands
 - set `MNEMONIC_SOURCE_FILE=/path/to/mnemonic.txt` when importing an existing validator account
 - `./start_validator_node.sh init` initializes `./data/node`, creates or imports the validator account, prints a newly generated mnemonic once to stdout, and writes `./data/validator.address`, `./data/validator.valoper`, `./data/validator.consensus_pubkey.json`, and `./data/peer_info.txt`
-- the public mainnet validator script defaults `GAS_PRICES` to `1000000000aaxon` for Cosmos staking transactions; override it explicitly if the chain fee floor changes
+- the public mainnet validator script defaults `GAS_PRICES` to `1000000000cognize` for Cosmos staking transactions; override it explicitly if the chain fee floor changes
 - `./start_validator_node.sh start` applies the `validator-min` profile: aggressive state pruning, `tx_index=null`, `discard_abci_responses=true`, and JSON-RPC / REST / gRPC disabled for minimal disk growth
 - CometBFT RPC stays bound to `127.0.0.1` by default so local validator operations still work
 - `./start_validator_node.sh start` starts the local validator node process

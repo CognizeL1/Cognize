@@ -83,11 +83,11 @@ func (k Keeper) executeDeregister(ctx sdk.Context, address string, params types.
 		burnedAmount = agent.BurnedAtRegister
 	} else {
 		burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize))
-		burnedAmount = sdk.NewCoin("acognize", burnInt)
+		burnedAmount = sdk.NewCoin("cognize", burnInt)
 	}
 	var moduleHeld sdk.Coin
 	if agent.StakeAmount.IsLT(burnedAmount) {
-		moduleHeld = sdk.NewInt64Coin("acognize", 0)
+		moduleHeld = sdk.NewInt64Coin("cognize", 0)
 	} else {
 		moduleHeld = agent.StakeAmount.Sub(burnedAmount)
 	}

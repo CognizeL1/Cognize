@@ -190,7 +190,7 @@ func registerAPIIndexRoutes(router *mux.Router) {
 	publicIndex := func(w http.ResponseWriter, r *http.Request) {
 		origin := requestOrigin(r)
 		writeIndex(w, map[string]any{
-			"name":        "Axon Public API",
+			"name":        "Cognize Public API",
 			"base_path":   publicAPIRoot + "/",
 			"docs_url":    origin + "/docs/",
 			"openapi_url": origin + "/docs/openapi.json",
@@ -209,24 +209,24 @@ func registerAPIIndexRoutes(router *mux.Router) {
 	agentIndex := func(w http.ResponseWriter, r *http.Request) {
 		origin := requestOrigin(r)
 		writeIndex(w, map[string]any{
-			"name":        "Axon Agent API",
-			"base_path":   "/axon/agent/v1/",
+			"name":        "Cognize Agent API",
+			"base_path":   "/cognize/agent/v1/",
 			"docs_url":    origin + "/docs/",
 			"openapi_url": origin + "/docs/openapi.json",
 			"entrypoints": []string{
-				"/axon/agent/v1/params",
-				"/axon/agent/v1/agents",
-				"/axon/agent/v1/agent/{address}",
-				"/axon/agent/v1/reputation/{address}",
-				"/axon/agent/v1/challenge/current",
+				"/cognize/agent/v1/params",
+				"/cognize/agent/v1/agents",
+				"/cognize/agent/v1/agent/{address}",
+				"/cognize/agent/v1/reputation/{address}",
+				"/cognize/agent/v1/challenge/current",
 			},
 		})
 	}
 
 	router.HandleFunc(publicAPIRoot, publicIndex).Methods(http.MethodGet)
 	router.HandleFunc(publicAPIRoot+"/", publicIndex).Methods(http.MethodGet)
-	router.HandleFunc("/axon/agent/v1", agentIndex).Methods(http.MethodGet)
-	router.HandleFunc("/axon/agent/v1/", agentIndex).Methods(http.MethodGet)
+	router.HandleFunc("/cognize/agent/v1", agentIndex).Methods(http.MethodGet)
+	router.HandleFunc("/cognize/agent/v1/", agentIndex).Methods(http.MethodGet)
 }
 
 func registerDocsSiteRoutes(router *mux.Router, spec []byte, generatedSection apiDocsGeneratedSection) {
@@ -293,12 +293,12 @@ func buildAPIDocsPayload(r *http.Request, generatedSection apiDocsGeneratedSecti
 	origin := requestOrigin(r)
 	return apiDocsPayload{
 		GeneratedAt: time.Now().UTC().Format(time.RFC3339),
-		Summary:     "Unified runtime API documentation for the mainnet-api entry, including the repository-owned /axon/public/v1 aggregation layer and protobuf-generated Axon agent routes.",
+		Summary:     "Unified runtime API documentation for the mainnet-api entry, including the repository-owned /cognize/public/v1 aggregation layer and protobuf-generated Cognize agent routes.",
 		Runtime: apiDocsRuntime{
 			DocsURL:        origin + "/docs/",
 			DocsDataURL:    origin + "/docs/data.json",
 			PublicAPIBase:  origin + publicAPIRoot + "/",
-			AgentAPIBase:   origin + "/axon/agent/v1/",
+			AgentAPIBase:   origin + "/cognize/agent/v1/",
 			OpenAPISpecURL: origin + "/docs/openapi.json",
 			SwaggerUIURL:   origin + "/docs/swagger/",
 		},
@@ -325,9 +325,9 @@ func buildAPIDocsPayload(r *http.Request, generatedSection apiDocsGeneratedSecti
 func buildPublicServiceEntries(origin string) []apiDocsServiceEntry {
 	return []apiDocsServiceEntry{
 		{Name: "Unified API Entry", Entry: origin + "/", Notes: "Internally maintained public HTTPS entry for the node REST/API capability set"},
-		{Name: "EVM JSON-RPC", Entry: "https://mainnet-rpc.axonchain.ai/", Notes: "Internally maintained public entry mapping to the node EVM JSON-RPC capability on local port 8545"},
-		{Name: "Axon Public API", Entry: origin + publicAPIRoot + "/", Notes: "Repository-owned aggregated interface built on current node data"},
-		{Name: "Axon Agent API", Entry: origin + "/axon/agent/v1/", Notes: "Generated agent query routes exposed through the same public entry"},
+		{Name: "EVM JSON-RPC", Entry: "https://mainnet-rpc.cognizechain.ai/", Notes: "Internally maintained public entry mapping to the node EVM JSON-RPC capability on local port 8545"},
+		{Name: "Cognize Public API", Entry: origin + publicAPIRoot + "/", Notes: "Repository-owned aggregated interface built on current node data"},
+		{Name: "Cognize Agent API", Entry: origin + "/cognize/agent/v1/", Notes: "Generated agent query routes exposed through the same public entry"},
 		{Name: "API Docs", Entry: origin + "/docs/", Notes: "Runtime docs site for the same public API entry"},
 	}
 }
@@ -338,7 +338,7 @@ func buildLocalServiceEntries() []apiDocsLocalService {
 		{Name: "CometBFT RPC", Port: "26657", LocalForm: "http://127.0.0.1:26657", Notes: "Low-level chain RPC"},
 		{Name: "EVM JSON-RPC", Port: "8545", LocalForm: "http://127.0.0.1:8545", Notes: "Wallet and dApp RPC"},
 		{Name: "EVM JSON-RPC WebSocket", Port: "8546", LocalForm: "ws://127.0.0.1:8546", Notes: "Local subscription transport"},
-		{Name: "Cosmos REST API", Port: "1317", LocalForm: "http://127.0.0.1:1317", Notes: "Standard REST, generated routes, and /axon/public/v1"},
+		{Name: "Cosmos REST API", Port: "1317", LocalForm: "http://127.0.0.1:1317", Notes: "Standard REST, generated routes, and /cognize/public/v1"},
 		{Name: "gRPC", Port: "9090", LocalForm: "127.0.0.1:9090", Notes: "Typed service access"},
 	}
 }
@@ -349,135 +349,135 @@ func buildManualPublicAPIGroups() []apiDocsGroup {
 			Name:        "Chain",
 			Description: "Static network identity, sync state, fee view, and aggregated chain params.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/chain/info", Summary: "Return chain id, network, version, native token metadata, and bech32 prefixes."},
-				{Method: "GET", Path: "/axon/public/v1/chain/status", Summary: "Return latest block height, latest block time, catching_up, peer_count, and node version."},
-				{Method: "GET", Path: "/axon/public/v1/chain/health", Summary: "Return lightweight node health, RPC availability, REST availability, and peer count."},
-				{Method: "GET", Path: "/axon/public/v1/chain/fees", Summary: "Return current base fee, minimum gas price, and recommended gas price tiers."},
-				{Method: "GET", Path: "/axon/public/v1/chain/params", Summary: "Return aggregated staking, slashing, distribution, governance, and agent params."},
+				{Method: "GET", Path: "/cognize/public/v1/chain/info", Summary: "Return chain id, network, version, native token metadata, and bech32 prefixes."},
+				{Method: "GET", Path: "/cognize/public/v1/chain/status", Summary: "Return latest block height, latest block time, catching_up, peer_count, and node version."},
+				{Method: "GET", Path: "/cognize/public/v1/chain/health", Summary: "Return lightweight node health, RPC availability, REST availability, and peer count."},
+				{Method: "GET", Path: "/cognize/public/v1/chain/fees", Summary: "Return current base fee, minimum gas price, and recommended gas price tiers."},
+				{Method: "GET", Path: "/cognize/public/v1/chain/params", Summary: "Return aggregated staking, slashing, distribution, governance, and agent params."},
 			},
 		},
 		{
 			Name:        "Params",
 			Description: "Module-specific parameter views without additional aggregation.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/params/staking", Summary: "Return staking params."},
-				{Method: "GET", Path: "/axon/public/v1/params/slashing", Summary: "Return slashing params."},
-				{Method: "GET", Path: "/axon/public/v1/params/distribution", Summary: "Return distribution params."},
-				{Method: "GET", Path: "/axon/public/v1/params/agent", Summary: "Return agent module params."},
-				{Method: "GET", Path: "/axon/public/v1/gov/params", Summary: "Return governance deposit, voting, and tally params."},
+				{Method: "GET", Path: "/cognize/public/v1/params/staking", Summary: "Return staking params."},
+				{Method: "GET", Path: "/cognize/public/v1/params/slashing", Summary: "Return slashing params."},
+				{Method: "GET", Path: "/cognize/public/v1/params/distribution", Summary: "Return distribution params."},
+				{Method: "GET", Path: "/cognize/public/v1/params/agent", Summary: "Return agent module params."},
+				{Method: "GET", Path: "/cognize/public/v1/gov/params", Summary: "Return governance deposit, voting, and tally params."},
 			},
 		},
 		{
 			Name:        "Blocks",
 			Description: "Current-node block lookup, range listing, block txs, validator set, and proposer view.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/blocks/latest", Summary: "Return the latest block summary."},
-				{Method: "GET", Path: "/axon/public/v1/blocks/{identifier}", Summary: "Lookup a block by height or hex hash."},
-				{Method: "GET", Path: "/axon/public/v1/blocks", Summary: "Return a descending block window.", Query: []string{"from", "to", "limit"}},
-				{Method: "GET", Path: "/axon/public/v1/blocks/{height}/txs", Summary: "Return block metadata and tx service results for one height.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/blocks/{height}/validators", Summary: "Return validator set at a target height.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/blocks/{height}/proposer", Summary: "Return proposer consensus address and matching validator-set entry when available."},
+				{Method: "GET", Path: "/cognize/public/v1/blocks/latest", Summary: "Return the latest block summary."},
+				{Method: "GET", Path: "/cognize/public/v1/blocks/{identifier}", Summary: "Lookup a block by height or hex hash."},
+				{Method: "GET", Path: "/cognize/public/v1/blocks", Summary: "Return a descending block window.", Query: []string{"from", "to", "limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/blocks/{height}/txs", Summary: "Return block metadata and tx service results for one height.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/blocks/{height}/validators", Summary: "Return validator set at a target height.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/blocks/{height}/proposer", Summary: "Return proposer consensus address and matching validator-set entry when available."},
 			},
 		},
 		{
 			Name:        "Transactions",
 			Description: "Current-node tx lookup, event query, simulate, and broadcast helpers.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/txs/recent", Summary: "Return recent indexed transactions.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/txs/search", Summary: "Run a direct tx event query string.", Query: []string{"q", "limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/txs", Summary: "Build a tx search query from common filters.", Query: []string{"sender", "recipient", "type", "status", "from_height", "to_height", "limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/txs/{hash}", Summary: "Return a stable tx body summary and tx execution summary."},
-				{Method: "GET", Path: "/axon/public/v1/txs/{hash}/events", Summary: "Return tx events only."},
-				{Method: "GET", Path: "/axon/public/v1/txs/{hash}/raw", Summary: "Return base64-encoded protobuf tx bytes."},
-				{Method: "POST", Path: "/axon/public/v1/txs/simulate", Summary: "Simulate signed tx bytes.", Notes: []string{`body: {"tx_bytes":"<base64-or-hex>"}`}},
-				{Method: "POST", Path: "/axon/public/v1/txs/broadcast", Summary: "Broadcast signed tx bytes.", Notes: []string{`body: {"tx_bytes":"<base64-or-hex>","mode":"sync|async|block"}`}},
+				{Method: "GET", Path: "/cognize/public/v1/txs/recent", Summary: "Return recent indexed transactions.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/txs/search", Summary: "Run a direct tx event query string.", Query: []string{"q", "limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/txs", Summary: "Build a tx search query from common filters.", Query: []string{"sender", "recipient", "type", "status", "from_height", "to_height", "limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/txs/{hash}", Summary: "Return a stable tx body summary and tx execution summary."},
+				{Method: "GET", Path: "/cognize/public/v1/txs/{hash}/events", Summary: "Return tx events only."},
+				{Method: "GET", Path: "/cognize/public/v1/txs/{hash}/raw", Summary: "Return base64-encoded protobuf tx bytes."},
+				{Method: "POST", Path: "/cognize/public/v1/txs/simulate", Summary: "Simulate signed tx bytes.", Notes: []string{`body: {"tx_bytes":"<base64-or-hex>"}`}},
+				{Method: "POST", Path: "/cognize/public/v1/txs/broadcast", Summary: "Broadcast signed tx bytes.", Notes: []string{`body: {"tx_bytes":"<base64-or-hex>","mode":"sync|async|block"}`}},
 			},
 		},
 		{
 			Name:        "Accounts",
 			Description: "Stable base-account summary, balances, tx lookups, and rewards.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}", Summary: "Return a stable base-account summary."},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/balances", Summary: "Return all balances.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/spendable", Summary: "Return spendable balances.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/sequence", Summary: "Return account_number and sequence."},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/txs", Summary: "Return merged account tx activity from current-node tx index.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/transfers", Summary: "Return merged transfer-related tx activity.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/accounts/{address}/rewards", Summary: "Return distribution rewards summary."},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}", Summary: "Return a stable base-account summary."},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/balances", Summary: "Return all balances.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/spendable", Summary: "Return spendable balances.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/sequence", Summary: "Return account_number and sequence."},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/txs", Summary: "Return merged account tx activity from current-node tx index.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/transfers", Summary: "Return merged transfer-related tx activity.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/accounts/{address}/rewards", Summary: "Return distribution rewards summary."},
 			},
 		},
 		{
 			Name:        "Validators",
-			Description: "Validator list, ranking, detail, signing info, rewards, and Axon agent mapping.",
+			Description: "Validator list, ranking, detail, signing info, rewards, and Cognize agent mapping.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/validators", Summary: "Return validators.", Query: []string{"status", "limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/top", Summary: "Return bonded validators sorted by staked tokens.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}", Summary: "Return validator summary, consensus pubkey summary, commission, self-delegation, signing info, and mapped agent if present."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/status", Summary: "Return validator status and unbonding time."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/delegations", Summary: "Return validator delegations.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/unbondings", Summary: "Return validator unbondings.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/redelegations", Summary: "Return validator redelegations aggregated from source and destination lookups.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/commission", Summary: "Return validator commission."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/rewards", Summary: "Return validator outstanding rewards."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/slashes", Summary: "Return validator slash events.", Query: []string{"from_height", "to_height", "limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/signing-info", Summary: "Return slashing signing info and signed window values."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/self-delegation", Summary: "Return the self-delegation by mapping valoper to the same account bytes."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/agent", Summary: "Return the mapped Axon agent if present."},
-				{Method: "GET", Path: "/axon/public/v1/validators/{valoper}/uptime", Summary: "Return a lightweight uptime estimate derived from slashing signing info."},
+				{Method: "GET", Path: "/cognize/public/v1/validators", Summary: "Return validators.", Query: []string{"status", "limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/top", Summary: "Return bonded validators sorted by staked tokens.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}", Summary: "Return validator summary, consensus pubkey summary, commission, self-delegation, signing info, and mapped agent if present."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/status", Summary: "Return validator status and unbonding time."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/delegations", Summary: "Return validator delegations.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/unbondings", Summary: "Return validator unbondings.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/redelegations", Summary: "Return validator redelegations aggregated from source and destination lookups.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/commission", Summary: "Return validator commission."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/rewards", Summary: "Return validator outstanding rewards."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/slashes", Summary: "Return validator slash events.", Query: []string{"from_height", "to_height", "limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/signing-info", Summary: "Return slashing signing info and signed window values."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/self-delegation", Summary: "Return the self-delegation by mapping valoper to the same account bytes."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/agent", Summary: "Return the mapped Cognize agent if present."},
+				{Method: "GET", Path: "/cognize/public/v1/validators/{valoper}/uptime", Summary: "Return a lightweight uptime estimate derived from slashing signing info."},
 			},
 		},
 		{
 			Name:        "Delegators",
 			Description: "Delegator-centric staking, reward, withdraw-address, and validator views.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/delegations", Summary: "Return delegations.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/unbondings", Summary: "Return unbonding delegations.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/redelegations", Summary: "Return redelegations.", Query: []string{"limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/rewards", Summary: "Return delegator rewards."},
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/withdraw-address", Summary: "Return withdraw address."},
-				{Method: "GET", Path: "/axon/public/v1/delegators/{address}/validators", Summary: "Return validators related to the delegator.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/delegations", Summary: "Return delegations.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/unbondings", Summary: "Return unbonding delegations.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/redelegations", Summary: "Return redelegations.", Query: []string{"limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/rewards", Summary: "Return delegator rewards."},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/withdraw-address", Summary: "Return withdraw address."},
+				{Method: "GET", Path: "/cognize/public/v1/delegators/{address}/validators", Summary: "Return validators related to the delegator.", Query: []string{"limit", "offset"}},
 			},
 		},
 		{
 			Name:        "Governance",
 			Description: "Proposal list, proposal detail, votes, tally, and governance params.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/gov/proposals", Summary: "Return proposals.", Query: []string{"status", "voter", "depositor", "limit", "offset"}},
-				{Method: "GET", Path: "/axon/public/v1/gov/proposals/{id}", Summary: "Return one proposal.", Notes: []string{"missing proposal returns 404 not_found"}},
-				{Method: "GET", Path: "/axon/public/v1/gov/proposals/{id}/votes", Summary: "Return proposal votes.", Query: []string{"limit", "offset"}, Notes: []string{"missing proposal returns 404 not_found"}},
-				{Method: "GET", Path: "/axon/public/v1/gov/proposals/{id}/tally", Summary: "Return proposal tally.", Notes: []string{"missing proposal returns 404 not_found"}},
-				{Method: "GET", Path: "/axon/public/v1/gov/params", Summary: "Return governance params."},
+				{Method: "GET", Path: "/cognize/public/v1/gov/proposals", Summary: "Return proposals.", Query: []string{"status", "voter", "depositor", "limit", "offset"}},
+				{Method: "GET", Path: "/cognize/public/v1/gov/proposals/{id}", Summary: "Return one proposal.", Notes: []string{"missing proposal returns 404 not_found"}},
+				{Method: "GET", Path: "/cognize/public/v1/gov/proposals/{id}/votes", Summary: "Return proposal votes.", Query: []string{"limit", "offset"}, Notes: []string{"missing proposal returns 404 not_found"}},
+				{Method: "GET", Path: "/cognize/public/v1/gov/proposals/{id}/tally", Summary: "Return proposal tally.", Notes: []string{"missing proposal returns 404 not_found"}},
+				{Method: "GET", Path: "/cognize/public/v1/gov/params", Summary: "Return governance params."},
 			},
 		},
 		{
 			Name:        "Explorer",
 			Description: "Compact dashboard-oriented views built directly from current node state.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/explorer/overview", Summary: "Return chain, validator, and agent overview."},
-				{Method: "GET", Path: "/axon/public/v1/explorer/stats", Summary: "Return recent block span, tx count, peer count, and current store metadata."},
-				{Method: "GET", Path: "/axon/public/v1/explorer/validators/top", Summary: "Alias of validator ranking.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/explorer/blocks/recent", Summary: "Return recent blocks.", Query: []string{"limit"}},
-				{Method: "GET", Path: "/axon/public/v1/explorer/txs/recent", Summary: "Return recent indexed txs.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/explorer/overview", Summary: "Return chain, validator, and agent overview."},
+				{Method: "GET", Path: "/cognize/public/v1/explorer/stats", Summary: "Return recent block span, tx count, peer count, and current store metadata."},
+				{Method: "GET", Path: "/cognize/public/v1/explorer/validators/top", Summary: "Alias of validator ranking.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/explorer/blocks/recent", Summary: "Return recent blocks.", Query: []string{"limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/explorer/txs/recent", Summary: "Return recent indexed txs.", Query: []string{"limit"}},
 			},
 		},
 		{
 			Name:        "Agents",
-			Description: "Axon-specific agent discovery, heartbeat, reputation, and challenge views.",
+			Description: "Cognize-specific agent discovery, heartbeat, reputation, and challenge views.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/agents", Summary: "Return agent list.", Query: []string{"status", "offset", "limit"}},
-				{Method: "GET", Path: "/axon/public/v1/agents/{address}", Summary: "Return one agent summary."},
-				{Method: "GET", Path: "/axon/public/v1/agents/{address}/heartbeat", Summary: "Return heartbeat-derived status and remaining blocks until offline."},
-				{Method: "GET", Path: "/axon/public/v1/agents/{address}/reputation", Summary: "Return agent reputation view."},
-				{Method: "GET", Path: "/axon/public/v1/agents/{address}/stake", Summary: "Return agent stake view."},
-				{Method: "GET", Path: "/axon/public/v1/agents/online-validators", Summary: "Return agents currently considered online."},
-				{Method: "GET", Path: "/axon/public/v1/agents/challenge/current", Summary: "Return current on-chain challenge if present."},
+				{Method: "GET", Path: "/cognize/public/v1/agents", Summary: "Return agent list.", Query: []string{"status", "offset", "limit"}},
+				{Method: "GET", Path: "/cognize/public/v1/agents/{address}", Summary: "Return one agent summary."},
+				{Method: "GET", Path: "/cognize/public/v1/agents/{address}/heartbeat", Summary: "Return heartbeat-derived status and remaining blocks until offline."},
+				{Method: "GET", Path: "/cognize/public/v1/agents/{address}/reputation", Summary: "Return agent reputation view."},
+				{Method: "GET", Path: "/cognize/public/v1/agents/{address}/stake", Summary: "Return agent stake view."},
+				{Method: "GET", Path: "/cognize/public/v1/agents/online-validators", Summary: "Return agents currently considered online."},
+				{Method: "GET", Path: "/cognize/public/v1/agents/challenge/current", Summary: "Return current on-chain challenge if present."},
 			},
 		},
 		{
 			Name:        "Search",
 			Description: "Lightweight search over current-node-supported entities.",
 			Endpoints: []apiDocsEndpoint{
-				{Method: "GET", Path: "/axon/public/v1/search", Summary: "Resolve tx hash, account address, validator operator address, agent id, or validator moniker.", Query: []string{"q"}},
+				{Method: "GET", Path: "/cognize/public/v1/search", Summary: "Resolve tx hash, account address, validator operator address, agent id, or validator moniker.", Query: []string{"q"}},
 			},
 		},
 	}
@@ -505,7 +505,7 @@ func buildRuntimeOpenAPISpec() ([]byte, apiDocsGeneratedSection, error) {
 
 	spec := swaggerSpec{
 		Swagger:     "2.0",
-		Info:        swaggerInfo{Title: "Axon Runtime API", Version: version.Version},
+		Info:        swaggerInfo{Title: "Cognize Runtime API", Version: version.Version},
 		Consumes:    []string{"application/json"},
 		Produces:    []string{"application/json"},
 		Paths:       manualPaths,
@@ -608,7 +608,7 @@ func buildManualOpenAPIPaths(definitions map[string]swaggerSchema) map[string]ma
 }
 
 func buildGeneratedAgentOpenAPI(definitions map[string]swaggerSchema) (map[string]map[string]swaggerOperation, apiDocsGeneratedSection, error) {
-	fd, err := loadRegisteredFileDescriptor("axon/agent/v1/query.proto")
+	fd, err := loadRegisteredFileDescriptor("cognize/agent/v1/query.proto")
 	if err != nil {
 		return nil, apiDocsGeneratedSection{}, err
 	}
@@ -624,7 +624,7 @@ func buildGeneratedAgentOpenAPI(definitions map[string]swaggerSchema) (map[strin
 		return nil, apiDocsGeneratedSection{}, fmt.Errorf("query service not found in descriptor")
 	}
 
-	groupName := "Axon Agent Query"
+	groupName := "Cognize Agent Query"
 	paths := make(map[string]map[string]swaggerOperation)
 	routes := make([]generatedRoute, 0)
 
@@ -699,7 +699,7 @@ func buildGeneratedAgentOpenAPI(definitions map[string]swaggerSchema) (map[strin
 	}
 
 	return paths, apiDocsGeneratedSection{
-		Title:   "Generated Axon Agent API",
+		Title:   "Generated Cognize Agent API",
 		Version: version.Version,
 		Groups: []apiDocsGroup{
 			{
@@ -847,15 +847,15 @@ func flattenHTTPRule(rule *annotations.HttpRule) []httpBinding {
 func fallbackGeneratedHTTPBindings(methodName string) []httpBinding {
 	switch methodName {
 	case "Params":
-		return []httpBinding{{Method: http.MethodGet, Path: "/axon/agent/v1/params"}}
+		return []httpBinding{{Method: http.MethodGet, Path: "/cognize/agent/v1/params"}}
 	case "Agent":
-		return []httpBinding{{Method: http.MethodGet, Path: "/axon/agent/v1/agent/{address}"}}
+		return []httpBinding{{Method: http.MethodGet, Path: "/cognize/agent/v1/agent/{address}"}}
 	case "Agents":
-		return []httpBinding{{Method: http.MethodGet, Path: "/axon/agent/v1/agents"}}
+		return []httpBinding{{Method: http.MethodGet, Path: "/cognize/agent/v1/agents"}}
 	case "Reputation":
-		return []httpBinding{{Method: http.MethodGet, Path: "/axon/agent/v1/reputation/{address}"}}
+		return []httpBinding{{Method: http.MethodGet, Path: "/cognize/agent/v1/reputation/{address}"}}
 	case "CurrentChallenge":
-		return []httpBinding{{Method: http.MethodGet, Path: "/axon/agent/v1/challenge/current"}}
+		return []httpBinding{{Method: http.MethodGet, Path: "/cognize/agent/v1/challenge/current"}}
 	default:
 		return nil
 	}

@@ -10,7 +10,7 @@ Use your own node's EVM JSON-RPC endpoint, or a public one when available.
 |------|-------|
 | Cosmos Chain ID | `cognize_8210-1` |
 | EVM Chain ID | `8210` |
-| Native Token | `ACognize` |
+| Native Token | `COGNIZE` |
 
 ## Installation
 
@@ -27,7 +27,7 @@ client = AgentClient("http://localhost:8545")
 client.set_account("your-private-key")
 
 # Register as agent
-tx = client.register_agent("nlp,reasoning", stake_axon=10)
+tx = client.register_agent("nlp,reasoning", stake_cognize=10)
 tx.wait()
 
 # Add stake

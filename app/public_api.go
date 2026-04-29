@@ -37,13 +37,13 @@ import (
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	axonconfig "github.com/cognize/axon/app/config"
+	cognizeconfig "github.com/cognize/axon/app/config"
 	agenttypes "github.com/cognize/axon/x/agent/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 )
 
 const (
-	publicAPIRoot                 = "/axon/public/v1"
+	publicAPIRoot                 = "/cognize/public/v1"
 	publicAPIDefaultLimit         = 20
 	publicAPIMaxLimit             = 100
 	publicAPIMaxCacheEntries      = 10000
@@ -127,7 +127,7 @@ type publicAPIPeerInfo struct {
 
 // clientName builds a geth-style client identifier:
 //
-//	axond/v1.1.1-abc123/linux-amd64/go1.22.1
+//	cognized/v1.1.1-abc123/linux-amd64/go1.22.1
 func clientName() string {
 	v := version.Version
 	if v == "" {
@@ -140,15 +140,15 @@ func clientName() string {
 	if commit != "" {
 		v += "-" + commit
 	}
-	return fmt.Sprintf("axond/%s/%s-%s/%s", v, runtime.GOOS, runtime.GOARCH, runtime.Version())
+	return fmt.Sprintf("cognized/%s/%s-%s/%s", v, runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
 // parseMonikerClientName splits a moniker that may contain an injected client
-// name suffix. Format: "my-validator axond/v1.1.1/os-arch/goX.Y"
+// name suffix. Format: "my-validator cognized/v1.1.1/os-arch/goX.Y"
 // Returns (original_moniker, client_name). If no client name is found,
 // client_name is empty.
 func parseMonikerClientName(raw string) (moniker, name string) {
-	if idx := strings.Index(raw, " axond/"); idx >= 0 {
+	if idx := strings.Index(raw, " cognized/"); idx >= 0 {
 		return raw[:idx], raw[idx+1:]
 	}
 	return raw, ""
@@ -482,16 +482,16 @@ func (p *publicAPI) handleChainInfo(ctx context.Context, _ *http.Request) (any, 
 		AppName:    firstNonEmpty(versionInfo.GetAppName(), AppName),
 		Version:    firstNonEmpty(versionInfo.GetVersion(), version.Version),
 		CosmosSDK:  versionInfo.GetCosmosSdkVersion(),
-		EVMChainID: axonconfig.EVMChainID,
+		EVMChainID: cognizeconfig.EVMChainID,
 		NativeToken: map[string]any{
-			"base_denom":    axonconfig.AxonDenom,
-			"display_denom": axonconfig.HumanDenom,
+			"base_denom":    cognizeconfig.CognizeDenom,
+			"display_denom": cognizeconfig.HumanDenom,
 			"decimals":      18,
 		},
 		AddressPrefix: map[string]string{
-			"account":   axonconfig.Bech32PrefixAccAddr,
-			"validator": axonconfig.Bech32PrefixValAddr,
-			"consensus": axonconfig.Bech32PrefixConsAddr,
+			"account":   cognizeconfig.Bech32PrefixAccAddr,
+			"validator": cognizeconfig.Bech32PrefixValAddr,
+			"consensus": cognizeconfig.Bech32PrefixConsAddr,
 		},
 	}
 
@@ -605,24 +605,24 @@ func (p *publicAPI) handleChainFees(ctx context.Context, _ *http.Request) (any, 
 	return map[string]any{
 		"base_fee": map[string]any{
 			"amount": baseFee,
-			"denom":  axonconfig.AxonDenom,
+			"denom":  cognizeconfig.CognizeDenom,
 		},
 		"minimum_gas_price": map[string]any{
 			"amount": minGasPrice,
-			"denom":  axonconfig.AxonDenom,
+			"denom":  cognizeconfig.CognizeDenom,
 		},
 		"recommended_gas_price": map[string]any{
 			"slow": map[string]any{
 				"amount": minGasPrice,
-				"denom":  axonconfig.AxonDenom,
+				"denom":  cognizeconfig.CognizeDenom,
 			},
 			"standard": map[string]any{
 				"amount": preferredGasPrice(minGasPrice, baseFee),
-				"denom":  axonconfig.AxonDenom,
+				"denom":  cognizeconfig.CognizeDenom,
 			},
 			"fast": map[string]any{
 				"amount": preferredGasPrice(minGasPrice, baseFee),
-				"denom":  axonconfig.AxonDenom,
+				"denom":  cognizeconfig.CognizeDenom,
 			},
 		},
 		"estimation_note": "Use /cosmos/tx/v1beta1/simulate for transaction-specific gas estimation.",
@@ -845,8 +845,8 @@ func (p *publicAPI) handleExplorerOverview(ctx context.Context, _ *http.Request)
 		"bonded_validators":   bondedValidators,
 		"agent_count":         len(agentsResp.Agents),
 		"online_agents":       onlineAgents,
-		"native_token":        axonconfig.HumanDenom,
-		"evm_chain_id":        axonconfig.EVMChainID,
+		"native_token":        cognizeconfig.HumanDenom,
+		"evm_chain_id":        cognizeconfig.EVMChainID,
 	}, nil
 }
 
@@ -1151,7 +1151,7 @@ func (p *publicAPI) handleSearch(ctx context.Context, r *http.Request) (any, err
 		}
 	}
 
-	if strings.HasPrefix(query, axonconfig.Bech32PrefixValAddr) {
+	if strings.HasPrefix(query, cognizeconfig.Bech32PrefixValAddr) {
 		validator, err := p.fetchValidator(ctx, query)
 		if err == nil {
 			return map[string]any{
@@ -1162,7 +1162,7 @@ func (p *publicAPI) handleSearch(ctx context.Context, r *http.Request) (any, err
 		}
 	}
 
-	if strings.HasPrefix(query, axonconfig.Bech32PrefixAccAddr) {
+	if strings.HasPrefix(query, cognizeconfig.Bech32PrefixAccAddr) {
 		accountInfo, accountErr := p.authClient.AccountInfo(ctx, &authtypes.QueryAccountInfoRequest{Address: query})
 		agentResp, agentErr := p.agentClient.Agent(ctx, &agenttypes.QueryAgentRequest{Address: query})
 		latestHeight, agentParams, _ := p.fetchChainHeightAndAgentParams(ctx)

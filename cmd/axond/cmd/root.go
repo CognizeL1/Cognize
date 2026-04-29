@@ -49,13 +49,13 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	axonapp "github.com/cognize/axon/app"
-	axonconfig "github.com/cognize/axon/app/config"
+	cognizeapp "github.com/cognize/axon/app"
+	cognizeconfig "github.com/cognize/axon/app/config"
 	agentcli "github.com/cognize/axon/x/agent/client/cli"
 )
 
 func NewRootCmd() *cobra.Command {
-	tempApp := axonapp.NewAxonApp(
+	tempApp := cognizeapp.NewCognizeApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
@@ -77,14 +77,14 @@ func NewRootCmd() *cobra.Command {
 		WithInput(os.Stdin).
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithBroadcastMode(flags.FlagBroadcastMode).
-		WithHomeDir(axonconfig.MustGetDefaultNodeHome()).
+		WithHomeDir(cognizeconfig.MustGetDefaultNodeHome()).
 		WithViper("").
 		WithKeyringOptions(hd.EthSecp256k1Option()).
 		WithLedgerHasProtobuf(true)
 
 	rootCmd := &cobra.Command{
-		Use:   "axond",
-		Short: "Axon — AI Agent Native Blockchain",
+		Use:   "cognized",
+		Short: "Cognize — AI Agent Native Blockchain",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			cmd.SetOut(cmd.OutOrStdout())
 			cmd.SetErr(cmd.ErrOrStderr())
@@ -120,7 +120,7 @@ func NewRootCmd() *cobra.Command {
 				return err
 			}
 
-			customAppTemplate, customAppConfig := axonconfig.InitAppConfig()
+			customAppTemplate, customAppConfig := cognizeconfig.InitAppConfig()
 			customTMConfig := initCometConfig()
 
 			if err := sdkserver.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customTMConfig); err != nil {
@@ -128,7 +128,7 @@ func NewRootCmd() *cobra.Command {
 			}
 
 			// Inject client name into CometBFT moniker so peers can
-			// identify the axond version via p2p handshake.
+			// identify the cognized version via p2p handshake.
 			injectClientNameIntoMoniker(cmd)
 			return nil
 		},
@@ -152,10 +152,10 @@ func initCometConfig() *cmtcfg.Config {
 	return cfg
 }
 
-// axondClientName builds a geth-style client identifier:
+// cognizedClientName builds a geth-style client identifier:
 //
-//	axond/v1.1.1-abc123/linux-amd64/go1.22.1
-func axondClientName() string {
+//	cognized/v1.1.1-abc123/linux-amd64/go1.22.1
+func cognizedClientName() string {
 	v := version.Version
 	if v == "" {
 		v = "dev"
@@ -167,10 +167,10 @@ func axondClientName() string {
 	if commit != "" {
 		v += "-" + commit
 	}
-	return fmt.Sprintf("axond/%s/%s-%s/%s", v, runtime.GOOS, runtime.GOARCH, runtime.Version())
+	return fmt.Sprintf("cognized/%s/%s-%s/%s", v, runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
-// injectClientNameIntoMoniker appends the axond client identifier to the
+// injectClientNameIntoMoniker appends the cognized client identifier to the
 // CometBFT moniker so that peers can read it from DefaultNodeInfo.Moniker
 // during p2p handshake. The original user-configured moniker is preserved
 // as a prefix.
@@ -179,24 +179,24 @@ func injectClientNameIntoMoniker(cmd *cobra.Command) {
 	if serverCtx == nil || serverCtx.Config == nil {
 		return
 	}
-	cn := axondClientName()
+	cn := cognizedClientName()
 	moniker := serverCtx.Config.Moniker
-	if !strings.Contains(moniker, "axond/") {
+	if !strings.Contains(moniker, "cognized/") {
 		serverCtx.Config.Moniker = moniker + " " + cn
 	}
 }
 
-func initRootCmd(rootCmd *cobra.Command, axonApp *axonapp.AxonApp) {
+func initRootCmd(rootCmd *cobra.Command, cognizeApp *cognizeapp.CognizeApp) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
-	defaultNodeHome := axonconfig.MustGetDefaultNodeHome()
+	defaultNodeHome := cognizeconfig.MustGetDefaultNodeHome()
 	sdkAppCreator := func(l log.Logger, d dbm.DB, w io.Writer, ao servertypes.AppOptions) servertypes.Application {
 		return newApp(l, d, w, ao)
 	}
 	rootCmd.AddCommand(
-		genutilcli.InitCmd(axonApp.BasicModuleManager, defaultNodeHome),
-		genutilcli.Commands(axonApp.TxConfig(), axonApp.BasicModuleManager, defaultNodeHome),
+		genutilcli.InitCmd(cognizeApp.BasicModuleManager, defaultNodeHome),
+		genutilcli.Commands(cognizeApp.TxConfig(), cognizeApp.BasicModuleManager, defaultNodeHome),
 		cmtcli.NewCompletionCmd(rootCmd, true),
 		evmdebug.Cmd(),
 		confixcmd.ConfigCommand(),
@@ -323,7 +323,7 @@ func newApp(
 		baseapp.SetChainID(chainID),
 	}
 
-	return axonapp.NewAxonApp(
+	return cognizeapp.NewCognizeApp(
 		logger, db, traceStore, true,
 		appOpts,
 		baseappOptions...,
@@ -357,17 +357,17 @@ func appExport(
 		return servertypes.ExportedApp{}, err
 	}
 
-	var axonApp *axonapp.AxonApp
+	var cognizeApp *cognizeapp.CognizeApp
 	if height != -1 {
-		axonApp = axonapp.NewAxonApp(logger, db, traceStore, false, appOpts, baseapp.SetChainID(chainID))
-		if err := axonApp.LoadHeight(height); err != nil {
+		cognizeApp = cognizeapp.NewCognizeApp(logger, db, traceStore, false, appOpts, baseapp.SetChainID(chainID))
+		if err := cognizeApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		axonApp = axonapp.NewAxonApp(logger, db, traceStore, true, appOpts, baseapp.SetChainID(chainID))
+		cognizeApp = cognizeapp.NewCognizeApp(logger, db, traceStore, true, appOpts, baseapp.SetChainID(chainID))
 	}
 
-	return axonApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, modulesToExport)
+	return cognizeApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, modulesToExport)
 }
 
 func getChainIDFromOpts(appOpts servertypes.AppOptions) (string, error) {

@@ -255,7 +255,7 @@ func TestCalculateAIBonus(t *testing.T) {
 }
 
 func TestKeyFunctions(t *testing.T) {
-	addr := "axon1abc123"
+	addr := "cognize1abc123"
 
 	agentKey := types.KeyAgent(addr)
 	if string(agentKey) != types.AgentKeyPrefix+addr {

@@ -357,10 +357,10 @@ func (k Keeper) ProcessInsuranceClaim(ctx sdk.Context, claimID, approver string,
 		payout := claimAmt.Sub(fee)
 
 		agentAddr := sdk.MustAccAddressFromBech32(claim.Agent)
-		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("acognize", payout))); err != nil {
+		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("cognize", payout))); err != nil {
 			return err
 		}
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, agentAddr, sdk.NewCoins(sdk.NewCoin("acognize", payout))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, agentAddr, sdk.NewCoins(sdk.NewCoin("cognize", payout))); err != nil {
 			return err
 		}
 	} else {

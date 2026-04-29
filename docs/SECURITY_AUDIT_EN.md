@@ -75,9 +75,9 @@ This report covers all core components of the Cognize blockchain, ordered by sec
 
 ### 2.3 Total Supply Hard Cap
 
-✅ Pass — Block reward hard cap: 650M ACognize
-✅ Pass — Contribution reward hard cap: 350M ACognize
-✅ Pass — Total supply = 1B ACognize
+✅ Pass — Block reward hard cap: 650M COGNIZE
+✅ Pass — Contribution reward hard cap: 350M COGNIZE
+✅ Pass — Total supply = 1B COGNIZE
 
 ### 2.4 Minting Permissions
 

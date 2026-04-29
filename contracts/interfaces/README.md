@@ -1,6 +1,6 @@
-# Axon Precompile Interfaces
+# Cognize Precompile Interfaces
 
-These Solidity interfaces define the Agent-native capabilities available on Axon.
+These Solidity interfaces define the Agent-native capabilities available on Cognize.
 They are implemented as EVM precompiled contracts, executing Go code at native speed.
 
 ## Addresses

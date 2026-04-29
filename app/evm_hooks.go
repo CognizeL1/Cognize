@@ -17,15 +17,14 @@ import (
 )
 
 const (
-	// DeployBurnAmount is 10 AXON = 10 * 10^18 acognize
-	DeployBurnDenom = "acognize"
-	DeployBurnAxon  = 10
+	DeployBurnDenom = "cognize"
+	DeployBurnCognize  = 10
 	DeployBurnExp   = 18
 )
 
 var _ evmtypes.EvmHooks = DeployBurnHook{}
 
-// DeployBurnHook burns 10 AXON from the deployer when a contract is created,
+// DeployBurnHook burns 10 COGNIZE from the deployer when a contract is created,
 // and tracks the deployment for contribution rewards.
 //
 // Limitation: only top-level deployments (receipt.ContractAddress) trigger the
@@ -55,8 +54,8 @@ func (h DeployBurnHook) PostTxProcessing(
 	isDeployment := receipt.ContractAddress != (common.Address{})
 
 	if isDeployment {
-		// 10 AXON = 10 * 10^18 acognize
-		burnAmount := sdkmath.NewInt(DeployBurnAxon).Mul(sdkmath.NewIntWithDecimal(1, DeployBurnExp))
+		// 10 COGNIZE = 10 * 10^18 cognize
+		burnAmount := sdkmath.NewInt(DeployBurnCognize).Mul(sdkmath.NewIntWithDecimal(1, DeployBurnExp))
 		burnCoin := sdk.NewCoin(DeployBurnDenom, burnAmount)
 
 		balance := h.bankKeeper.GetBalance(ctx, senderAccAddr, DeployBurnDenom)

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	Bech32Prefix         = "axon"
+	Bech32Prefix         = "cognize"
 	Bech32PrefixAccAddr  = Bech32Prefix
 	Bech32PrefixAccPub   = Bech32Prefix + sdk.PrefixPublic
 	Bech32PrefixValAddr  = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixOperator

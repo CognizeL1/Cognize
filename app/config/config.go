@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	AxonDenom  = "acognize" // atto-AXON (18 decimals)
-	HumanDenom = "AXON"
-	EVMChainID = uint64(8210) // Axon default EVM chain ID
+	CognizeDenom = "cognize"
+	HumanDenom  = "COGNIZE"
+	EVMChainID  = uint64(8210) // Cognize default EVM chain ID
 )
 
 func MustGetDefaultNodeHome() string {
-	defaultNodeHome, err := clienthelpers.GetNodeHomeDirectory(".axond")
+	defaultNodeHome, err := clienthelpers.GetNodeHomeDirectory(".cognized")
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func MustGetDefaultNodeHome() string {
 
 func InitAppConfig() (string, interface{}) {
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.MinGasPrices = "1000000000" + AxonDenom
+	srvCfg.MinGasPrices = "1000000000" + CognizeDenom
 
 	evmCfg := cosmosevmserverconfig.DefaultEVMConfig()
 	evmCfg.EVMChainID = EVMChainID

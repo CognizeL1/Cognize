@@ -5,9 +5,9 @@ COMMIT := $(shell git log -1 --format='%H')
 VERSION ?= v1.1.1
 
 BUILD_DIR ?= $(CURDIR)/build
-BINARY_NAME := axond
+BINARY_NAME := cognized
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=axon \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cognize \
 	-X github.com/cosmos/cosmos-sdk/version.AppName=$(BINARY_NAME) \
 	-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT)

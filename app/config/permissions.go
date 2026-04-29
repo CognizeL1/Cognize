@@ -34,7 +34,7 @@ func BlockedAddresses() map[string]bool {
 		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
-	axonPrecompiles := map[string]bool{
+	cognizePrecompiles := map[string]bool{
 		"0x0000000000000000000000000000000000000801": true,
 		"0x0000000000000000000000000000000000000802": true,
 		"0x0000000000000000000000000000000000000803": true,
@@ -51,7 +51,7 @@ func BlockedAddresses() map[string]bool {
 	}
 
 	for _, precompile := range blockedPrecompilesHex {
-		if axonPrecompiles[precompile] {
+		if cognizePrecompiles[precompile] {
 			continue
 		}
 		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
@@ -74,7 +74,7 @@ var maccPerms = map[string][]string{
 	feemarkettypes.ModuleName: nil,
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 
-	// Axon custom modules
+	// Cognize custom modules
 	agenttypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 	privacytypes.ModuleName: nil,
 }

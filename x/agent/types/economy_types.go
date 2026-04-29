@@ -302,7 +302,7 @@ func (m *QueryServiceCallsResponse) String() string { return proto.CompactTextSt
 func (*QueryServiceCallsResponse) ProtoMessage() {}
 
 type QueryTasksRequest struct {
-	Status    TaskStatus `protobuf:"varint,1,opt,name=status,proto3,enum=axon.agent.v1.TaskStatus" json:"status,omitempty"`
+	Status    TaskStatus `protobuf:"varint,1,opt,name=status,proto3,enum=cognize.agent.v1.TaskStatus" json:"status,omitempty"`
 	Requester string    `protobuf:"bytes,2,opt,name=requester,proto3" json:"requester,omitempty"`
 	Limit     int64    `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 }

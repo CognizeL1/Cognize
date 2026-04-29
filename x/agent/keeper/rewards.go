@@ -72,13 +72,13 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 	}
 
 	poolBig := pool.Amount.BigInt()
-	distributed := sdk.NewInt64Coin("acognize", 0)
+	distributed := sdk.NewInt64Coin("cognize", 0)
 
 	for _, wa := range agents {
 		share := new(big.Int).Mul(poolBig, wa.weight)
 		share.Div(share, totalWeight)
 
-		reward := sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(share))
+		reward := sdk.NewCoin("cognize", sdkmath.NewIntFromBigInt(share))
 		if reward.IsZero() {
 			continue
 		}
@@ -100,7 +100,7 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 	if distributed.Amount.GT(pool.Amount) {
 		k.Logger(ctx).Error("distributed exceeds pool — clamping to zero",
 			"pool", pool, "distributed", distributed)
-		remaining = sdk.NewInt64Coin("acognize", 0)
+		remaining = sdk.NewInt64Coin("cognize", 0)
 	} else {
 		remaining = pool.Sub(distributed)
 	}
@@ -119,7 +119,7 @@ func (k Keeper) getRewardPool(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(types.RewardPoolKey))
 	if bz == nil {
-		return sdk.NewInt64Coin("acognize", 0)
+		return sdk.NewInt64Coin("cognize", 0)
 	}
 	var coin sdk.Coin
 	k.cdc.MustUnmarshal(bz, &coin)

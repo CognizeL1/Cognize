@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	DefaultMaxShieldAmount      = "10000000000000000000000" // 10000 × 10^18 acognize
+	DefaultMaxShieldAmount      = "10000000000000000000000" // 10000 × 10^18 cognize
 	DefaultPoolCapRatio         = 10                        // 10% = 0.10
 	DefaultPrivacyGasMultiplier = 200                       // 2.00 in basis points / 100
-	DefaultVKRegistrationFee    = "100000000000000000000"   // 100 × 10^18 acognize
+	DefaultVKRegistrationFee    = "100000000000000000000"   // 100 × 10^18 cognize
 	DefaultMaxKnownRoots        = 100
 	TreeDepth                   = 32
 )

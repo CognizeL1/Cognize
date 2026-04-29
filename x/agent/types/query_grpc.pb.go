@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             (unknown)
-// source: axon/agent/v1/query.proto
+// source: cognize/agent/v1/query.proto
 
 package types
 
@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName           = "/axon.agent.v1.Query/Params"
-	Query_Agent_FullMethodName            = "/axon.agent.v1.Query/Agent"
-	Query_Agents_FullMethodName           = "/axon.agent.v1.Query/Agents"
-	Query_Reputation_FullMethodName       = "/axon.agent.v1.Query/Reputation"
-	Query_CurrentChallenge_FullMethodName = "/axon.agent.v1.Query/CurrentChallenge"
+	Query_Params_FullMethodName           = "/cognize.agent.v1.Query/Params"
+	Query_Agent_FullMethodName            = "/cognize.agent.v1.Query/Agent"
+	Query_Agents_FullMethodName           = "/cognize.agent.v1.Query/Agents"
+	Query_Reputation_FullMethodName       = "/cognize.agent.v1.Query/Reputation"
+	Query_CurrentChallenge_FullMethodName = "/cognize.agent.v1.Query/CurrentChallenge"
 )
 
 // QueryClient is the client API for Query service.
@@ -244,7 +244,7 @@ func _Query_CurrentChallenge_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "axon.agent.v1.Query",
+	ServiceName: "cognize.agent.v1.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -269,5 +269,5 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "axon/agent/v1/query.proto",
+	Metadata: "cognize/agent/v1/query.proto",
 }

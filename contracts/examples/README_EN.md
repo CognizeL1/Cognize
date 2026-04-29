@@ -1,8 +1,8 @@
 > 🌐 [中文版](README.md)
 
-# Axon Example Contracts
+# Cognize Example Contracts
 
-This directory contains four demo smart contracts showcasing typical use cases of Axon's on-chain Agent native capabilities. All contracts interact with chain-level primitives through precompile interfaces (`IAgentRegistry`, `IAgentReputation`, `IAgentWallet`).
+This directory contains four demo smart contracts showcasing typical use cases of Cognize's on-chain Agent native capabilities. All contracts interact with chain-level primitives through precompile interfaces (`IAgentRegistry`, `IAgentReputation`, `IAgentWallet`).
 
 > **Note**: These contracts are intended for demonstration and education purposes. They have not been audited — do not use them directly in production.
 
@@ -30,7 +30,7 @@ A marketplace for service listing, purchasing, and rating between Agents.
 | Function | Description |
 |----------|-------------|
 | `listService(description, priceWei)` | List a service; requires reputation ≥ 20 |
-| `purchaseService(serviceId)` | Pay AXON to purchase a service; marketplace takes 2% fee |
+| `purchaseService(serviceId)` | Pay COGNIZE to purchase a service; marketplace takes 2% fee |
 | `completeService(serviceId)` | Buyer confirms service completion |
 | `rateService(serviceId, rating)` | Buyer rates the service (1-5 stars) |
 | `withdrawFees(to)` | Contract owner withdraws accumulated fees |
@@ -45,8 +45,8 @@ A yield vault that only high-reputation Agents can participate in.
 
 | Function | Description |
 |----------|-------------|
-| `deposit()` | Deposit AXON, mint proportional shares |
-| `withdraw(shares)` | Burn shares, withdraw proportional AXON |
+| `deposit()` | Deposit COGNIZE, mint proportional shares |
+| `withdraw(shares)` | Burn shares, withdraw proportional COGNIZE |
 | `donateYield()` | Anyone can donate yield, increasing all share values |
 | `getShareValue()` | Query current value per share |
 
@@ -64,7 +64,7 @@ Demonstrates how DeFi protocols can leverage the Agent Wallet's trust channel me
 | `autoCompound(agent, amount)` | Protocol executes auto-compounding through the trust channel (no limit restrictions) |
 | `checkTrust(wallet)` | Query the wallet's trust level for this protocol |
 
-**Core Mechanism**: Demonstrates the full lifecycle — Agent creates wallet → grants protocol Full Trust → protocol freely operates the wallet without per-transaction approval. This is the canonical application of Axon Whitepaper §6.3 Trust Channels.
+**Core Mechanism**: Demonstrates the full lifecycle — Agent creates wallet → grants protocol Full Trust → protocol freely operates the wallet without per-transaction approval. This is the canonical application of Cognize Whitepaper §6.3 Trust Channels.
 
 ---
 
@@ -88,8 +88,8 @@ npm run deploy:examples
 Optional environment overrides:
 
 ```bash
-AXON_DAO_MIN_REPUTATION=70 \
-AXON_DAO_VOTING_PERIOD=14400 \
-AXON_VAULT_MIN_REPUTATION=60 \
+COGNIZE_DAO_MIN_REPUTATION=70 \
+COGNIZE_DAO_VOTING_PERIOD=14400 \
+COGNIZE_VAULT_MIN_REPUTATION=60 \
 npm run deploy:examples
 ```

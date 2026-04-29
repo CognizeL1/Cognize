@@ -2,7 +2,7 @@
 
 **Version**: 1.0.0  
 **Status**: Mainnet Ready  
-**Token**: ACognize  
+**Token**: COGNIZE  
 **Consensus**: CometBFT  
 
 ---
@@ -11,7 +11,7 @@
 
 Cognize is a decentralized blockchain specifically designed for AI agents. A complete fork with major improvements:
 
-- **Lower barriers**: Min stake 10 ACognize
+- **Lower barriers**: Min stake 10 COGNIZE
 - **Deflationary**: Burns on registration (2) + deploy (1)
 - **AI-powered**: VRF challenges for reputation
 - **Privacy opt-in**: Mixer with rewards
@@ -26,12 +26,12 @@ Cognize is a decentralized blockchain specifically designed for AI agents. A com
 
 | Parameter | Value |
 |-----------|-------|
-| Total Supply | 1B ACognize |
+| Total Supply | 1B COGNIZE |
 | Block Rewards | 650M (65%) |
 | Contribution Rewards | 350M (35%) |
-| Min Stake | 10 ACognize |
-| Register Burn | 2 ACognize |
-| Deploy Burn | 1 ACognize |
+| Min Stake | 10 COGNIZE |
+| Register Burn | 2 COGNIZE |
+| Deploy Burn | 1 COGNIZE |
 | Halving | 4 years |
 | Block Time | ~5 seconds |
 
@@ -55,12 +55,12 @@ Cognize is a decentralized blockchain specifically designed for AI agents. A com
 ### Registration
 
 ```bash
-cognized tx agent register --from wallet --stake 10acognize
+cognized tx agent register --from wallet --stake 10cognize
 ```
 
 **Requirements**:
-- Stake ≥ 10 ACognize
-- Burn 2 ACognize (deflation)
+- Stake ≥ 10 COGNIZE
+- Burn 2 COGNIZE (deflation)
 - Initial reputation: 10
 
 ### Heartbeat
@@ -113,12 +113,12 @@ cognized tx privacy validate-key --key-id <key> --user <address>
 ### Mixer/CoinJoin
 
 ```bash
-cognized tx privacy create-mix --denom acognize --min-deposit 100 --max-participants 100
+cognized tx privacy create-mix --denom cognize --min-deposit 100 --max-participants 100
 cognized tx privacy commit --pool-id <id> --amount <amount>
 cognized tx privacy withdraw --pool-id <id> --recipient <address> --commitment <commit> --proof <proof>
 ```
 
-**Reward**: 5 ACognize per participation.
+**Reward**: 5 COGNIZE per participation.
 
 ---
 
@@ -166,7 +166,7 @@ cognized tx gov submit-proposal --title <title> --description <desc> --type para
 ```
 
 **Requirements**:
-- Stake ≥ 10 ACognize
+- Stake ≥ 10 COGNIZE
 - Reputation ≥ 20
 
 ### Vote
@@ -222,7 +222,7 @@ cognized tx streaming create --sender <address> --recipient <address> --total-am
 ## 🔒 Stablecoin
 
 ```bash
-cognized tx stablecoin deposit --amount <acognize>
+cognized tx stablecoin deposit --amount <cognize>
 cognized tx stablecoin withdraw --amount <cusd>
 ```
 
@@ -282,7 +282,7 @@ cognized query rewards pools
 
 ```bash
 cognized init <moniker> --chain-id cognize_8210-1
-cognized tx staking create-validator --amount 10000acognize --pubkey $(cognized tendermint show-validator) --moniker <moniker> --commission 1.10
+cognized tx staking create-validator --amount 10000cognize --pubkey $(cognized tendermint show-validator) --moniker <moniker> --commission 1.10
 cognized start
 ```
 

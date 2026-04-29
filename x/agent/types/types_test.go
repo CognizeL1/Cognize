@@ -64,24 +64,24 @@ func TestUint64BytesOrdering(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestKeyAgent(t *testing.T) {
-	key := types.KeyAgent("axon1test")
-	want := types.AgentKeyPrefix + "axon1test"
+	key := types.KeyAgent("cognize1test")
+	want := types.AgentKeyPrefix + "cognize1test"
 	if string(key) != want {
 		t.Errorf("KeyAgent = %q, want %q", key, want)
 	}
 }
 
 func TestKeyAgentDifferentAddresses(t *testing.T) {
-	k1 := types.KeyAgent("axon1aaa")
-	k2 := types.KeyAgent("axon1bbb")
+	k1 := types.KeyAgent("cognize1aaa")
+	k2 := types.KeyAgent("cognize1bbb")
 	if string(k1) == string(k2) {
 		t.Error("different addresses should produce different keys")
 	}
 }
 
 func TestKeyDeregisterQueue(t *testing.T) {
-	key := types.KeyDeregisterQueue("axon1test")
-	want := types.DeregisterQueueKeyPrefix + "axon1test"
+	key := types.KeyDeregisterQueue("cognize1test")
+	want := types.DeregisterQueueKeyPrefix + "cognize1test"
 	if string(key) != want {
 		t.Errorf("KeyDeregisterQueue = %q, want %q", key, want)
 	}
@@ -114,7 +114,7 @@ func TestKeyChallengePool(t *testing.T) {
 }
 
 func TestKeyAIResponse(t *testing.T) {
-	key := types.KeyAIResponse(5, "axon1val")
+	key := types.KeyAIResponse(5, "cognize1val")
 	if len(key) == 0 {
 		t.Fatal("KeyAIResponse should not be empty")
 	}
@@ -125,16 +125,16 @@ func TestKeyAIResponse(t *testing.T) {
 }
 
 func TestKeyAIResponseDifferentValidators(t *testing.T) {
-	k1 := types.KeyAIResponse(1, "axon1aaa")
-	k2 := types.KeyAIResponse(1, "axon1bbb")
+	k1 := types.KeyAIResponse(1, "cognize1aaa")
+	k2 := types.KeyAIResponse(1, "cognize1bbb")
 	if string(k1) == string(k2) {
 		t.Error("different validators should produce different AI response keys")
 	}
 }
 
 func TestKeyAIResponseDifferentEpochs(t *testing.T) {
-	k1 := types.KeyAIResponse(1, "axon1aaa")
-	k2 := types.KeyAIResponse(2, "axon1aaa")
+	k1 := types.KeyAIResponse(1, "cognize1aaa")
+	k2 := types.KeyAIResponse(2, "cognize1aaa")
 	if string(k1) == string(k2) {
 		t.Error("different epochs should produce different AI response keys")
 	}
@@ -142,7 +142,7 @@ func TestKeyAIResponseDifferentEpochs(t *testing.T) {
 
 func TestKeyAIResponsePrefix(t *testing.T) {
 	prefix := types.KeyAIResponsePrefix(5)
-	fullKey := types.KeyAIResponse(5, "axon1val")
+	fullKey := types.KeyAIResponse(5, "cognize1val")
 
 	if len(prefix) > len(fullKey) {
 		t.Fatal("prefix should be shorter than full key")
@@ -153,7 +153,7 @@ func TestKeyAIResponsePrefix(t *testing.T) {
 }
 
 func TestKeyEpochActivity(t *testing.T) {
-	key := types.KeyEpochActivity(3, "axon1test")
+	key := types.KeyEpochActivity(3, "cognize1test")
 	if len(key) == 0 {
 		t.Fatal("KeyEpochActivity should not be empty")
 	}
@@ -164,15 +164,15 @@ func TestKeyEpochActivity(t *testing.T) {
 }
 
 func TestKeyAIBonus(t *testing.T) {
-	key := types.KeyAIBonus("axon1val")
-	want := types.AIBonusKeyPrefix + "axon1val"
+	key := types.KeyAIBonus("cognize1val")
+	want := types.AIBonusKeyPrefix + "cognize1val"
 	if string(key) != want {
 		t.Errorf("KeyAIBonus = %q, want %q", key, want)
 	}
 }
 
 func TestKeyDeployCount(t *testing.T) {
-	key := types.KeyDeployCount(1, "axon1val")
+	key := types.KeyDeployCount(1, "cognize1val")
 	if len(key) == 0 {
 		t.Fatal("KeyDeployCount should not be empty")
 	}
@@ -183,7 +183,7 @@ func TestKeyDeployCount(t *testing.T) {
 }
 
 func TestKeyContractCall(t *testing.T) {
-	key := types.KeyContractCall(1, "axon1val")
+	key := types.KeyContractCall(1, "cognize1val")
 	if len(key) == 0 {
 		t.Fatal("KeyContractCall should not be empty")
 	}
@@ -231,14 +231,14 @@ func TestKeyPrefixesUnique(t *testing.T) {
 func TestDefaultParamsValues(t *testing.T) {
 	p := types.DefaultParams()
 
-	if p.MinRegisterStake != 100 {
-		t.Errorf("MinRegisterStake = %d, want 100", p.MinRegisterStake)
+	if p.MinRegisterStake != 10 {
+		t.Errorf("MinRegisterStake = %d, want 10", p.MinRegisterStake)
 	}
-	if p.RegisterBurnAmount != 20 {
-		t.Errorf("RegisterBurnAmount = %d, want 20", p.RegisterBurnAmount)
+	if p.RegisterBurnAmount != 2 {
+		t.Errorf("RegisterBurnAmount = %d, want 2", p.RegisterBurnAmount)
 	}
-	if p.ContractDeployBurn != 10 {
-		t.Errorf("ContractDeployBurn = %d, want 10", p.ContractDeployBurn)
+	if p.ContractDeployBurn != 1 {
+		t.Errorf("ContractDeployBurn = %d, want 1", p.ContractDeployBurn)
 	}
 	if p.InitialReputation != 10 {
 		t.Errorf("InitialReputation = %d, want 10", p.InitialReputation)

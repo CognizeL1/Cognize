@@ -153,12 +153,12 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, agent types.Agent, params 
 	} else {
 		// Fallback for legacy agents without snapshot
 		burnInt := new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize)
-		burnedAtRegister = sdk.NewCoin("acognize", sdkmath.NewIntFromBigInt(burnInt))
+		burnedAtRegister = sdk.NewCoin("cognize", sdkmath.NewIntFromBigInt(burnInt))
 	}
 
 	var remaining sdk.Coin
 	if agent.StakeAmount.IsLT(burnedAtRegister) {
-		remaining = sdk.NewInt64Coin("acognize", 0)
+		remaining = sdk.NewInt64Coin("cognize", 0)
 	} else {
 		remaining = agent.StakeAmount.Sub(burnedAtRegister)
 	}
@@ -174,7 +174,7 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, agent types.Agent, params 
 
 	agent.Status = types.AgentStatus_AGENT_STATUS_SUSPENDED
 	if burned || !remaining.IsPositive() {
-		agent.StakeAmount = sdk.NewInt64Coin("acognize", 0)
+		agent.StakeAmount = sdk.NewInt64Coin("cognize", 0)
 	}
 	k.SetAgent(ctx, agent)
 

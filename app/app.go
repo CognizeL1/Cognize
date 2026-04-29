@@ -125,7 +125,7 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	axonconfig "github.com/cognize/axon/app/config"
+	cognizeconfig "github.com/cognize/axon/app/config"
 	poseidonprecompile "github.com/cognize/axon/precompiles/poseidon"
 	privateidentityprecompile "github.com/cognize/axon/precompiles/private_identity"
 	privatetransferprecompile "github.com/cognize/axon/precompiles/private_transfer"
@@ -143,19 +143,19 @@ import (
 
 func init() {
 	sdk.DefaultPowerReduction = utils.AttoPowerReduction
-	defaultNodeHome = axonconfig.MustGetDefaultNodeHome()
+	defaultNodeHome = cognizeconfig.MustGetDefaultNodeHome()
 }
 
-const AppName = "axon"
+const AppName = "cognize"
 
 var defaultNodeHome string
 
 var (
-	_ runtime.AppI                = (*AxonApp)(nil)
-	_ cosmosevmserver.Application = (*AxonApp)(nil)
+	_ runtime.AppI                = (*CognizeApp)(nil)
+	_ cosmosevmserver.Application = (*CognizeApp)(nil)
 )
 
-type AxonApp struct {
+type CognizeApp struct {
 	*baseapp.BaseApp
 
 	legacyAmino       *codec.LegacyAmino
@@ -193,7 +193,7 @@ type AxonApp struct {
 	Erc20Keeper     erc20keeper.Keeper
 	EVMMempool      *evmmempool.ExperimentalEVMMempool
 
-	// Axon custom keepers
+	// Cognize custom keepers
 	AgentKeeper   agentkeeper.Keeper
 	PrivacyKeeper privacykeeper.Keeper
 
@@ -207,14 +207,14 @@ type AxonApp struct {
 // GenesisState defines the genesis state of the application.
 type GenesisState map[string]json.RawMessage
 
-func NewAxonApp(
+func NewCognizeApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *AxonApp {
+) *CognizeApp {
 	evmChainID := cast.ToUint64(appOpts.Get(srvflags.EVMChainID))
 	encodingConfig := evmencoding.MakeConfig(evmChainID)
 
@@ -244,7 +244,7 @@ func NewAxonApp(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey,
 		// Cosmos EVM
 		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
-		// Axon
+		// Cognize
 		agenttypes.StoreKey,
 		privacytypes.StoreKey,
 	)
@@ -265,7 +265,7 @@ func NewAxonApp(
 		os.Exit(1)
 	}
 
-	app := &AxonApp{
+	app := &CognizeApp{
 		BaseApp:           bApp,
 		legacyAmino:       legacyAmino,
 		appCodec:          appCodec,
@@ -289,7 +289,7 @@ func NewAxonApp(
 
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, runtime.NewKVStoreService(keys[authtypes.StoreKey]),
-		authtypes.ProtoBaseAccount, axonconfig.GetMaccPerms(),
+		authtypes.ProtoBaseAccount, cognizeconfig.GetMaccPerms(),
 		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
 		sdk.GetConfig().GetBech32AccountAddrPrefix(),
 		authAddr,
@@ -299,7 +299,7 @@ func NewAxonApp(
 		appCodec,
 		runtime.NewKVStoreService(keys[banktypes.StoreKey]),
 		app.AccountKeeper,
-		axonconfig.BlockedAddresses(),
+		cognizeconfig.BlockedAddresses(),
 		authAddr,
 		logger,
 	)
@@ -436,7 +436,7 @@ func NewAxonApp(
 
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
-	// ---- Axon Agent keeper (must be created before EVMKeeper so precompiles get a valid storeKey) ----
+	// ---- Cognize Agent keeper (must be created before EVMKeeper so precompiles get a valid storeKey) ----
 
 	app.AgentKeeper = agentkeeper.NewKeeper(
 		appCodec,
@@ -464,7 +464,7 @@ func NewAxonApp(
 		evmChainID,
 		tracer,
 	).WithStaticPrecompiles(
-		axonStaticPrecompiles(
+		cognizeStaticPrecompiles(
 			*app.StakingKeeper,
 			app.DistrKeeper,
 			app.BankKeeper,
@@ -493,7 +493,7 @@ func NewAxonApp(
 		app.TransferKeeper,
 	)
 
-	// ---- EVM Hooks: burn 10 AXON on contract deployment + track contributions ----
+	// ---- EVM Hooks: burn 10 COGNIZE on contract deployment + track contributions ----
 	app.EVMKeeper.SetHooks(evmkeeper.NewMultiEvmHooks(
 		NewDeployBurnHook(app.BankKeeper, app.AgentKeeper),
 	))
@@ -533,7 +533,7 @@ func NewAxonApp(
 
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
 
-	// ---- Axon Agent AppModule (adaptor for new SDK) ----
+	// ---- Cognize Agent AppModule (adaptor for new SDK) ----
 	agentAppModule := NewAgentAppModule(appCodec, app.AgentKeeper, app.BankKeeper, app.FeeMarketKeeper)
 
 	// ---- Privacy Module ----
@@ -564,7 +564,7 @@ func NewAxonApp(
 		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.BankKeeper, app.AccountKeeper.AddressCodec()),
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
-		// Axon
+		// Cognize
 		agentAppModule,
 		privacyAppModule,
 	)
@@ -699,7 +699,7 @@ func NewAxonApp(
 
 // --------------- Ante / Post handlers ---------------
 
-func (app *AxonApp) setAnteHandler(txConfig client.TxConfig, maxGasWanted uint64) {
+func (app *CognizeApp) setAnteHandler(txConfig client.TxConfig, maxGasWanted uint64) {
 	options := evmante.HandlerOptions{
 		Cdc:                    app.appCodec,
 		AccountKeeper:          app.AccountKeeper,
@@ -721,17 +721,17 @@ func (app *AxonApp) setAnteHandler(txConfig client.TxConfig, maxGasWanted uint64
 	app.SetAnteHandler(evmante.NewAnteHandler(options))
 }
 
-func (app *AxonApp) onPendingTx(hash common.Hash) {
+func (app *CognizeApp) onPendingTx(hash common.Hash) {
 	for _, listener := range app.pendingTxListeners {
 		listener(hash)
 	}
 }
 
-func (app *AxonApp) RegisterPendingTxListener(listener func(common.Hash)) {
+func (app *CognizeApp) RegisterPendingTxListener(listener func(common.Hash)) {
 	app.pendingTxListeners = append(app.pendingTxListeners, listener)
 }
 
-func (app *AxonApp) setPostHandler() {
+func (app *CognizeApp) setPostHandler() {
 	postHandler, err := posthandler.NewPostHandler(posthandler.HandlerOptions{})
 	if err != nil {
 		panic(err)
@@ -741,9 +741,9 @@ func (app *AxonApp) setPostHandler() {
 
 // --------------- ABCI lifecycle ---------------
 
-func (app *AxonApp) Name() string { return app.BaseApp.Name() }
+func (app *CognizeApp) Name() string { return app.BaseApp.Name() }
 
-func (app *AxonApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+func (app *CognizeApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 	app.ensurePrecompilesActive(ctx)
 	app.ensureFeeMarketParams(ctx)
 	return app.ModuleManager.BeginBlock(ctx)
@@ -751,7 +751,7 @@ func (app *AxonApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 
 // ensurePrecompilesActive is a one-time migration that activates all static
 // precompiles if the on-chain param list is empty (genesis misconfiguration).
-func (app *AxonApp) ensurePrecompilesActive(ctx sdk.Context) {
+func (app *CognizeApp) ensurePrecompilesActive(ctx sdk.Context) {
 	params := app.EVMKeeper.GetParams(ctx)
 	if len(params.ActiveStaticPrecompiles) > 0 {
 		return
@@ -770,7 +770,7 @@ func (app *AxonApp) ensurePrecompilesActive(ctx sdk.Context) {
 // min_gas_price and resets base_fee when they are near zero.
 // Without a floor the EIP-1559 base fee decays to zero on idle chains,
 // making all transactions free and disabling the deflationary burn.
-func (app *AxonApp) ensureFeeMarketParams(ctx sdk.Context) {
+func (app *CognizeApp) ensureFeeMarketParams(ctx sdk.Context) {
 	fmParams := app.FeeMarketKeeper.GetParams(ctx)
 
 	minGasTarget := feemarkettypes.DefaultParams().BaseFee
@@ -800,19 +800,19 @@ func (app *AxonApp) ensureFeeMarketParams(ctx sdk.Context) {
 	}
 }
 
-func (app *AxonApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+func (app *CognizeApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
 	return app.ModuleManager.EndBlock(ctx)
 }
 
-func (app *AxonApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
+func (app *CognizeApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
 	return app.BaseApp.FinalizeBlock(req)
 }
 
-func (app *AxonApp) Configurator() module.Configurator {
+func (app *CognizeApp) Configurator() module.Configurator {
 	return app.configurator
 }
 
-func (app *AxonApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+func (app *CognizeApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -823,37 +823,37 @@ func (app *AxonApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*a
 	return app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
 }
 
-func (app *AxonApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+func (app *CognizeApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.ModuleManager.PreBlock(ctx)
 }
 
-func (app *AxonApp) LoadHeight(height int64) error {
+func (app *CognizeApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
 // --------------- Accessors ---------------
 
-func (app *AxonApp) LegacyAmino() *codec.LegacyAmino            { return app.legacyAmino }
-func (app *AxonApp) AppCodec() codec.Codec                      { return app.appCodec }
-func (app *AxonApp) InterfaceRegistry() types.InterfaceRegistry { return app.interfaceRegistry }
-func (app *AxonApp) TxConfig() client.TxConfig                  { return app.txConfig }
+func (app *CognizeApp) LegacyAmino() *codec.LegacyAmino            { return app.legacyAmino }
+func (app *CognizeApp) AppCodec() codec.Codec                      { return app.appCodec }
+func (app *CognizeApp) InterfaceRegistry() types.InterfaceRegistry { return app.interfaceRegistry }
+func (app *CognizeApp) TxConfig() client.TxConfig                  { return app.txConfig }
 
-func (app *AxonApp) DefaultGenesis() map[string]json.RawMessage {
+func (app *CognizeApp) DefaultGenesis() map[string]json.RawMessage {
 	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
 
-	// Mint: use acognize denom
+	// Mint: use cognize denom
 	mintGenState := minttypes.DefaultGenesisState()
-	mintGenState.Params.MintDenom = axonconfig.AxonDenom
+	mintGenState.Params.MintDenom = cognizeconfig.CognizeDenom
 	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
 
-	// Staking: use acognize as bond denom
+	// Staking: use cognize as bond denom
 	stakingGenState := stakingtypes.DefaultGenesisState()
-	stakingGenState.Params.BondDenom = axonconfig.AxonDenom
+	stakingGenState.Params.BondDenom = cognizeconfig.CognizeDenom
 	genesis[stakingtypes.ModuleName] = app.appCodec.MustMarshalJSON(stakingGenState)
 
 	// EVM: set denom and activate precompiles
 	evmGenState := evmtypes.DefaultGenesisState()
-	evmGenState.Params.EvmDenom = axonconfig.AxonDenom
+	evmGenState.Params.EvmDenom = cognizeconfig.CognizeDenom
 	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
 	evmGenState.Preinstalls = evmtypes.DefaultPreinstalls
 	genesis[evmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
@@ -865,12 +865,12 @@ func (app *AxonApp) DefaultGenesis() map[string]json.RawMessage {
 	return genesis
 }
 
-func (app *AxonApp) GetKey(storeKey string) *storetypes.KVStoreKey { return app.keys[storeKey] }
-func (app *AxonApp) SimulationManager() *module.SimulationManager  { return app.sm }
+func (app *CognizeApp) GetKey(storeKey string) *storetypes.KVStoreKey { return app.keys[storeKey] }
+func (app *CognizeApp) SimulationManager() *module.SimulationManager  { return app.sm }
 
 // --------------- Service registration ---------------
 
-func (app *AxonApp) RegisterAPIRoutes(apiSvr *api.Server, _ config.APIConfig) {
+func (app *CognizeApp) RegisterAPIRoutes(apiSvr *api.Server, _ config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	cmtservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -880,15 +880,15 @@ func (app *AxonApp) RegisterAPIRoutes(apiSvr *api.Server, _ config.APIConfig) {
 	registerRuntimeAPIDocs(apiSvr)
 }
 
-func (app *AxonApp) RegisterTxService(clientCtx client.Context) {
+func (app *CognizeApp) RegisterTxService(clientCtx client.Context) {
 	authtx.RegisterTxService(app.GRPCQueryRouter(), clientCtx, app.Simulate, app.interfaceRegistry)
 }
 
-func (app *AxonApp) RegisterTendermintService(clientCtx client.Context) {
+func (app *CognizeApp) RegisterTendermintService(clientCtx client.Context) {
 	cmtservice.RegisterTendermintService(clientCtx, app.GRPCQueryRouter(), app.interfaceRegistry, app.Query)
 }
 
-func (app *AxonApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+func (app *CognizeApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	node.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg, func() int64 {
 		return app.CommitMultiStore().EarliestVersion()
 	})
@@ -896,23 +896,23 @@ func (app *AxonApp) RegisterNodeService(clientCtx client.Context, cfg config.Con
 
 // --------------- IBC Testing helpers ---------------
 
-func (app *AxonApp) GetBaseApp() *baseapp.BaseApp            { return app.BaseApp }
-func (app *AxonApp) GetIBCKeeper() *ibckeeper.Keeper         { return app.IBCKeeper }
-func (app *AxonApp) GetEVMKeeper() *evmkeeper.Keeper         { return app.EVMKeeper }
-func (app *AxonApp) GetStakingKeeper() *stakingkeeper.Keeper { return app.StakingKeeper }
-func (app *AxonApp) GetAccountKeeper() authkeeper.AccountKeeper {
+func (app *CognizeApp) GetBaseApp() *baseapp.BaseApp            { return app.BaseApp }
+func (app *CognizeApp) GetIBCKeeper() *ibckeeper.Keeper         { return app.IBCKeeper }
+func (app *CognizeApp) GetEVMKeeper() *evmkeeper.Keeper         { return app.EVMKeeper }
+func (app *CognizeApp) GetStakingKeeper() *stakingkeeper.Keeper { return app.StakingKeeper }
+func (app *CognizeApp) GetAccountKeeper() authkeeper.AccountKeeper {
 	return app.AccountKeeper
 }
-func (app *AxonApp) GetBankKeeper() bankkeeper.Keeper { return app.BankKeeper }
-func (app *AxonApp) GetMempool() sdkmempool.ExtMempool {
+func (app *CognizeApp) GetBankKeeper() bankkeeper.Keeper { return app.BankKeeper }
+func (app *CognizeApp) GetMempool() sdkmempool.ExtMempool {
 	return app.EVMMempool
 }
-func (app *AxonApp) GetAnteHandler() sdk.AnteHandler {
+func (app *CognizeApp) GetAnteHandler() sdk.AnteHandler {
 	return app.BaseApp.AnteHandler()
 }
-func (app *AxonApp) GetTxConfig() client.TxConfig { return app.txConfig }
+func (app *CognizeApp) GetTxConfig() client.TxConfig { return app.txConfig }
 
-func (app *AxonApp) Close() error {
+func (app *CognizeApp) Close() error {
 	var err error
 	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok && m != nil {
 		app.Logger().Info("Shutting down mempool")
@@ -928,8 +928,8 @@ func (app *AxonApp) Close() error {
 	return err
 }
 
-// axonStaticPrecompiles returns the default precompiles plus Axon-specific ones.
-func axonStaticPrecompiles(
+// cognizeStaticPrecompiles returns the default precompiles plus Cognize-specific ones.
+func cognizeStaticPrecompiles(
 	stakingKeeper stakingkeeper.Keeper,
 	distrKeeper distrkeeper.Keeper,
 	bankKeeper bankkeeper.Keeper,
@@ -1004,7 +1004,7 @@ func axonStaticPrecompiles(
 	return defaults
 }
 
-func (app *AxonApp) AutoCliOpts() autocli.AppOptions {
+func (app *CognizeApp) AutoCliOpts() autocli.AppOptions {
 	modules := make(map[string]appmodule.AppModule, 0)
 	for _, m := range app.ModuleManager.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {

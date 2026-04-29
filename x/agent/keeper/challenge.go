@@ -58,7 +58,7 @@ var vrfValues = map[string][]string{
 	"data_type":        {"sorted arrays", "random arrays", "linked lists", "hash tables"},
 	"data_structure":   {"hash table", "binary search tree", "array", "linked list", "heap", "trie"},
 	"element_count":    {"1000", "10000", "100000", "1 million"},
-	"blockchain":      {"Ethereum", "Bitcoin", "Cosmos", "Axon"},
+	"blockchain":      {"Ethereum", "Bitcoin", "Cosmos", "Cognize"},
 	"action":          {"transfer ETH", "create contract", "call contract", "mint token", "burn token"},
 	"asset":          {"native token", "ERC-20 token", "NFT", "wrapped token"},
 	"operation":       {"SSTORE", "SLOAD", "CREATE", "CALL", "LOG", "EXTCODEHASH"},
@@ -427,7 +427,7 @@ func (k Keeper) penalizeCheater(ctx sdk.Context, address string) {
 
 	slashAmount := agent.StakeAmount.Amount.MulRaw(CheatPenaltyStakePercent).QuoRaw(100)
 	if slashAmount.IsPositive() {
-		slashCoin := sdk.NewCoin("acognize", slashAmount)
+		slashCoin := sdk.NewCoin("cognize", slashAmount)
 		if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(slashCoin)); err != nil {
 			k.Logger(ctx).Error("failed to slash cheater stake", "address", address, "error", err)
 			return

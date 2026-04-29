@@ -14,12 +14,12 @@ import (
 
 const UpgradeName = "v1.1.1"
 
-func (app AxonApp) RegisterUpgradeHandlers() {
+func (app CognizeApp) RegisterUpgradeHandlers() {
 	app.UpgradeKeeper.SetUpgradeHandler(
 		UpgradeName,
 		func(ctx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
 			sdkCtx := sdk.UnwrapSDKContext(ctx)
-			sdkCtx.Logger().Info("running Axon upgrade handler", "name", UpgradeName, "height", sdkCtx.BlockHeight(), "expected_height", agentkeeper.V111UpgradeHeight)
+			sdkCtx.Logger().Info("running Cognize upgrade handler", "name", UpgradeName, "height", sdkCtx.BlockHeight(), "expected_height", agentkeeper.V111UpgradeHeight)
 			return app.ModuleManager.RunMigrations(ctx, app.Configurator(), fromVM)
 		},
 	)

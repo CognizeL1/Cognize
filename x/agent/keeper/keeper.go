@@ -29,7 +29,7 @@ type Keeper struct {
 }
 
 const (
-	mainnetChainID            = "axon_8210-1"
+	mainnetChainID            = "cognize_8210-1"
 	V110UpgradeHeight         = int64(259051)
 	V111UpgradeHeight         = int64(295500)
 	evidenceTxRetentionBlocks = dailyBlockWindow
@@ -251,11 +251,11 @@ func (k Keeper) RegisterFromPrecompile(ctx sdk.Context, msg *types.MsgRegister, 
 		return nil, types.ErrAgentAlreadyRegistered
 	}
 
-	if msg.Stake.Denom != "acognize" {
-		return nil, fmt.Errorf("invalid stake denom: expected acognize, got %s", msg.Stake.Denom)
+	if msg.Stake.Denom != "cognize" {
+		return nil, fmt.Errorf("invalid stake denom: expected cognize, got %s", msg.Stake.Denom)
 	}
 	minStakeInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.MinRegisterStake)), oneCognize))
-	minStake := sdk.NewCoin("acognize", minStakeInt)
+	minStake := sdk.NewCoin("cognize", minStakeInt)
 	if msg.Stake.IsLT(minStake) {
 		return nil, types.ErrInsufficientStake
 	}
@@ -270,7 +270,7 @@ func (k Keeper) RegisterFromPrecompile(ctx sdk.Context, msg *types.MsgRegister, 
 	}
 
 	burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneCognize))
-	burnAmount := sdk.NewCoin("acognize", burnInt)
+	burnAmount := sdk.NewCoin("cognize", burnInt)
 	burnCoins := sdk.NewCoins(burnAmount)
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
 		return nil, err
@@ -328,7 +328,7 @@ func (k Keeper) AddStakeToAgent(ctx sdk.Context, sender string, stake sdk.Coin, 
 		return nil, types.ErrDeregisterCooldown
 	}
 
-	if stake.Denom != "acognize" {
+	if stake.Denom != "cognize" {
 		return nil, types.ErrInvalidStakeDenom
 	}
 	if !stake.IsPositive() {
@@ -365,7 +365,7 @@ func (k Keeper) ReduceStakeFromAgent(ctx sdk.Context, sender string, amount sdk.
 	if k.HasDeregisterRequest(ctx, sender) {
 		return types.ErrDeregisterCooldown
 	}
-	if amount.Denom != "acognize" {
+	if amount.Denom != "cognize" {
 		return types.ErrInvalidStakeDenom
 	}
 	if !amount.IsPositive() {
@@ -374,7 +374,7 @@ func (k Keeper) ReduceStakeFromAgent(ctx sdk.Context, sender string, amount sdk.
 
 	params := k.GetParams(ctx)
 	minStakeInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.MinRegisterStake)), oneCognize))
-	minStake := sdk.NewCoin("acognize", minStakeInt)
+	minStake := sdk.NewCoin("cognize", minStakeInt)
 	remaining := agent.StakeAmount.Sub(amount)
 	if remaining.IsLT(minStake) {
 		return types.ErrBelowMinimumStake
@@ -417,7 +417,7 @@ func (k Keeper) ClaimReducedStake(ctx sdk.Context, sender string) error {
 		return err
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin("acognize", amount))
+	coins := sdk.NewCoins(sdk.NewCoin("cognize", amount))
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, coins); err != nil {
 		return err
 	}
