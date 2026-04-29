@@ -27,9 +27,9 @@ const (
 
 func DefaultParams() Params {
 	return Params{
-		MinRegisterStake:   100,
-		RegisterBurnAmount: 20,
-		ContractDeployBurn: 10,
+		MinRegisterStake:   10,
+		RegisterBurnAmount: 2,
+		ContractDeployBurn: 1,
 		InitialReputation:  10,
 		MaxReputation:      100,
 		HeartbeatInterval:  100,
