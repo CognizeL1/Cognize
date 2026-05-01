@@ -23,8 +23,8 @@ func GetQueryCmd() *cobra.Command {
 
 	queryCmd.AddCommand(
 		CmdQueryParams(),
-		CmdQueryustate(),
-		CmdQueryustates(),
+		CmdQueryState(),
+		CmdQueryStates(),
 		CmdQueryReputation(),
 		CmdQueryChallenge(),
 	)
@@ -57,7 +57,7 @@ func CmdQueryParams() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryustate() *cobra.Command {
+func CmdQueryState() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "state [address]",
 		Short: "Query an state by address",
@@ -69,7 +69,7 @@ func CmdQueryustate() *cobra.Command {
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.ustate(context.Background(), &types.QueryustateRequest{
+			res, err := queryClient.State(context.Background(), &types.QueryStateRequest{
 				Address: args[0],
 			})
 			if err != nil {
@@ -84,7 +84,7 @@ func CmdQueryustate() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryustates() *cobra.Command {
+func CmdQueryStates() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "states",
 		Short: "Query all registered states",
@@ -96,7 +96,7 @@ func CmdQueryustates() *cobra.Command {
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.ustates(context.Background(), &types.QueryustatesRequest{})
+			res, err := queryClient.States(context.Background(), &types.QueryStatesRequest{})
 			if err != nil {
 				return err
 			}

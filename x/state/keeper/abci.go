@@ -128,23 +128,23 @@ func (k Keeper) onEpochEnd(ctx sdk.Context) {
 func (k Keeper) checkHeartbeatTimeouts(ctx sdk.Context, params types.Params) {
 	blockHeight := ctx.BlockHeight()
 
-	type offlineustate struct {
-		state types.ustate
+	type offlineState struct {
+		state types.State
 	}
 
-	var toOffline []offlineustate
+	var toOffline []offlineState
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_ONLINE &&
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_ONLINE &&
 			blockHeight-state.LastHeartbeat > params.HeartbeatTimeout {
-			toOffline = append(toOffline, offlineustate{state: state})
+			toOffline = append(toOffline, offlineState{state: state})
 		}
 		return false
 	})
 
 	for _, o := range toOffline {
-		o.state.Status = types.ustateStatus_STATE_STATUS_OFFLINE
-		k.Setustate(ctx, o.state)
+		o.state.Status = types.StateStatus_STATE_STATUS_OFFLINE
+		k.SetState(ctx, o.state)
 		k.UpdateReputation(ctx, o.state.Address, types.ReputationLossOffline)
 		k.ApplyOfflinePenalty(ctx, o.state.Address)
 
@@ -288,7 +288,7 @@ func (k Keeper) addAccumulatedReward(ctx sdk.Context, key string, amount sdkmath
 	k.setAccumulatedReward(ctx, key, current.Add(amount))
 }
 
-const jailedFlagKeyPrefix = "ustateJailedFlag/"
+const jailedFlagKeyPrefix = "StateJailedFlag/"
 
 // processDoubleSignEvidence detects newly jailed validators among registered
 // states and applies the L1 double-sign penalty exactly once per jailing event.
@@ -297,8 +297,8 @@ func (k Keeper) processDoubleSignEvidence(ctx sdk.Context) {
 		return
 	}
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 			return false
 		}
 

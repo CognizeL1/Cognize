@@ -64,7 +64,7 @@ func (k Keeper) ProcessDeregisterQueue(ctx sdk.Context) {
 }
 
 func (k Keeper) executeDeregister(ctx sdk.Context, address string, params types.Params) {
-	state, found := k.Getustate(ctx, address)
+	state, found := k.GetState(ctx, address)
 	if !found {
 		k.DeleteDeregisterRequest(ctx, address)
 		return
@@ -105,12 +105,12 @@ func (k Keeper) executeDeregister(ctx sdk.Context, address string, params types.
 		}
 	}
 
-	k.Deleteustate(ctx, address)
+	k.DeleteState(ctx, address)
 	k.DeleteDeregisterRequest(ctx, address)
 	k.DeleteAIBonus(ctx, address)
-	k.cleanupustateEpochData(ctx, address)
+	k.cleanupStateEpochData(ctx, address)
 	if k.IsV111UpgradeActivated(ctx) && k.privacyKeeper != nil {
-		k.privacyKeeper.DeleteustateIdentity(ctx, address)
+		k.privacyKeeper.DeleteStateIdentity(ctx, address)
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
@@ -122,11 +122,11 @@ func (k Keeper) executeDeregister(ctx sdk.Context, address string, params types.
 	k.Logger(ctx).Info("state deregistered after cooldown", "address", address)
 }
 
-// cleanupustateEpochData removes epoch-scoped data for a deregistered state.
+// cleanupStateEpochData removes epoch-scoped data for a deregistered state.
 // Keys use the format "Prefix/<epoch_bytes>/<address>", so we match on the
 // "/" + address suffix to avoid accidentally deleting data for other states
 // whose address might be a raw substring of the key.
-func (k Keeper) cleanupustateEpochData(ctx sdk.Context, address string) {
+func (k Keeper) cleanupStateEpochData(ctx sdk.Context, address string) {
 	store := ctx.KVStore(k.storeKey)
 
 	prefixes := []string{

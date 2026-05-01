@@ -12,7 +12,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgAddStake{}, "axon/state/MsgAddStake", nil)
 	cdc.RegisterConcrete(&MsgReduceStake{}, "axon/state/MsgReduceStake", nil)
 	cdc.RegisterConcrete(&MsgClaimReducedStake{}, "axon/state/MsgClaimReducedStake", nil)
-	cdc.RegisterConcrete(&MsgUpdateustate{}, "axon/state/MsgUpdateustate", nil)
+	cdc.RegisterConcrete(&MsgUpdateState{}, "axon/state/MsgUpdateState", nil)
 	cdc.RegisterConcrete(&MsgHeartbeat{}, "axon/state/MsgHeartbeat", nil)
 	cdc.RegisterConcrete(&MsgDeregister{}, "axon/state/MsgDeregister", nil)
 	cdc.RegisterConcrete(&MsgSubmitAIChallengeResponse{}, "axon/state/MsgSubmitAIChallengeResponse", nil)
@@ -25,7 +25,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgAddStake{},
 		&MsgReduceStake{},
 		&MsgClaimReducedStake{},
-		&MsgUpdateustate{},
+		&MsgUpdateState{},
 		&MsgHeartbeat{},
 		&MsgDeregister{},
 		&MsgSubmitAIChallengeResponse{},

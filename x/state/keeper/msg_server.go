@@ -29,8 +29,8 @@ func (k msgServer) Register(goCtx context.Context, msg *types.MsgRegister) (*typ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 
-	if k.Isustate(ctx, msg.Sender) {
-		return nil, types.ErrustateAlreadyRegistered
+	if k.IsState(ctx, msg.Sender) {
+		return nil, types.ErrStateAlreadyRegistered
 	}
 
 	if msg.Stake.Denom != "aaxon" {
@@ -75,33 +75,33 @@ func (k msgServer) Register(goCtx context.Context, msg *types.MsgRegister) (*typ
 		capabilities[i] = strings.TrimSpace(capabilities[i])
 	}
 
-	state := types.ustate{
+	state := types.State{
 		Address:          msg.Sender,
-		ustateId:          generateustateID(msg.Sender, ctx.BlockHeight()),
+		StateId:          generateStateID(msg.Sender, ctx.BlockHeight()),
 		Capabilities:     capabilities,
 		Model:            msg.Model,
 		Reputation:       params.InitialReputation,
-		Status:           types.ustateStatus_STATE_STATUS_ONLINE,
+		Status:           types.StateStatus_STATE_STATUS_ONLINE,
 		StakeAmount:      msg.Stake,
 		BurnedAtRegister: burnAmount,
 		RegisteredAt:     ctx.BlockHeight(),
 		LastHeartbeat:    ctx.BlockHeight(),
 	}
 
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 	k.BootstrapLegacyReputation(ctx, state.Address, state.Reputation)
 	k.IncrementDailyRegisterCount(ctx, msg.Sender)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		"state_registered",
 		sdk.NewAttribute("address", msg.Sender),
-		sdk.NewAttribute("state_id", state.ustateId),
+		sdk.NewAttribute("state_id", state.StateId),
 		sdk.NewAttribute("stake", msg.Stake.String()),
 		sdk.NewAttribute("burned", burnAmount.String()),
 		sdk.NewAttribute("reputation", fmt.Sprintf("%d", state.Reputation)),
 	))
 
-	return &types.MsgRegisterResponse{ustateId: state.ustateId}, nil
+	return &types.MsgRegisterResponse{StateId: state.StateId}, nil
 }
 
 func (k msgServer) AddStake(goCtx context.Context, msg *types.MsgAddStake) (*types.MsgAddStakeResponse, error) {
@@ -112,19 +112,19 @@ func (k msgServer) AddStake(goCtx context.Context, msg *types.MsgAddStake) (*typ
 		return nil, err
 	}
 
-	return k.Keeper.AddStakeToustate(ctx, msg.Sender, msg.Stake, senderAddr)
+	return k.Keeper.AddStakeToState(ctx, msg.Sender, msg.Stake, senderAddr)
 }
 
-func (k msgServer) Updateustate(goCtx context.Context, msg *types.MsgUpdateustate) (*types.MsgUpdateustateResponse, error) {
+func (k msgServer) UpdateState(goCtx context.Context, msg *types.MsgUpdateState) (*types.MsgUpdateStateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	state, found := k.Getustate(ctx, msg.Sender)
+	state, found := k.GetState(ctx, msg.Sender)
 	if !found {
-		return nil, types.ErrustateNotFound
+		return nil, types.ErrStateNotFound
 	}
 
-	if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
-		return nil, types.ErrustateSuspended
+	if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
+		return nil, types.ErrStateSuspended
 	}
 
 	if len(msg.Capabilities) > 1024 {
@@ -144,21 +144,21 @@ func (k msgServer) Updateustate(goCtx context.Context, msg *types.MsgUpdateustat
 		state.Model = msg.Model
 	}
 
-	k.Setustate(ctx, state)
-	return &types.MsgUpdateustateResponse{}, nil
+	k.SetState(ctx, state)
+	return &types.MsgUpdateStateResponse{}, nil
 }
 
 func (k msgServer) Heartbeat(goCtx context.Context, msg *types.MsgHeartbeat) (*types.MsgHeartbeatResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 
-	state, found := k.Getustate(ctx, msg.Sender)
+	state, found := k.GetState(ctx, msg.Sender)
 	if !found {
-		return nil, types.ErrustateNotFound
+		return nil, types.ErrStateNotFound
 	}
 
-	if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
-		return nil, types.ErrustateSuspended
+	if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
+		return nil, types.ErrStateSuspended
 	}
 
 	if ctx.BlockHeight()-state.LastHeartbeat < params.HeartbeatInterval {
@@ -166,8 +166,8 @@ func (k msgServer) Heartbeat(goCtx context.Context, msg *types.MsgHeartbeat) (*t
 	}
 
 	state.LastHeartbeat = ctx.BlockHeight()
-	state.Status = types.ustateStatus_STATE_STATUS_ONLINE
-	k.Setustate(ctx, state)
+	state.Status = types.StateStatus_STATE_STATUS_ONLINE
+	k.SetState(ctx, state)
 
 	k.IncrementEpochActivity(ctx, msg.Sender)
 
@@ -177,9 +177,9 @@ func (k msgServer) Heartbeat(goCtx context.Context, msg *types.MsgHeartbeat) (*t
 func (k msgServer) Deregister(goCtx context.Context, msg *types.MsgDeregister) (*types.MsgDeregisterResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	state, found := k.Getustate(ctx, msg.Sender)
+	state, found := k.GetState(ctx, msg.Sender)
 	if !found {
-		return nil, types.ErrustateNotFound
+		return nil, types.ErrStateNotFound
 	}
 
 	if k.HasDeregisterRequest(ctx, msg.Sender) {
@@ -188,8 +188,8 @@ func (k msgServer) Deregister(goCtx context.Context, msg *types.MsgDeregister) (
 
 	k.SetDeregisterRequest(ctx, msg.Sender, ctx.BlockHeight())
 
-	state.Status = types.ustateStatus_STATE_STATUS_SUSPENDED
-	k.Setustate(ctx, state)
+	state.Status = types.StateStatus_STATE_STATUS_SUSPENDED
+	k.SetState(ctx, state)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		"state_deregister_requested",
@@ -203,7 +203,7 @@ func (k msgServer) Deregister(goCtx context.Context, msg *types.MsgDeregister) (
 
 func (k msgServer) ReduceStake(goCtx context.Context, msg *types.MsgReduceStake) (*types.MsgReduceStakeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.Keeper.ReduceStakeFromustate(ctx, msg.Sender, msg.Amount); err != nil {
+	if err := k.Keeper.ReduceStakeFromState(ctx, msg.Sender, msg.Amount); err != nil {
 		return nil, err
 	}
 	return &types.MsgReduceStakeResponse{}, nil
@@ -220,12 +220,12 @@ func (k msgServer) ClaimReducedStake(goCtx context.Context, msg *types.MsgClaimR
 func (k msgServer) SubmitAIChallengeResponse(goCtx context.Context, msg *types.MsgSubmitAIChallengeResponse) (*types.MsgSubmitAIChallengeResponseResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	state, found := k.Getustate(ctx, msg.Sender)
+	state, found := k.GetState(ctx, msg.Sender)
 	if !found {
-		return nil, types.ErrustateNotFound
+		return nil, types.ErrStateNotFound
 	}
-	if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
-		return nil, types.ErrustateSuspended
+	if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
+		return nil, types.ErrStateSuspended
 	}
 	if !k.isActiveValidatorAddress(ctx, msg.Sender) {
 		return nil, types.ErrValidatorRequired
@@ -265,8 +265,8 @@ func (k msgServer) RevealAIChallengeResponse(goCtx context.Context, msg *types.M
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 
-	if _, found := k.Getustate(ctx, msg.Sender); !found {
-		return nil, types.ErrustateNotFound
+	if _, found := k.GetState(ctx, msg.Sender); !found {
+		return nil, types.ErrStateNotFound
 	}
 	if k.HasDeregisterRequest(ctx, msg.Sender) {
 		return nil, types.ErrDeregisterCooldown
@@ -323,7 +323,7 @@ func (k msgServer) RevealAIChallengeResponse(goCtx context.Context, msg *types.M
 	return &types.MsgRevealAIChallengeResponseResponse{}, nil
 }
 
-func generateustateID(address string, blockHeight int64) string {
+func generateStateID(address string, blockHeight int64) string {
 	hash := sha256.Sum256([]byte(fmt.Sprintf("%s:%d", address, blockHeight)))
 	return fmt.Sprintf("state-%s", hex.EncodeToString(hash[:8]))
 }

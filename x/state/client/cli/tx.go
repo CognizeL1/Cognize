@@ -19,7 +19,7 @@ import (
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
-		Short:                      "ustate module transactions",
+		Short:                      "State module transactions",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -30,7 +30,7 @@ func GetTxCmd() *cobra.Command {
 		CmdAddStake(),
 		CmdDeregister(),
 		CmdHeartbeat(),
-		CmdUpdateustate(),
+		CmdUpdateState(),
 		CmdSubmitAIChallenge(),
 		CmdRevealAIChallenge(),
 	)
@@ -146,7 +146,7 @@ func CmdHeartbeat() *cobra.Command {
 	return cmd
 }
 
-func CmdUpdateustate() *cobra.Command {
+func CmdUpdateState() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update [capabilities] [model]",
 		Short: "Update state capabilities and model",
@@ -157,7 +157,7 @@ func CmdUpdateustate() *cobra.Command {
 				return err
 			}
 
-			msg := &types.MsgUpdateustate{
+			msg := &types.MsgUpdateState{
 				Sender:       clientCtx.GetFromAddress().String(),
 				Capabilities: args[0],
 				Model:        args[1],

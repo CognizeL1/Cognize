@@ -16,7 +16,7 @@ const (
 	ContributionBaseYearlyStr = "35000000000000000000000000"
 
 	// MaxContributionSupplyStr: hard cap = 350,000,000 AXON = 350M × 10^18 aaxon
-	// Whitepaper §9.4: ustate 贡献奖励 35% = 350,000,000 AXON
+	// Whitepaper §9.4: State 贡献奖励 35% = 350,000,000 AXON
 	MaxContributionSupplyStr = "350000000000000000000000000"
 
 	// ContributionPhaseBlocks = 4 years per phase
@@ -141,19 +141,19 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 		return
 	}
 
-	type scoredustate struct {
+	type scoredState struct {
 		address string
 		score   int64
 		stake   *big.Int
 	}
 
-	var states []scoredustate
+	var states []scoredState
 	totalScore := int64(0)
 	totalEligibleStake := new(big.Int)
 	currentBlock := ctx.BlockHeight()
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 			return false
 		}
 
@@ -177,7 +177,7 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 			return false
 		}
 
-		states = append(states, scoredustate{address: state.Address, score: score, stake: new(big.Int).Set(stake)})
+		states = append(states, scoredState{address: state.Address, score: score, stake: new(big.Int).Set(stake)})
 		totalScore += score
 		totalEligibleStake.Add(totalEligibleStake, stake)
 		return false
@@ -197,10 +197,10 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 		share := new(big.Int).Mul(poolBig, big.NewInt(a.score))
 		share.Div(share, big.NewInt(totalScore))
 
-		maxPerustate := contributionRewardCap(poolBig, a.stake, totalEligibleStake, capBps)
+		maxPerState := contributionRewardCap(poolBig, a.stake, totalEligibleStake, capBps)
 
-		if share.Cmp(maxPerustate) > 0 {
-			share.Set(maxPerustate)
+		if share.Cmp(maxPerState) > 0 {
+			share.Set(maxPerState)
 		}
 
 		reward := sdkmath.NewIntFromBigInt(share)
@@ -237,7 +237,7 @@ func (k Keeper) DistributeContributionRewards(ctx sdk.Context, epoch uint64) {
 }
 
 // calculateContributionScore computes a weighted score for an state.
-func (k Keeper) calculateContributionScore(ctx sdk.Context, epoch uint64, state types.ustate) int64 {
+func (k Keeper) calculateContributionScore(ctx sdk.Context, epoch uint64, state types.State) int64 {
 	score := int64(0)
 
 	// Contract deployments
@@ -268,7 +268,7 @@ func (k Keeper) calculateContributionScore(ctx sdk.Context, epoch uint64, state 
 	}
 
 	// Online bonus
-	if state.Status == types.ustateStatus_STATE_STATUS_ONLINE {
+	if state.Status == types.StateStatus_STATE_STATUS_ONLINE {
 		score += 5
 	}
 

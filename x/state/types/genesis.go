@@ -5,7 +5,7 @@ import "fmt"
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Params: DefaultParams(),
-		ustates: []ustate{},
+		States: []State{},
 	}
 }
 
@@ -14,7 +14,7 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 	seen := make(map[string]bool)
-	for _, state := range gs.ustates {
+	for _, state := range gs.States {
 		if state.Address == "" {
 			return fmt.Errorf("state address cannot be empty")
 		}

@@ -12,7 +12,7 @@ type mockPrivacyKeeper struct {
 	deleted []string
 }
 
-func (m *mockPrivacyKeeper) DeleteustateIdentity(_ sdk.Context, stateAddr string) {
+func (m *mockPrivacyKeeper) DeleteStateIdentity(_ sdk.Context, stateAddr string) {
 	m.deleted = append(m.deleted, stateAddr)
 }
 
@@ -27,21 +27,21 @@ func TestExecuteDeregisterDeletesPrivacyIdentity(t *testing.T) {
 		0x10, 0x11, 0x12, 0x13, 0x14,
 	}).String()
 
-	state := types.ustate{
+	state := types.State{
 		Address:          address,
-		ustateId:          address,
-		Status:           types.ustateStatus_STATE_STATUS_SUSPENDED,
+		StateId:          address,
+		Status:           types.StateStatus_STATE_STATUS_SUSPENDED,
 		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
 		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 1),
 		RegisteredAt:     1,
 		LastHeartbeat:    1,
 	}
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 	k.SetDeregisterRequest(ctx, state.Address, ctx.BlockHeight()-types.DeregisterCooldownBlocks)
 
 	k.executeDeregister(ctx, state.Address, k.GetParams(ctx))
 
-	if _, found := k.Getustate(ctx, state.Address); found {
+	if _, found := k.GetState(ctx, state.Address); found {
 		t.Fatal("state should be deleted after deregister")
 	}
 	if k.HasDeregisterRequest(ctx, state.Address) {
@@ -65,16 +65,16 @@ func TestExecuteDeregisterSkipsPrivacyCleanupBeforeUpgrade(t *testing.T) {
 		0x24, 0x25, 0x26, 0x27, 0x28,
 	}).String()
 
-	state := types.ustate{
+	state := types.State{
 		Address:          address,
-		ustateId:          address,
-		Status:           types.ustateStatus_STATE_STATUS_SUSPENDED,
+		StateId:          address,
+		Status:           types.StateStatus_STATE_STATUS_SUSPENDED,
 		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
 		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 1),
 		RegisteredAt:     1,
 		LastHeartbeat:    1,
 	}
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 	k.SetDeregisterRequest(ctx, state.Address, ctx.BlockHeight()-types.DeregisterCooldownBlocks)
 
 	k.executeDeregister(ctx, state.Address, k.GetParams(ctx))

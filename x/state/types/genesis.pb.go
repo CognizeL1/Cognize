@@ -23,7 +23,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type GenesisState struct {
 	Params               Params   `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	ustates               []ustate  `protobuf:"bytes,2,rep,name=states,proto3" json:"states"`
+	States               []State  `protobuf:"bytes,2,rep,name=states,proto3" json:"states"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -60,9 +60,9 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
-func (m *GenesisState) Getustates() []ustate {
+func (m *GenesisState) GetStates() []State {
 	if m != nil {
-		return m.ustates
+		return m.States
 	}
 	return nil
 }

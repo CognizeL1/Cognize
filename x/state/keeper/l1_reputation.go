@@ -126,8 +126,8 @@ func (k Keeper) ProcessL1Reputation(ctx sdk.Context, epoch uint64) {
 	aiScores := k.collectAIScores(ctx, epoch)
 	aiPercentiles := computePercentiles(aiScores)
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 			return false
 		}
 
@@ -207,9 +207,9 @@ func (k Keeper) ApplyReputationDecay(ctx sdk.Context) {
 	l1Cap := k.l1CapMillis(ctx)
 	l2Cap := k.l2CapMillis(ctx)
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
+	k.IterateStates(ctx, func(state types.State) bool {
 		addr := state.Address
-		if k.shouldFreezeustateReputationDuringDeregister(ctx, addr) {
+		if k.shouldFreezeStateReputationDuringDeregister(ctx, addr) {
 			return false
 		}
 
@@ -251,8 +251,8 @@ func parseDecToMillis(s string) (int64, error) {
 
 // SyncLegacyReputation updates the old state.Reputation field from L1+L2 for backward compatibility.
 func (k Keeper) SyncLegacyReputation(ctx sdk.Context) {
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if k.shouldFreezeustateReputationDuringDeregister(ctx, state.Address) {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if k.shouldFreezeStateReputationDuringDeregister(ctx, state.Address) {
 			return false
 		}
 
@@ -263,7 +263,7 @@ func (k Keeper) SyncLegacyReputation(ctx sdk.Context) {
 		}
 		if state.Reputation != legacy {
 			state.Reputation = legacy
-			k.Setustate(ctx, state)
+			k.SetState(ctx, state)
 		}
 		return false
 	})

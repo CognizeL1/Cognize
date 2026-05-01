@@ -39,11 +39,11 @@ func newL2ReputationTestKeeper(t *testing.T) (Keeper, sdk.Context) {
 	return k, ctx
 }
 
-func setTestustate(k Keeper, ctx sdk.Context, address string, registeredAt int64) {
-	k.Setustate(ctx, types.ustate{
+func setTestState(k Keeper, ctx sdk.Context, address string, registeredAt int64) {
+	k.SetState(ctx, types.State{
 		Address:          address,
-		ustateId:          address,
-		Status:           types.ustateStatus_STATE_STATUS_ONLINE,
+		StateId:          address,
+		Status:           types.StateStatus_STATE_STATUS_ONLINE,
 		StakeAmount:      sdk.NewInt64Coin("aaxon", 1),
 		BurnedAtRegister: sdk.NewInt64Coin("aaxon", 0),
 		RegisteredAt:     registeredAt,
@@ -64,8 +64,8 @@ func TestSubmitL2ReportUsesConfiguredThresholdsAndWeights(t *testing.T) {
 		t.Fatalf("set params: %v", err)
 	}
 
-	setTestustate(k, ctx, "reporter", ctx.BlockHeight())
-	setTestustate(k, ctx, "target", 1)
+	setTestState(k, ctx, "reporter", ctx.BlockHeight())
+	setTestState(k, ctx, "target", 1)
 	k.SetL1Score(ctx, "reporter", 10_000)
 
 	if err := k.SubmitL2Report(ctx, "reporter", "target", 1, "", "no evidence"); err != nil {
@@ -91,8 +91,8 @@ func TestSubmitL2ReportRejectsBelowConfiguredMinReporterRep(t *testing.T) {
 		t.Fatalf("set params: %v", err)
 	}
 
-	setTestustate(k, ctx, "reporter", 1)
-	setTestustate(k, ctx, "target", 1)
+	setTestState(k, ctx, "reporter", 1)
+	setTestState(k, ctx, "target", 1)
 	k.SetL1Score(ctx, "reporter", 34_000)
 
 	if err := k.SubmitL2Report(ctx, "reporter", "target", 1, "", "too low"); err == nil || err.Error() != "reputation too low" {
@@ -111,8 +111,8 @@ func TestSubmitL2ReportRejectsTooNewUsingConfiguredAccountAge(t *testing.T) {
 		t.Fatalf("set params: %v", err)
 	}
 
-	setTestustate(k, ctx, "reporter", 100)
-	setTestustate(k, ctx, "target", 1)
+	setTestState(k, ctx, "reporter", 100)
+	setTestState(k, ctx, "target", 1)
 	k.SetL1Score(ctx, "reporter", 10_000)
 
 	if err := k.SubmitL2Report(ctx, "reporter", "target", 1, "", "too new"); err == nil || err.Error() != "account too new" {

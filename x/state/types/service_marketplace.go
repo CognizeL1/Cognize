@@ -39,9 +39,9 @@ func ServiceStatusFromString(s string) (ServiceStatus, error) {
 	}
 }
 
-type ustateService struct {
+type StateService struct {
 	Id              string    `json:"id"`
-	ustateAddress    string    `json:"state_address"`
+	StateAddress    string    `json:"state_address"`
 	Name           string    `json:"name"`
 	Description    string    `json:"description"`
 	Capabilities   []string  `json:"capabilities"`
@@ -56,11 +56,11 @@ type ustateService struct {
 	Reputation     uint64    `json:"reputation"`
 }
 
-func (s ustateService) Validate() error {
+func (s StateService) Validate() error {
 	if s.Id == "" {
 		return fmt.Errorf("service id is required")
 	}
-	if s.ustateAddress == "" {
+	if s.StateAddress == "" {
 		return fmt.Errorf("state address is required")
 	}
 	if s.Name == "" {
@@ -87,7 +87,7 @@ func (s ustateService) Validate() error {
 	return nil
 }
 
-func (s ustateService) IsActive() bool {
+func (s StateService) IsActive() bool {
 	return s.Status == ServiceStatus_SERVICE_STATUS_ACTIVE
 }
 
@@ -156,7 +156,7 @@ type TaskRequest struct {
 	Budget               sdk.Coin   `json:"budget"`
 	DeadlineBlock       int64      `json:"deadline_block"`
 	Status               TaskStatus `json:"status"`
-	Selectedustate        string     `json:"selected_state"`
+	SelectedState        string     `json:"selected_state"`
 	CreatedAt            int64      `json:"created_at"`
 }
 
@@ -194,7 +194,7 @@ func (t TaskRequest) IsOpen() bool {
 
 type TaskBid struct {
 	TaskId        string    `json:"task_id"`
-	ustateAddress string    `json:"state_address"`
+	StateAddress string    `json:"state_address"`
 	Proposal     string    `json:"proposal"`
 	Price        sdk.Coin  `json:"price"`
 	SubmittedAt  int64     `json:"submitted_at"`
@@ -205,7 +205,7 @@ func (b TaskBid) Validate() error {
 	if b.TaskId == "" {
 		return fmt.Errorf("task id is required")
 	}
-	if b.ustateAddress == "" {
+	if b.StateAddress == "" {
 		return fmt.Errorf("state address is required")
 	}
 	if b.Proposal == "" {
@@ -256,7 +256,7 @@ func ToolStatusFromString(s string) (ToolStatus, error) {
 
 type ToolDefinition struct {
 	Id           string     `json:"id"`
-	ustateAddress string     `json:"state_address"`
+	StateAddress string     `json:"state_address"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
 	InputSchema string     `json:"input_schema"`
@@ -271,7 +271,7 @@ func (t ToolDefinition) Validate() error {
 	if t.Id == "" {
 		return fmt.Errorf("tool id is required")
 	}
-	if t.ustateAddress == "" {
+	if t.StateAddress == "" {
 		return fmt.Errorf("state address is required")
 	}
 	if t.Name == "" {

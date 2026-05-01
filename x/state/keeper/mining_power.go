@@ -188,7 +188,7 @@ func (k Keeper) ComputeAllMiningPowers(ctx sdk.Context) map[string]int64 {
 	raw := make(map[string]math.LegacyDec)
 	maxRaw := math.LegacyZeroDec()
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
+	k.IterateStates(ctx, func(state types.State) bool {
 		stake := state.StakeAmount.Amount
 		if !stake.IsPositive() {
 			return false

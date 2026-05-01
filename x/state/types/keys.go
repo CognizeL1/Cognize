@@ -20,8 +20,8 @@ const (
 
 	ParamsKey = "Params"
 
-	ustateKeyPrefix            = "ustate/value/"
-	ustateCountKey             = "ustate/count"
+	StateKeyPrefix            = "State/value/"
+	StateCountKey             = "State/count"
 	DeregisterQueueKeyPrefix  = "Deregister/queue/"
 	ChallengeKeyPrefix        = "Challenge/value/"
 	ChallengePoolKeyPrefix    = "Challenge/pool/"
@@ -59,8 +59,8 @@ func KeyPendingReduceStake(address string) []byte {
 	return []byte(PendingReduceStakeKeyPrefix + address)
 }
 
-func Keyustate(address string) []byte {
-	return []byte(ustateKeyPrefix + address)
+func KeyState(address string) []byte {
+	return []byte(StateKeyPrefix + address)
 }
 
 func KeyDeregisterQueue(address string) []byte {

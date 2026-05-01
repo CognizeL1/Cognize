@@ -103,8 +103,8 @@ func (k Keeper) ProcessEpochReputation(ctx sdk.Context, epoch uint64) {
 
 	var updates []reputationUpdate
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 			return false
 		}
 		if state.Reputation == 0 {
@@ -113,11 +113,11 @@ func (k Keeper) ProcessEpochReputation(ctx sdk.Context, epoch uint64) {
 
 		delta := int64(0)
 
-		if state.Status == types.ustateStatus_STATE_STATUS_ONLINE {
+		if state.Status == types.StateStatus_STATE_STATUS_ONLINE {
 			delta += types.ReputationGainEpochOnline
 		}
 
-		if state.Status == types.ustateStatus_STATE_STATUS_OFFLINE {
+		if state.Status == types.StateStatus_STATE_STATUS_OFFLINE {
 			delta += types.ReputationLossNoHeartbeatEpoch
 		}
 
@@ -137,16 +137,16 @@ func (k Keeper) ProcessEpochReputation(ctx sdk.Context, epoch uint64) {
 	for _, u := range updates {
 		k.UpdateReputation(ctx, u.address, u.delta)
 
-		updatedustate, found := k.Getustate(ctx, u.address)
-		if found && updatedustate.Reputation == 0 {
-			k.handleZeroReputation(ctx, updatedustate, params)
+		updatedState, found := k.GetState(ctx, u.address)
+		if found && updatedState.Reputation == 0 {
+			k.handleZeroReputation(ctx, updatedState, params)
 		}
 	}
 }
 
 // handleZeroReputation burns remaining stake and suspends the state.
 // Uses the snapshot BurnedAtRegister instead of current params to avoid parameter-change drift.
-func (k Keeper) handleZeroReputation(ctx sdk.Context, state types.ustate, params types.Params) {
+func (k Keeper) handleZeroReputation(ctx sdk.Context, state types.State, params types.Params) {
 	var burnedAtRegister sdk.Coin
 	if state.BurnedAtRegister.Denom != "" && state.BurnedAtRegister.IsPositive() {
 		burnedAtRegister = state.BurnedAtRegister
@@ -172,11 +172,11 @@ func (k Keeper) handleZeroReputation(ctx sdk.Context, state types.ustate, params
 		}
 	}
 
-	state.Status = types.ustateStatus_STATE_STATUS_SUSPENDED
+	state.Status = types.StateStatus_STATE_STATUS_SUSPENDED
 	if burned || !remaining.IsPositive() {
 		state.StakeAmount = sdk.NewInt64Coin("aaxon", 0)
 	}
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		"state_stake_burned",

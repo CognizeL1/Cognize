@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Msg_Register_FullMethodName                  = "/axon.state.v1.Msg/Register"
 	Msg_AddStake_FullMethodName                  = "/axon.state.v1.Msg/AddStake"
-	Msg_Updateustate_FullMethodName               = "/axon.state.v1.Msg/Updateustate"
+	Msg_UpdateState_FullMethodName               = "/axon.state.v1.Msg/UpdateState"
 	Msg_Heartbeat_FullMethodName                 = "/axon.state.v1.Msg/Heartbeat"
 	Msg_Deregister_FullMethodName                = "/axon.state.v1.Msg/Deregister"
 	Msg_ReduceStake_FullMethodName               = "/axon.state.v1.Msg/ReduceStake"
@@ -36,7 +36,7 @@ const (
 type MsgClient interface {
 	Register(ctx context.Context, in *MsgRegister, opts ...grpc.CallOption) (*MsgRegisterResponse, error)
 	AddStake(ctx context.Context, in *MsgAddStake, opts ...grpc.CallOption) (*MsgAddStakeResponse, error)
-	Updateustate(ctx context.Context, in *MsgUpdateustate, opts ...grpc.CallOption) (*MsgUpdateustateResponse, error)
+	UpdateState(ctx context.Context, in *MsgUpdateState, opts ...grpc.CallOption) (*MsgUpdateStateResponse, error)
 	Heartbeat(ctx context.Context, in *MsgHeartbeat, opts ...grpc.CallOption) (*MsgHeartbeatResponse, error)
 	Deregister(ctx context.Context, in *MsgDeregister, opts ...grpc.CallOption) (*MsgDeregisterResponse, error)
 	ReduceStake(ctx context.Context, in *MsgReduceStake, opts ...grpc.CallOption) (*MsgReduceStakeResponse, error)
@@ -73,10 +73,10 @@ func (c *msgClient) AddStake(ctx context.Context, in *MsgAddStake, opts ...grpc.
 	return out, nil
 }
 
-func (c *msgClient) Updateustate(ctx context.Context, in *MsgUpdateustate, opts ...grpc.CallOption) (*MsgUpdateustateResponse, error) {
+func (c *msgClient) UpdateState(ctx context.Context, in *MsgUpdateState, opts ...grpc.CallOption) (*MsgUpdateStateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgUpdateustateResponse)
-	err := c.cc.Invoke(ctx, Msg_Updateustate_FullMethodName, in, out, cOpts...)
+	out := new(MsgUpdateStateResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func (c *msgClient) RevealAIChallengeResponse(ctx context.Context, in *MsgReveal
 type MsgServer interface {
 	Register(context.Context, *MsgRegister) (*MsgRegisterResponse, error)
 	AddStake(context.Context, *MsgAddStake) (*MsgAddStakeResponse, error)
-	Updateustate(context.Context, *MsgUpdateustate) (*MsgUpdateustateResponse, error)
+	UpdateState(context.Context, *MsgUpdateState) (*MsgUpdateStateResponse, error)
 	Heartbeat(context.Context, *MsgHeartbeat) (*MsgHeartbeatResponse, error)
 	Deregister(context.Context, *MsgDeregister) (*MsgDeregisterResponse, error)
 	ReduceStake(context.Context, *MsgReduceStake) (*MsgReduceStakeResponse, error)
@@ -172,8 +172,8 @@ func (UnimplementedMsgServer) Register(context.Context, *MsgRegister) (*MsgRegis
 func (UnimplementedMsgServer) AddStake(context.Context, *MsgAddStake) (*MsgAddStakeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddStake not implemented")
 }
-func (UnimplementedMsgServer) Updateustate(context.Context, *MsgUpdateustate) (*MsgUpdateustateResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Updateustate not implemented")
+func (UnimplementedMsgServer) UpdateState(context.Context, *MsgUpdateState) (*MsgUpdateStateResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateState not implemented")
 }
 func (UnimplementedMsgServer) Heartbeat(context.Context, *MsgHeartbeat) (*MsgHeartbeatResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Heartbeat not implemented")
@@ -250,20 +250,20 @@ func _Msg_AddStake_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Updateustate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateustate)
+func _Msg_UpdateState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateState)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Updateustate(ctx, in)
+		return srv.(MsgServer).UpdateState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Updateustate_FullMethodName,
+		FullMethod: Msg_UpdateState_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Updateustate(ctx, req.(*MsgUpdateustate))
+		return srv.(MsgServer).UpdateState(ctx, req.(*MsgUpdateState))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -392,8 +392,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddStake_Handler,
 		},
 		{
-			MethodName: "Updateustate",
-			Handler:    _Msg_Updateustate_Handler,
+			MethodName: "UpdateState",
+			Handler:    _Msg_UpdateState_Handler,
 		},
 		{
 			MethodName: "Heartbeat",

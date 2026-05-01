@@ -63,17 +63,17 @@ func TestUint64BytesOrdering(t *testing.T) {
 // Key functions
 // ---------------------------------------------------------------------------
 
-func TestKeyustate(t *testing.T) {
-	key := types.Keyustate("axon1test")
-	want := types.ustateKeyPrefix + "axon1test"
+func TestKeyState(t *testing.T) {
+	key := types.KeyState("axon1test")
+	want := types.StateKeyPrefix + "axon1test"
 	if string(key) != want {
-		t.Errorf("Keyustate = %q, want %q", key, want)
+		t.Errorf("KeyState = %q, want %q", key, want)
 	}
 }
 
-func TestKeyustateDifferentAddresses(t *testing.T) {
-	k1 := types.Keyustate("axon1aaa")
-	k2 := types.Keyustate("axon1bbb")
+func TestKeyStateDifferentAddresses(t *testing.T) {
+	k1 := types.KeyState("axon1aaa")
+	k2 := types.KeyState("axon1bbb")
 	if string(k1) == string(k2) {
 		t.Error("different addresses should produce different keys")
 	}
@@ -202,7 +202,7 @@ func TestKeyPrefixesUnique(t *testing.T) {
 		name  string
 		value string
 	}{
-		{"ustateKeyPrefix", types.ustateKeyPrefix},
+		{"StateKeyPrefix", types.StateKeyPrefix},
 		{"DeregisterQueueKeyPrefix", types.DeregisterQueueKeyPrefix},
 		{"ChallengeKeyPrefix", types.ChallengeKeyPrefix},
 		{"ChallengePoolKeyPrefix", types.ChallengePoolKeyPrefix},
@@ -321,10 +321,10 @@ func TestDefaultGenesisNotNil(t *testing.T) {
 	}
 }
 
-func TestDefaultGenesisEmptyustates(t *testing.T) {
+func TestDefaultGenesisEmptyStates(t *testing.T) {
 	gs := types.DefaultGenesis()
-	if len(gs.ustates) != 0 {
-		t.Errorf("default genesis should have 0 states, got %d", len(gs.ustates))
+	if len(gs.States) != 0 {
+		t.Errorf("default genesis should have 0 states, got %d", len(gs.States))
 	}
 }
 
@@ -379,10 +379,10 @@ func TestErrorsNotNil(t *testing.T) {
 		name string
 		err  error
 	}{
-		{"ErrustateAlreadyRegistered", types.ErrustateAlreadyRegistered},
-		{"ErrustateNotFound", types.ErrustateNotFound},
+		{"ErrStateAlreadyRegistered", types.ErrStateAlreadyRegistered},
+		{"ErrStateNotFound", types.ErrStateNotFound},
 		{"ErrInsufficientStake", types.ErrInsufficientStake},
-		{"ErrustateSuspended", types.ErrustateSuspended},
+		{"ErrStateSuspended", types.ErrStateSuspended},
 		{"ErrChallengeNotActive", types.ErrChallengeNotActive},
 		{"ErrChallengeExpired", types.ErrChallengeExpired},
 		{"ErrAlreadySubmitted", types.ErrAlreadySubmitted},

@@ -3,10 +3,10 @@ package types
 import "cosmossdk.io/errors"
 
 var (
-	ErrustateAlreadyRegistered     = errors.Register(ModuleName, 1100, "state already registered")
-	ErrustateNotFound              = errors.Register(ModuleName, 1101, "state not found")
+	ErrStateAlreadyRegistered     = errors.Register(ModuleName, 1100, "state already registered")
+	ErrStateNotFound              = errors.Register(ModuleName, 1101, "state not found")
 	ErrInsufficientStake          = errors.Register(ModuleName, 1102, "insufficient stake amount")
-	ErrustateSuspended             = errors.Register(ModuleName, 1103, "state is suspended")
+	ErrStateSuspended             = errors.Register(ModuleName, 1103, "state is suspended")
 	ErrHeartbeatTooFrequent       = errors.Register(ModuleName, 1104, "heartbeat sent too frequently")
 	ErrChallengeNotActive         = errors.Register(ModuleName, 1105, "no active AI challenge")
 	ErrChallengeExpired           = errors.Register(ModuleName, 1106, "AI challenge submission window expired")
@@ -16,7 +16,7 @@ var (
 	ErrDeregisterCooldown         = errors.Register(ModuleName, 1110, "state in deregister cooldown period")
 	ErrDeregisterAlreadyQueued    = errors.Register(ModuleName, 1111, "deregister already requested")
 	ErrChallengeWindowClosed      = errors.Register(ModuleName, 1112, "challenge submission window closed")
-	ErrustateOffline               = errors.Register(ModuleName, 1113, "state is offline")
+	ErrStateOffline               = errors.Register(ModuleName, 1113, "state is offline")
 	ErrRevealTooEarly             = errors.Register(ModuleName, 1114, "reveal phase has not started yet")
 	ErrRevealWindowClosed         = errors.Register(ModuleName, 1115, "reveal window has closed")
 	ErrAlreadyEvaluated           = errors.Register(ModuleName, 1116, "challenge already evaluated")

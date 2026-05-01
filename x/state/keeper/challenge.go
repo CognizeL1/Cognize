@@ -274,8 +274,8 @@ func (k Keeper) EvaluateEpochChallenges(ctx sdk.Context, epoch uint64) {
 		store.Set(types.KeyAIResponse(epoch, resp.ValidatorAddress), bz)
 	}
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_ONLINE &&
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_ONLINE &&
 			k.isActiveValidatorAddress(ctx, state.Address) &&
 			!respondents[state.Address] {
 			k.SetAIBonus(ctx, state.Address, 0)
@@ -324,7 +324,7 @@ func (k Keeper) penalizeCheater(ctx sdk.Context, address string) {
 	k.SetAIBonus(ctx, address, -5)
 	k.UpdateReputation(ctx, address, CheatPenaltyReputation)
 
-	state, found := k.Getustate(ctx, address)
+	state, found := k.GetState(ctx, address)
 	if !found {
 		return
 	}
@@ -337,7 +337,7 @@ func (k Keeper) penalizeCheater(ctx sdk.Context, address string) {
 			return
 		}
 		state.StakeAmount = state.StakeAmount.Sub(slashCoin)
-		k.Setustate(ctx, state)
+		k.SetState(ctx, state)
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(

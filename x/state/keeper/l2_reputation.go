@@ -19,7 +19,7 @@ const (
 	L2ReportIndexKeyPrefix = "L2ReportIdx/"
 	L2ReportCountPrefix    = "L2ReportCnt/"
 
-	DefaultL2BudgetPerustateMillis int64 = 100     // 0.1 per state
+	DefaultL2BudgetPerStateMillis int64 = 100     // 0.1 per state
 	DefaultL2BudgetCapMillis      int64 = 100_000 // 100.0
 	L2MaxReportsPerEpoch          int64 = 50
 
@@ -160,7 +160,7 @@ func (k Keeper) SubmitL2Report(ctx sdk.Context, reporter, target string, score i
 		return fmt.Errorf("cannot self-report")
 	}
 
-	reporterustate, found := k.Getustate(ctx, reporter)
+	reporterState, found := k.GetState(ctx, reporter)
 	if !found {
 		return fmt.Errorf("caller not registered")
 	}
@@ -168,15 +168,15 @@ func (k Keeper) SubmitL2Report(ctx sdk.Context, reporter, target string, score i
 	if reporterRep < l2MinReporterRepMillis(params) {
 		return fmt.Errorf("reputation too low")
 	}
-	if ctx.BlockHeight()-reporterustate.RegisteredAt < params.L2MinAccountAge {
+	if ctx.BlockHeight()-reporterState.RegisteredAt < params.L2MinAccountAge {
 		return fmt.Errorf("account too new")
 	}
 
-	targetustate, found := k.Getustate(ctx, target)
+	targetState, found := k.GetState(ctx, target)
 	if !found {
 		return fmt.Errorf("target not registered")
 	}
-	if k.IsV111UpgradeActivated(ctx) && targetustate.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	if k.IsV111UpgradeActivated(ctx) && targetState.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 		return fmt.Errorf("target is deregistering")
 	}
 
@@ -338,15 +338,15 @@ func (k Keeper) SettleL2Reputation(ctx sdk.Context, epoch uint64) {
 	rawDeltas := k.computeRawL2Deltas(ctx, epoch)
 
 	stateCount := int64(0)
-	k.Iterateustates(ctx, func(_ types.ustate) bool {
+	k.IterateStates(ctx, func(_ types.State) bool {
 		stateCount++
 		return false
 	})
 
-	budgetPerustate := l2BudgetPerustateMillis(params)
+	budgetPerState := l2BudgetPerStateMillis(params)
 	budgetCap := l2BudgetCapMillis(params)
 
-	budget := budgetPerustate * stateCount
+	budget := budgetPerState * stateCount
 	if budget > budgetCap {
 		budget = budgetCap
 	}
@@ -533,8 +533,8 @@ func l2MinReporterRepMillis(params types.Params) int64 {
 	return params.L2MinReporterRep * 1000
 }
 
-func l2BudgetPerustateMillis(params types.Params) int64 {
-	return parseL2DecimalMillis(params.L2BudgetPerustate, types.DefaultParams().L2BudgetPerustate, DefaultL2BudgetPerustateMillis)
+func l2BudgetPerStateMillis(params types.Params) int64 {
+	return parseL2DecimalMillis(params.L2BudgetPerState, types.DefaultParams().L2BudgetPerState, DefaultL2BudgetPerStateMillis)
 }
 
 func l2BudgetCapMillis(params types.Params) int64 {

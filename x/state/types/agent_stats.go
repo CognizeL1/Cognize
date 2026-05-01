@@ -1,6 +1,6 @@
 package types
 
-type ustateStatistics struct {
+type StateStatistics struct {
 	Address              string  `json:"address"`
 	Reputation          uint64  `json:"reputation"`
 	Status              string  `json:"status"`
@@ -32,12 +32,12 @@ type ChallengeMetrics struct {
 	MaxScore        int64   `json:"max_score"`
 }
 
-type QueryustateStatsRequest struct {
+type QueryStateStatsRequest struct {
 	Address string `json:"address"`
 }
 
-type QueryustateStatsResponse struct {
-	Stats ustateStatistics `json:"stats"`
+type QueryStateStatsResponse struct {
+	Stats StateStatistics `json:"stats"`
 }
 
 type QueryReputationHistoryRequest struct {
@@ -49,22 +49,22 @@ type QueryReputationHistoryResponse struct {
 	History []ReputationHistoryEntry `json:"history"`
 }
 
-type QueryTopustatesRequest struct {
+type QueryTopStatesRequest struct {
 	SortBy string `json:"sort_by"`
 	Limit  int    `json:"limit"`
 }
 
-type QueryTopustatesResponse struct {
-	ustates []ustateStatistics `json:"states"`
+type QueryTopStatesResponse struct {
+	States []StateStatistics `json:"states"`
 }
 
-type QueryustatesByCapabilityRequest struct {
+type QueryStatesByCapabilityRequest struct {
 	Capabilities []string `json:"capabilities"`
 	MatchAll     bool     `json:"match_all"`
 }
 
-type QueryustatesByCapabilityResponse struct {
-	ustates []ustate `json:"states"`
+type QueryStatesByCapabilityResponse struct {
+	States []State `json:"states"`
 }
 
 type QueryChallengeMetricsRequest struct {
@@ -75,11 +75,11 @@ type QueryChallengeMetricsResponse struct {
 	Metrics ChallengeMetrics `json:"metrics"`
 }
 
-type QueryustateChallengeHistoryRequest struct {
+type QueryStateChallengeHistoryRequest struct {
 	Address string `json:"address"`
 	Limit   uint64 `json:"limit"`
 }
 
-type QueryustateChallengeHistoryResponse struct {
+type QueryStateChallengeHistoryResponse struct {
 	Responses []AIResponse `json:"responses"`
 }

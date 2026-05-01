@@ -86,7 +86,7 @@ func (m *MsgRegister) GetStake() types.Coin {
 }
 
 type MsgRegisterResponse struct {
-	ustateId              string   `protobuf:"bytes,1,opt,name=state_id,json=stateId,proto3" json:"state_id,omitempty"`
+	StateId              string   `protobuf:"bytes,1,opt,name=state_id,json=stateId,proto3" json:"state_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -116,9 +116,9 @@ func (m *MsgRegisterResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRegisterResponse proto.InternalMessageInfo
 
-func (m *MsgRegisterResponse) GetustateId() string {
+func (m *MsgRegisterResponse) GetStateId() string {
 	if m != nil {
-		return m.ustateId
+		return m.StateId
 	}
 	return ""
 }
@@ -207,7 +207,7 @@ func (m *MsgAddStakeResponse) GetTotalStake() types.Coin {
 	return types.Coin{}
 }
 
-type MsgUpdateustate struct {
+type MsgUpdateState struct {
 	Sender               string   `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	Capabilities         string   `protobuf:"bytes,2,opt,name=capabilities,proto3" json:"capabilities,omitempty"`
 	Model                string   `protobuf:"bytes,3,opt,name=model,proto3" json:"model,omitempty"`
@@ -216,80 +216,80 @@ type MsgUpdateustate struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MsgUpdateustate) Reset()         { *m = MsgUpdateustate{} }
-func (m *MsgUpdateustate) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateustate) ProtoMessage()    {}
-func (*MsgUpdateustate) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateState) Reset()         { *m = MsgUpdateState{} }
+func (m *MsgUpdateState) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateState) ProtoMessage()    {}
+func (*MsgUpdateState) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b77bc60185085f37, []int{4}
 }
-func (m *MsgUpdateustate) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MsgUpdateustate.Unmarshal(m, b)
+func (m *MsgUpdateState) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgUpdateState.Unmarshal(m, b)
 }
-func (m *MsgUpdateustate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MsgUpdateustate.Marshal(b, m, deterministic)
+func (m *MsgUpdateState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgUpdateState.Marshal(b, m, deterministic)
 }
-func (m *MsgUpdateustate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateustate.Merge(m, src)
+func (m *MsgUpdateState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateState.Merge(m, src)
 }
-func (m *MsgUpdateustate) XXX_Size() int {
-	return xxx_messageInfo_MsgUpdateustate.Size(m)
+func (m *MsgUpdateState) XXX_Size() int {
+	return xxx_messageInfo_MsgUpdateState.Size(m)
 }
-func (m *MsgUpdateustate) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateustate.DiscardUnknown(m)
+func (m *MsgUpdateState) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateState.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateustate proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateState proto.InternalMessageInfo
 
-func (m *MsgUpdateustate) GetSender() string {
+func (m *MsgUpdateState) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-func (m *MsgUpdateustate) GetCapabilities() string {
+func (m *MsgUpdateState) GetCapabilities() string {
 	if m != nil {
 		return m.Capabilities
 	}
 	return ""
 }
 
-func (m *MsgUpdateustate) GetModel() string {
+func (m *MsgUpdateState) GetModel() string {
 	if m != nil {
 		return m.Model
 	}
 	return ""
 }
 
-type MsgUpdateustateResponse struct {
+type MsgUpdateStateResponse struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MsgUpdateustateResponse) Reset()         { *m = MsgUpdateustateResponse{} }
-func (m *MsgUpdateustateResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateustateResponse) ProtoMessage()    {}
-func (*MsgUpdateustateResponse) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateStateResponse) Reset()         { *m = MsgUpdateStateResponse{} }
+func (m *MsgUpdateStateResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateStateResponse) ProtoMessage()    {}
+func (*MsgUpdateStateResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b77bc60185085f37, []int{5}
 }
-func (m *MsgUpdateustateResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MsgUpdateustateResponse.Unmarshal(m, b)
+func (m *MsgUpdateStateResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgUpdateStateResponse.Unmarshal(m, b)
 }
-func (m *MsgUpdateustateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MsgUpdateustateResponse.Marshal(b, m, deterministic)
+func (m *MsgUpdateStateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgUpdateStateResponse.Marshal(b, m, deterministic)
 }
-func (m *MsgUpdateustateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateustateResponse.Merge(m, src)
+func (m *MsgUpdateStateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateStateResponse.Merge(m, src)
 }
-func (m *MsgUpdateustateResponse) XXX_Size() int {
-	return xxx_messageInfo_MsgUpdateustateResponse.Size(m)
+func (m *MsgUpdateStateResponse) XXX_Size() int {
+	return xxx_messageInfo_MsgUpdateStateResponse.Size(m)
 }
-func (m *MsgUpdateustateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateustateResponse.DiscardUnknown(m)
+func (m *MsgUpdateStateResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateStateResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateustateResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateStateResponse proto.InternalMessageInfo
 
 type MsgHeartbeat struct {
 	Sender               string   `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
@@ -744,8 +744,8 @@ func init() {
 	proto.RegisterType((*MsgRegisterResponse)(nil), "axon.state.v1.MsgRegisterResponse")
 	proto.RegisterType((*MsgAddStake)(nil), "axon.state.v1.MsgAddStake")
 	proto.RegisterType((*MsgAddStakeResponse)(nil), "axon.state.v1.MsgAddStakeResponse")
-	proto.RegisterType((*MsgUpdateustate)(nil), "axon.state.v1.MsgUpdateustate")
-	proto.RegisterType((*MsgUpdateustateResponse)(nil), "axon.state.v1.MsgUpdateustateResponse")
+	proto.RegisterType((*MsgUpdateState)(nil), "axon.state.v1.MsgUpdateState")
+	proto.RegisterType((*MsgUpdateStateResponse)(nil), "axon.state.v1.MsgUpdateStateResponse")
 	proto.RegisterType((*MsgHeartbeat)(nil), "axon.state.v1.MsgHeartbeat")
 	proto.RegisterType((*MsgHeartbeatResponse)(nil), "axon.state.v1.MsgHeartbeatResponse")
 	proto.RegisterType((*MsgDeregister)(nil), "axon.state.v1.MsgDeregister")

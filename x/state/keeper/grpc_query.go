@@ -29,33 +29,33 @@ func (k queryServer) Params(goCtx context.Context, req *types.QueryParamsRequest
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-func (k queryServer) ustate(goCtx context.Context, req *types.QueryustateRequest) (*types.QueryustateResponse, error) {
+func (k queryServer) State(goCtx context.Context, req *types.QueryStateRequest) (*types.QueryStateResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	state, found := k.Getustate(ctx, req.Address)
+	state, found := k.GetState(ctx, req.Address)
 	if !found {
 		return nil, status.Error(codes.NotFound, "state not found")
 	}
 
-	return &types.QueryustateResponse{ustate: &state}, nil
+	return &types.QueryStateResponse{State: &state}, nil
 }
 
-const maxustatesPerQuery = 200
+const maxStatesPerQuery = 200
 
-func (k queryServer) ustates(goCtx context.Context, req *types.QueryustatesRequest) (*types.QueryustatesResponse, error) {
+func (k queryServer) States(goCtx context.Context, req *types.QueryStatesRequest) (*types.QueryStatesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	var states []types.ustate
-	k.Iterateustates(ctx, func(state types.ustate) bool {
+	var states []types.State
+	k.IterateStates(ctx, func(state types.State) bool {
 		states = append(states, state)
-		return len(states) >= maxustatesPerQuery
+		return len(states) >= maxStatesPerQuery
 	})
-	return &types.QueryustatesResponse{ustates: states}, nil
+	return &types.QueryStatesResponse{States: states}, nil
 }
 
 func (k queryServer) Reputation(goCtx context.Context, req *types.QueryReputationRequest) (*types.QueryReputationResponse, error) {

@@ -20,8 +20,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Query_Params_FullMethodName           = "/axon.state.v1.Query/Params"
-	Query_ustate_FullMethodName            = "/axon.state.v1.Query/ustate"
-	Query_ustates_FullMethodName           = "/axon.state.v1.Query/ustates"
+	Query_State_FullMethodName            = "/axon.state.v1.Query/State"
+	Query_States_FullMethodName           = "/axon.state.v1.Query/States"
 	Query_Reputation_FullMethodName       = "/axon.state.v1.Query/Reputation"
 	Query_CurrentChallenge_FullMethodName = "/axon.state.v1.Query/CurrentChallenge"
 )
@@ -31,8 +31,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	ustate(ctx context.Context, in *QueryustateRequest, opts ...grpc.CallOption) (*QueryustateResponse, error)
-	ustates(ctx context.Context, in *QueryustatesRequest, opts ...grpc.CallOption) (*QueryustatesResponse, error)
+	State(ctx context.Context, in *QueryStateRequest, opts ...grpc.CallOption) (*QueryStateResponse, error)
+	States(ctx context.Context, in *QueryStatesRequest, opts ...grpc.CallOption) (*QueryStatesResponse, error)
 	Reputation(ctx context.Context, in *QueryReputationRequest, opts ...grpc.CallOption) (*QueryReputationResponse, error)
 	CurrentChallenge(ctx context.Context, in *QueryCurrentChallengeRequest, opts ...grpc.CallOption) (*QueryCurrentChallengeResponse, error)
 }
@@ -55,20 +55,20 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) ustate(ctx context.Context, in *QueryustateRequest, opts ...grpc.CallOption) (*QueryustateResponse, error) {
+func (c *queryClient) State(ctx context.Context, in *QueryStateRequest, opts ...grpc.CallOption) (*QueryStateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryustateResponse)
-	err := c.cc.Invoke(ctx, Query_ustate_FullMethodName, in, out, cOpts...)
+	out := new(QueryStateResponse)
+	err := c.cc.Invoke(ctx, Query_State_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) ustates(ctx context.Context, in *QueryustatesRequest, opts ...grpc.CallOption) (*QueryustatesResponse, error) {
+func (c *queryClient) States(ctx context.Context, in *QueryStatesRequest, opts ...grpc.CallOption) (*QueryStatesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryustatesResponse)
-	err := c.cc.Invoke(ctx, Query_ustates_FullMethodName, in, out, cOpts...)
+	out := new(QueryStatesResponse)
+	err := c.cc.Invoke(ctx, Query_States_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +100,8 @@ func (c *queryClient) CurrentChallenge(ctx context.Context, in *QueryCurrentChal
 // for forward compatibility.
 type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	ustate(context.Context, *QueryustateRequest) (*QueryustateResponse, error)
-	ustates(context.Context, *QueryustatesRequest) (*QueryustatesResponse, error)
+	State(context.Context, *QueryStateRequest) (*QueryStateResponse, error)
+	States(context.Context, *QueryStatesRequest) (*QueryStatesResponse, error)
 	Reputation(context.Context, *QueryReputationRequest) (*QueryReputationResponse, error)
 	CurrentChallenge(context.Context, *QueryCurrentChallengeRequest) (*QueryCurrentChallengeResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -117,11 +117,11 @@ type UnimplementedQueryServer struct{}
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) ustate(context.Context, *QueryustateRequest) (*QueryustateResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ustate not implemented")
+func (UnimplementedQueryServer) State(context.Context, *QueryStateRequest) (*QueryStateResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method State not implemented")
 }
-func (UnimplementedQueryServer) ustates(context.Context, *QueryustatesRequest) (*QueryustatesResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ustates not implemented")
+func (UnimplementedQueryServer) States(context.Context, *QueryStatesRequest) (*QueryStatesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method States not implemented")
 }
 func (UnimplementedQueryServer) Reputation(context.Context, *QueryReputationRequest) (*QueryReputationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Reputation not implemented")
@@ -168,38 +168,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ustate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryustateRequest)
+func _Query_State_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ustate(ctx, in)
+		return srv.(QueryServer).State(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_ustate_FullMethodName,
+		FullMethod: Query_State_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ustate(ctx, req.(*QueryustateRequest))
+		return srv.(QueryServer).State(ctx, req.(*QueryStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ustates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryustatesRequest)
+func _Query_States_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryStatesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ustates(ctx, in)
+		return srv.(QueryServer).States(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_ustates_FullMethodName,
+		FullMethod: Query_States_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ustates(ctx, req.(*QueryustatesRequest))
+		return srv.(QueryServer).States(ctx, req.(*QueryStatesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -252,12 +252,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "ustate",
-			Handler:    _Query_ustate_Handler,
+			MethodName: "State",
+			Handler:    _Query_State_Handler,
 		},
 		{
-			MethodName: "ustates",
-			Handler:    _Query_ustates_Handler,
+			MethodName: "States",
+			Handler:    _Query_States_Handler,
 		},
 		{
 			MethodName: "Reputation",

@@ -23,8 +23,8 @@ func TestSubmitL2ReportUsesFullWeightOnlyForIndexedEvidence(t *testing.T) {
 		t.Fatalf("set params: %v", err)
 	}
 
-	setTestustate(k, ctx, "reporter", 1)
-	setTestustate(k, ctx, "target", 1)
+	setTestState(k, ctx, "reporter", 1)
+	setTestState(k, ctx, "target", 1)
 	k.SetL1Score(ctx, "reporter", 10_000)
 
 	evidenceHash := common.HexToHash("0x1111111111111111111111111111111111111111111111111111111111111111")
@@ -54,16 +54,16 @@ func TestSubmitL2ReportFallsBackWhenEvidenceMissingOrInvalid(t *testing.T) {
 		t.Fatalf("set params: %v", err)
 	}
 
-	setTestustate(k, ctx, "reporter1", 1)
-	setTestustate(k, ctx, "target1", 1)
+	setTestState(k, ctx, "reporter1", 1)
+	setTestState(k, ctx, "target1", 1)
 	k.SetL1Score(ctx, "reporter1", 10_000)
 	if err := k.SubmitL2Report(ctx, "reporter1", "target1", 1, "xyz", "invalid"); err != nil {
 		t.Fatalf("submit invalid evidence report: %v", err)
 	}
 
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 720)
-	setTestustate(k, ctx, "reporter2", 1)
-	setTestustate(k, ctx, "target2", 1)
+	setTestState(k, ctx, "reporter2", 1)
+	setTestState(k, ctx, "target2", 1)
 	k.SetL1Score(ctx, "reporter2", 10_000)
 	missingHash := common.HexToHash("0x2222222222222222222222222222222222222222222222222222222222222222")
 	if err := k.SubmitL2Report(ctx, "reporter2", "target2", 1, missingHash.Hex(), "missing"); err != nil {
@@ -180,10 +180,10 @@ func TestCleanupOldDailyRegDataBatchesLargeBacklog(t *testing.T) {
 
 func TestCalculateContributionScoreCapsLargeCounters(t *testing.T) {
 	k, ctx := newL2ReputationTestKeeper(t)
-	state := types.ustate{
+	state := types.State{
 		Address:    "state1",
 		Reputation: 80,
-		Status:     types.ustateStatus_STATE_STATUS_ONLINE,
+		Status:     types.StateStatus_STATE_STATUS_ONLINE,
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -281,7 +281,7 @@ func TestEvaluateEpochChallengesScoresCorrectlyBeforeUpgrade(t *testing.T) {
 	store.Set(types.KeyAIResponse(epoch, wrongResp.ValidatorAddress), bz)
 
 	// Register the validator as state
-	setTestustate(k, ctx, wrongResp.ValidatorAddress, 1)
+	setTestState(k, ctx, wrongResp.ValidatorAddress, 1)
 
 	// Evaluate
 	k.EvaluateEpochChallenges(ctx, epoch)
@@ -342,7 +342,7 @@ func TestEvaluateEpochChallengesScoresCorrectlyAfterUpgrade(t *testing.T) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&wrongResp)
 	store.Set(types.KeyAIResponse(epoch, wrongResp.ValidatorAddress), bz)
-	setTestustate(k, ctx, wrongResp.ValidatorAddress, 1)
+	setTestState(k, ctx, wrongResp.ValidatorAddress, 1)
 
 	k.EvaluateEpochChallenges(ctx, epoch)
 
@@ -410,7 +410,7 @@ func TestHistoricalReplayConsistency(t *testing.T) {
 	}
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.KeyAIResponse(epoch1, resp1.ValidatorAddress), k.cdc.MustMarshal(&resp1))
-	setTestustate(k, ctx, resp1.ValidatorAddress, 1)
+	setTestState(k, ctx, resp1.ValidatorAddress, 1)
 
 	k.EvaluateEpochChallenges(ctx, epoch1)
 
@@ -437,7 +437,7 @@ func TestHistoricalReplayConsistency(t *testing.T) {
 		CommitHash:       "c2",
 	}
 	store.Set(types.KeyAIResponse(epoch2, resp2.ValidatorAddress), k.cdc.MustMarshal(&resp2))
-	setTestustate(k, ctx, resp2.ValidatorAddress, 1)
+	setTestState(k, ctx, resp2.ValidatorAddress, 1)
 
 	k.EvaluateEpochChallenges(ctx, epoch2)
 

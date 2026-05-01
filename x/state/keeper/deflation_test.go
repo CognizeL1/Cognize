@@ -25,7 +25,7 @@ func TestGasBurnPercentages(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Deflation Path 2: ustate Registration Burn (20 AXON)
+// Deflation Path 2: State Registration Burn (20 AXON)
 // ---------------------------------------------------------------------------
 
 func TestRegistrationBurnAmount(t *testing.T) {
@@ -41,7 +41,7 @@ func TestRegistrationBurnAmount(t *testing.T) {
 	if burnAxon.BigInt().Cmp(expected) != 0 {
 		t.Errorf("burn amount = %s aaxon, want %s", burnAxon.String(), expected.String())
 	}
-	t.Logf("Path 2: ustate registration burns %d AXON (%s aaxon)", params.RegisterBurnAmount, burnAxon.String())
+	t.Logf("Path 2: State registration burns %d AXON (%s aaxon)", params.RegisterBurnAmount, burnAxon.String())
 }
 
 // ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ func TestContractDeployBurnConstant(t *testing.T) {
 func TestReputationZeroBurnDocumentation(t *testing.T) {
 	t.Log("Path 4: When state reputation reaches 0:")
 	t.Log("  - 100% of remaining stake is burned via BurnCoins")
-	t.Log("  - ustate status set to SUSPENDED")
+	t.Log("  - State status set to SUSPENDED")
 	t.Log("  - Event: state_slashed_zero_reputation emitted")
 	t.Log("  Implemented in x/state/keeper/reputation.go handleZeroReputation()")
 }
@@ -336,7 +336,7 @@ func TestAllDeflationPathsDocumented(t *testing.T) {
 		location string
 	}{
 		{1, "Gas Base Fee Burn (80%/50% of FeeCollector)", "app/fee_burn.go + app/state_module.go BeginBlock"},
-		{2, "ustate Registration Burn (20 AXON)", "x/state/keeper/msg_server.go Register()"},
+		{2, "State Registration Burn (20 AXON)", "x/state/keeper/msg_server.go Register()"},
 		{3, "Contract Deploy Burn (10 AXON)", "app/evm_hooks.go DeployBurnHook"},
 		{4, "Reputation Zero → Full Stake Burn", "x/state/keeper/reputation.go handleZeroReputation()"},
 		{5, "AI Challenge Cheat Penalty (20% stake)", "x/state/keeper/challenge.go penalizeCheater()"},

@@ -22,5 +22,5 @@ type StakingKeeper interface {
 }
 
 type PrivacyKeeper interface {
-	DeleteustateIdentity(ctx sdk.Context, stateAddr string)
+	DeleteStateIdentity(ctx sdk.Context, stateAddr string)
 }

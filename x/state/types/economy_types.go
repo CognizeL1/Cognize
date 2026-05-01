@@ -7,7 +7,7 @@ import (
 
 func (m *MsgRegister) XXX_Workaround()                {}
 func (m *MsgAddStake) XXX_Workaround()               {}
-func (m *MsgUpdateustate) XXX_Workaround()            {}
+func (m *MsgUpdateState) XXX_Workaround()            {}
 func (m *MsgHeartbeat) XXX_Workaround()            {}
 func (m *MsgDeregister) XXX_Workaround()          {}
 func (m *MsgReduceStake) XXX_Workaround()          {}
@@ -151,7 +151,7 @@ func (*MsgSubmitBidResponse) ProtoMessage() {}
 type MsgSelectBid struct {
 	Sender       string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	TaskId       string `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
-	ustateAddress string `protobuf:"bytes,3,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
+	StateAddress string `protobuf:"bytes,3,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
 }
 
 func (m *MsgSelectBid) Reset()         { *m = MsgSelectBid{} }
@@ -252,7 +252,7 @@ func (*MsgSubmitL2ReportResponse) ProtoMessage() {}
 
 type QueryServicesRequest struct {
 	Capability   string `protobuf:"bytes,1,opt,name=capability,proto3" json:"capability,omitempty"`
-	ustateAddress string `protobuf:"bytes,2,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
+	StateAddress string `protobuf:"bytes,2,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
 	Limit       int64  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 }
 
@@ -261,7 +261,7 @@ func (m *QueryServicesRequest) String() string { return proto.CompactTextString(
 func (*QueryServicesRequest) ProtoMessage() {}
 
 type QueryServicesResponse struct {
-	Services []ustateService `protobuf:"bytes,1,rep,name=services,proto3" json:"services"`
+	Services []StateService `protobuf:"bytes,1,rep,name=services,proto3" json:"services"`
 }
 
 func (m *QueryServicesResponse) Reset()         { *m = QueryServicesResponse{} }
@@ -277,7 +277,7 @@ func (m *QueryServiceRequest) String() string { return proto.CompactTextString(m
 func (*QueryServiceRequest) ProtoMessage()   {}
 
 type QueryServiceResponse struct {
-	Service ustateService `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
+	Service StateService `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
 }
 
 func (m *QueryServiceResponse) Reset()         { *m = QueryServiceResponse{} }
@@ -353,7 +353,7 @@ func (m *QueryTaskBidsResponse) String() string { return proto.CompactTextString
 func (*QueryTaskBidsResponse) ProtoMessage()    {}
 
 type QueryToolsRequest struct {
-	ustateAddress string `protobuf:"bytes,1,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
+	StateAddress string `protobuf:"bytes,1,opt,name=state_address,json=stateAddress,proto3" json:"state_address,omitempty"`
 	PublicOnly  bool    `protobuf:"varint,2,opt,name=public_only,json=publicOnly,proto3" json:"public_only,omitempty"`
 	Limit      int64   `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 }

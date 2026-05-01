@@ -46,7 +46,7 @@ func KeyAIModel(modelID string) []byte {
 	return []byte("aimodel/" + modelID)
 }
 
-func KeyAIModelByustate(state string) []byte {
+func KeyAIModelByState(state string) []byte {
 	return []byte("aimodel/state/" + state)
 }
 
@@ -58,7 +58,7 @@ func KeyDataset(datasetID string) []byte {
 	return []byte("dataset/" + datasetID)
 }
 
-func KeyDatasetByustate(state string) []byte {
+func KeyDatasetByState(state string) []byte {
 	return []byte("dataset/state/" + state)
 }
 

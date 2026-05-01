@@ -22,44 +22,44 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type ustateStatus int32
+type StateStatus int32
 
 const (
-	ustateStatus_STATE_STATUS_UNSPECIFIED ustateStatus = 0
-	ustateStatus_STATE_STATUS_ONLINE      ustateStatus = 1
-	ustateStatus_STATE_STATUS_OFFLINE     ustateStatus = 2
-	ustateStatus_STATE_STATUS_SUSPENDED   ustateStatus = 3
+	StateStatus_STATE_STATUS_UNSPECIFIED StateStatus = 0
+	StateStatus_STATE_STATUS_ONLINE      StateStatus = 1
+	StateStatus_STATE_STATUS_OFFLINE     StateStatus = 2
+	StateStatus_STATE_STATUS_SUSPENDED   StateStatus = 3
 )
 
-var ustateStatus_name = map[int32]string{
+var StateStatus_name = map[int32]string{
 	0: "STATE_STATUS_UNSPECIFIED",
 	1: "STATE_STATUS_ONLINE",
 	2: "STATE_STATUS_OFFLINE",
 	3: "STATE_STATUS_SUSPENDED",
 }
 
-var ustateStatus_value = map[string]int32{
+var StateStatus_value = map[string]int32{
 	"STATE_STATUS_UNSPECIFIED": 0,
 	"STATE_STATUS_ONLINE":      1,
 	"STATE_STATUS_OFFLINE":     2,
 	"STATE_STATUS_SUSPENDED":   3,
 }
 
-func (x ustateStatus) String() string {
-	return proto.EnumName(ustateStatus_name, int32(x))
+func (x StateStatus) String() string {
+	return proto.EnumName(StateStatus_name, int32(x))
 }
 
-func (ustateStatus) EnumDescriptor() ([]byte, []int) {
+func (StateStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_048f2657adbe63a6, []int{0}
 }
 
-type ustate struct {
+type State struct {
 	Address              string      `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	ustateId              string      `protobuf:"bytes,2,opt,name=state_id,json=stateId,proto3" json:"state_id,omitempty"`
+	StateId              string      `protobuf:"bytes,2,opt,name=state_id,json=stateId,proto3" json:"state_id,omitempty"`
 	Capabilities         []string    `protobuf:"bytes,3,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
 	Model                string      `protobuf:"bytes,4,opt,name=model,proto3" json:"model,omitempty"`
 	Reputation           uint64      `protobuf:"varint,5,opt,name=reputation,proto3" json:"reputation,omitempty"`
-	Status               ustateStatus `protobuf:"varint,6,opt,name=status,proto3,enum=axon.state.v1.ustateStatus" json:"status,omitempty"`
+	Status               StateStatus `protobuf:"varint,6,opt,name=status,proto3,enum=axon.state.v1.StateStatus" json:"status,omitempty"`
 	StakeAmount          types.Coin  `protobuf:"bytes,7,opt,name=stake_amount,json=stakeAmount,proto3" json:"stake_amount"`
 	RegisteredAt         int64       `protobuf:"varint,8,opt,name=registered_at,json=registeredAt,proto3" json:"registered_at,omitempty"`
 	LastHeartbeat        int64       `protobuf:"varint,9,opt,name=last_heartbeat,json=lastHeartbeat,proto3" json:"last_heartbeat,omitempty"`
@@ -69,94 +69,94 @@ type ustate struct {
 	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *ustate) Reset()         { *m = ustate{} }
-func (m *ustate) String() string { return proto.CompactTextString(m) }
-func (*ustate) ProtoMessage()    {}
-func (*ustate) Descriptor() ([]byte, []int) {
+func (m *State) Reset()         { *m = State{} }
+func (m *State) String() string { return proto.CompactTextString(m) }
+func (*State) ProtoMessage()    {}
+func (*State) Descriptor() ([]byte, []int) {
 	return fileDescriptor_048f2657adbe63a6, []int{0}
 }
-func (m *ustate) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ustate.Unmarshal(m, b)
+func (m *State) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_State.Unmarshal(m, b)
 }
-func (m *ustate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ustate.Marshal(b, m, deterministic)
+func (m *State) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_State.Marshal(b, m, deterministic)
 }
-func (m *ustate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ustate.Merge(m, src)
+func (m *State) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_State.Merge(m, src)
 }
-func (m *ustate) XXX_Size() int {
-	return xxx_messageInfo_ustate.Size(m)
+func (m *State) XXX_Size() int {
+	return xxx_messageInfo_State.Size(m)
 }
-func (m *ustate) XXX_DiscardUnknown() {
-	xxx_messageInfo_ustate.DiscardUnknown(m)
+func (m *State) XXX_DiscardUnknown() {
+	xxx_messageInfo_State.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ustate proto.InternalMessageInfo
+var xxx_messageInfo_State proto.InternalMessageInfo
 
-func (m *ustate) GetAddress() string {
+func (m *State) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *ustate) GetustateId() string {
+func (m *State) GetStateId() string {
 	if m != nil {
-		return m.ustateId
+		return m.StateId
 	}
 	return ""
 }
 
-func (m *ustate) GetCapabilities() []string {
+func (m *State) GetCapabilities() []string {
 	if m != nil {
 		return m.Capabilities
 	}
 	return nil
 }
 
-func (m *ustate) GetModel() string {
+func (m *State) GetModel() string {
 	if m != nil {
 		return m.Model
 	}
 	return ""
 }
 
-func (m *ustate) GetReputation() uint64 {
+func (m *State) GetReputation() uint64 {
 	if m != nil {
 		return m.Reputation
 	}
 	return 0
 }
 
-func (m *ustate) GetStatus() ustateStatus {
+func (m *State) GetStatus() StateStatus {
 	if m != nil {
 		return m.Status
 	}
-	return ustateStatus_STATE_STATUS_UNSPECIFIED
+	return StateStatus_STATE_STATUS_UNSPECIFIED
 }
 
-func (m *ustate) GetStakeAmount() types.Coin {
+func (m *State) GetStakeAmount() types.Coin {
 	if m != nil {
 		return m.StakeAmount
 	}
 	return types.Coin{}
 }
 
-func (m *ustate) GetRegisteredAt() int64 {
+func (m *State) GetRegisteredAt() int64 {
 	if m != nil {
 		return m.RegisteredAt
 	}
 	return 0
 }
 
-func (m *ustate) GetLastHeartbeat() int64 {
+func (m *State) GetLastHeartbeat() int64 {
 	if m != nil {
 		return m.LastHeartbeat
 	}
 	return 0
 }
 
-func (m *ustate) GetBurnedAtRegister() types.Coin {
+func (m *State) GetBurnedAtRegister() types.Coin {
 	if m != nil {
 		return m.BurnedAtRegister
 	}
@@ -312,8 +312,8 @@ func (m *AIResponse) GetEvaluated() bool {
 }
 
 func init() {
-	proto.RegisterEnum("axon.state.v1.ustateStatus", ustateStatus_name, ustateStatus_value)
-	proto.RegisterType((*ustate)(nil), "axon.state.v1.ustate")
+	proto.RegisterEnum("axon.state.v1.StateStatus", StateStatus_name, StateStatus_value)
+	proto.RegisterType((*State)(nil), "axon.state.v1.State")
 	proto.RegisterType((*AIChallenge)(nil), "axon.state.v1.AIChallenge")
 	proto.RegisterType((*AIResponse)(nil), "axon.state.v1.AIResponse")
 }

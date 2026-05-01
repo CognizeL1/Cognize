@@ -90,146 +90,146 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryustateRequest struct {
+type QueryStateRequest struct {
 	Address              string   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *QueryustateRequest) Reset()         { *m = QueryustateRequest{} }
-func (m *QueryustateRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryustateRequest) ProtoMessage()    {}
-func (*QueryustateRequest) Descriptor() ([]byte, []int) {
+func (m *QueryStateRequest) Reset()         { *m = QueryStateRequest{} }
+func (m *QueryStateRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryStateRequest) ProtoMessage()    {}
+func (*QueryStateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_76d159402b89041f, []int{2}
 }
-func (m *QueryustateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_QueryustateRequest.Unmarshal(m, b)
+func (m *QueryStateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryStateRequest.Unmarshal(m, b)
 }
-func (m *QueryustateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_QueryustateRequest.Marshal(b, m, deterministic)
+func (m *QueryStateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryStateRequest.Marshal(b, m, deterministic)
 }
-func (m *QueryustateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryustateRequest.Merge(m, src)
+func (m *QueryStateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStateRequest.Merge(m, src)
 }
-func (m *QueryustateRequest) XXX_Size() int {
-	return xxx_messageInfo_QueryustateRequest.Size(m)
+func (m *QueryStateRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryStateRequest.Size(m)
 }
-func (m *QueryustateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryustateRequest.DiscardUnknown(m)
+func (m *QueryStateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStateRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryustateRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryStateRequest proto.InternalMessageInfo
 
-func (m *QueryustateRequest) GetAddress() string {
+func (m *QueryStateRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-type QueryustateResponse struct {
-	ustate                *ustate   `protobuf:"bytes,1,opt,name=state,proto3" json:"state,omitempty"`
+type QueryStateResponse struct {
+	State                *State   `protobuf:"bytes,1,opt,name=state,proto3" json:"state,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *QueryustateResponse) Reset()         { *m = QueryustateResponse{} }
-func (m *QueryustateResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryustateResponse) ProtoMessage()    {}
-func (*QueryustateResponse) Descriptor() ([]byte, []int) {
+func (m *QueryStateResponse) Reset()         { *m = QueryStateResponse{} }
+func (m *QueryStateResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryStateResponse) ProtoMessage()    {}
+func (*QueryStateResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_76d159402b89041f, []int{3}
 }
-func (m *QueryustateResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_QueryustateResponse.Unmarshal(m, b)
+func (m *QueryStateResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryStateResponse.Unmarshal(m, b)
 }
-func (m *QueryustateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_QueryustateResponse.Marshal(b, m, deterministic)
+func (m *QueryStateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryStateResponse.Marshal(b, m, deterministic)
 }
-func (m *QueryustateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryustateResponse.Merge(m, src)
+func (m *QueryStateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStateResponse.Merge(m, src)
 }
-func (m *QueryustateResponse) XXX_Size() int {
-	return xxx_messageInfo_QueryustateResponse.Size(m)
+func (m *QueryStateResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryStateResponse.Size(m)
 }
-func (m *QueryustateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryustateResponse.DiscardUnknown(m)
+func (m *QueryStateResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStateResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryustateResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryStateResponse proto.InternalMessageInfo
 
-func (m *QueryustateResponse) Getustate() *ustate {
+func (m *QueryStateResponse) GetState() *State {
 	if m != nil {
-		return m.ustate
+		return m.State
 	}
 	return nil
 }
 
-type QueryustatesRequest struct {
+type QueryStatesRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *QueryustatesRequest) Reset()         { *m = QueryustatesRequest{} }
-func (m *QueryustatesRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryustatesRequest) ProtoMessage()    {}
-func (*QueryustatesRequest) Descriptor() ([]byte, []int) {
+func (m *QueryStatesRequest) Reset()         { *m = QueryStatesRequest{} }
+func (m *QueryStatesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryStatesRequest) ProtoMessage()    {}
+func (*QueryStatesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_76d159402b89041f, []int{4}
 }
-func (m *QueryustatesRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_QueryustatesRequest.Unmarshal(m, b)
+func (m *QueryStatesRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryStatesRequest.Unmarshal(m, b)
 }
-func (m *QueryustatesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_QueryustatesRequest.Marshal(b, m, deterministic)
+func (m *QueryStatesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryStatesRequest.Marshal(b, m, deterministic)
 }
-func (m *QueryustatesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryustatesRequest.Merge(m, src)
+func (m *QueryStatesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStatesRequest.Merge(m, src)
 }
-func (m *QueryustatesRequest) XXX_Size() int {
-	return xxx_messageInfo_QueryustatesRequest.Size(m)
+func (m *QueryStatesRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryStatesRequest.Size(m)
 }
-func (m *QueryustatesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryustatesRequest.DiscardUnknown(m)
+func (m *QueryStatesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStatesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryustatesRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryStatesRequest proto.InternalMessageInfo
 
-type QueryustatesResponse struct {
-	ustates               []ustate  `protobuf:"bytes,1,rep,name=states,proto3" json:"states"`
+type QueryStatesResponse struct {
+	States               []State  `protobuf:"bytes,1,rep,name=states,proto3" json:"states"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *QueryustatesResponse) Reset()         { *m = QueryustatesResponse{} }
-func (m *QueryustatesResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryustatesResponse) ProtoMessage()    {}
-func (*QueryustatesResponse) Descriptor() ([]byte, []int) {
+func (m *QueryStatesResponse) Reset()         { *m = QueryStatesResponse{} }
+func (m *QueryStatesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryStatesResponse) ProtoMessage()    {}
+func (*QueryStatesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_76d159402b89041f, []int{5}
 }
-func (m *QueryustatesResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_QueryustatesResponse.Unmarshal(m, b)
+func (m *QueryStatesResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryStatesResponse.Unmarshal(m, b)
 }
-func (m *QueryustatesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_QueryustatesResponse.Marshal(b, m, deterministic)
+func (m *QueryStatesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryStatesResponse.Marshal(b, m, deterministic)
 }
-func (m *QueryustatesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryustatesResponse.Merge(m, src)
+func (m *QueryStatesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStatesResponse.Merge(m, src)
 }
-func (m *QueryustatesResponse) XXX_Size() int {
-	return xxx_messageInfo_QueryustatesResponse.Size(m)
+func (m *QueryStatesResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryStatesResponse.Size(m)
 }
-func (m *QueryustatesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryustatesResponse.DiscardUnknown(m)
+func (m *QueryStatesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStatesResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryustatesResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryStatesResponse proto.InternalMessageInfo
 
-func (m *QueryustatesResponse) Getustates() []ustate {
+func (m *QueryStatesResponse) GetStates() []State {
 	if m != nil {
-		return m.ustates
+		return m.States
 	}
 	return nil
 }
@@ -381,10 +381,10 @@ func (m *QueryCurrentChallengeResponse) GetChallenge() *AIChallenge {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "axon.state.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "axon.state.v1.QueryParamsResponse")
-	proto.RegisterType((*QueryustateRequest)(nil), "axon.state.v1.QueryustateRequest")
-	proto.RegisterType((*QueryustateResponse)(nil), "axon.state.v1.QueryustateResponse")
-	proto.RegisterType((*QueryustatesRequest)(nil), "axon.state.v1.QueryustatesRequest")
-	proto.RegisterType((*QueryustatesResponse)(nil), "axon.state.v1.QueryustatesResponse")
+	proto.RegisterType((*QueryStateRequest)(nil), "axon.state.v1.QueryStateRequest")
+	proto.RegisterType((*QueryStateResponse)(nil), "axon.state.v1.QueryStateResponse")
+	proto.RegisterType((*QueryStatesRequest)(nil), "axon.state.v1.QueryStatesRequest")
+	proto.RegisterType((*QueryStatesResponse)(nil), "axon.state.v1.QueryStatesResponse")
 	proto.RegisterType((*QueryReputationRequest)(nil), "axon.state.v1.QueryReputationRequest")
 	proto.RegisterType((*QueryReputationResponse)(nil), "axon.state.v1.QueryReputationResponse")
 	proto.RegisterType((*QueryCurrentChallengeRequest)(nil), "axon.state.v1.QueryCurrentChallengeRequest")

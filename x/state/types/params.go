@@ -52,7 +52,7 @@ func DefaultParams() Params {
 		// L2 evaluation
 		L2MinReporterRep:      30,
 		L2MinAccountAge:       120960,
-		L2BudgetPerustate:      "0.1",
+		L2BudgetPerState:      "0.1",
 		L2BudgetCap:           100,
 		L2AbuseThreshold:      50,
 		L2MutualReportPenalty: "0.1",
@@ -124,7 +124,7 @@ func (p Params) Validate() error {
 	if err := validateDecRange(p.L2DecayPerEpoch, "L2DecayPerEpoch", 0, 0.5); err != nil {
 		return err
 	}
-	if err := validateDecRange(p.L2BudgetPerustate, "L2BudgetPerustate", 0.01, 1.0); err != nil {
+	if err := validateDecRange(p.L2BudgetPerState, "L2BudgetPerState", 0.01, 1.0); err != nil {
 		return err
 	}
 	if err := validateDecRange(p.L2MutualReportPenalty, "L2MutualReportPenalty", 0, 0.5); err != nil {

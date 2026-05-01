@@ -47,7 +47,7 @@ type PrivacyKeyUsage struct {
 
 type PrivateService struct {
 	ServiceID      string `json:"service_id"`
-	ustateAddress  string `json:"state_address"`
+	StateAddress  string `json:"state_address"`
 	Name         string `json:"name"`
 	IsPrivate    bool   `json:"is_private"`
 	AccessType   string `json:"access_type"`

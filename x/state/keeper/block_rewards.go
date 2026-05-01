@@ -140,8 +140,8 @@ func (k Keeper) distributeValidatorRewards(ctx sdk.Context, totalAmount sdkmath.
 	var validators []validatorWeight
 	totalWeight := new(big.Int)
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status != types.ustateStatus_STATE_STATUS_ONLINE {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status != types.StateStatus_STATE_STATUS_ONLINE {
 			return false
 		}
 		if !k.isActiveValidatorAddress(ctx, state.Address) {
@@ -211,7 +211,7 @@ func (k Keeper) distributeValidatorRewards(ctx sdk.Context, totalAmount sdkmath.
 }
 
 // distributeReputationRewards distributes 25% (M4 Reputation Pool) to all registered
-// ustates proportional to their ReputationScore. Unlike the old AI Performance Pool,
+// States proportional to their ReputationScore. Unlike the old AI Performance Pool,
 // this is open to ALL registered states (not just validators) and weights by reputation
 // only (not stake), incentivizing reputation accumulation.
 func (k Keeper) distributeReputationRewards(ctx sdk.Context, totalAmount sdkmath.Int) sdkmath.Int {
@@ -227,8 +227,8 @@ func (k Keeper) distributeReputationRewards(ctx sdk.Context, totalAmount sdkmath
 	var states []repWeight
 	totalWeight := int64(0)
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
 			return false
 		}
 		totalRep := k.GetTotalReputation(ctx, state.Address)

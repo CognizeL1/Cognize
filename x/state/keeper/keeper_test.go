@@ -151,8 +151,8 @@ func TestDefaultGenesis(t *testing.T) {
 	if gs == nil {
 		t.Fatal("DefaultGenesis should not be nil")
 	}
-	if len(gs.ustates) != 0 {
-		t.Errorf("expected 0 states in default genesis, got %d", len(gs.ustates))
+	if len(gs.States) != 0 {
+		t.Errorf("expected 0 states in default genesis, got %d", len(gs.States))
 	}
 	if err := gs.Validate(); err != nil {
 		t.Errorf("default genesis should be valid: %v", err)
@@ -257,9 +257,9 @@ func TestCalculateAIBonus(t *testing.T) {
 func TestKeyFunctions(t *testing.T) {
 	addr := "axon1abc123"
 
-	stateKey := types.Keyustate(addr)
-	if string(stateKey) != types.ustateKeyPrefix+addr {
-		t.Errorf("Keyustate mismatch: %s", stateKey)
+	stateKey := types.KeyState(addr)
+	if string(stateKey) != types.StateKeyPrefix+addr {
+		t.Errorf("KeyState mismatch: %s", stateKey)
 	}
 
 	deregKey := types.KeyDeregisterQueue(addr)

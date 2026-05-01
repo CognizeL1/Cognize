@@ -34,16 +34,16 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 		return
 	}
 
-	type weightedustate struct {
+	type weightedState struct {
 		address string
 		weight  *big.Int
 	}
 
-	var states []weightedustate
+	var states []weightedState
 	totalWeight := new(big.Int)
 
-	k.Iterateustates(ctx, func(state types.ustate) bool {
-		if state.Status != types.ustateStatus_STATE_STATUS_ONLINE {
+	k.IterateStates(ctx, func(state types.State) bool {
+		if state.Status != types.StateStatus_STATE_STATUS_ONLINE {
 			return false
 		}
 
@@ -59,7 +59,7 @@ func (k Keeper) DistributeEpochRewards(ctx sdk.Context, epoch uint64) {
 		w := new(big.Int).Mul(stakeAmount, big.NewInt(multiplier))
 		totalWeight.Add(totalWeight, w)
 
-		states = append(states, weightedustate{
+		states = append(states, weightedState{
 			address: state.Address,
 			weight:  w,
 		})

@@ -44,7 +44,7 @@ type Params struct {
 	// L2 evaluation (M5-M8)
 	L2MinReporterRep      int64  `protobuf:"varint,18,opt,name=l2_min_reporter_rep,json=l2MinReporterRep,proto3" json:"l2_min_reporter_rep,omitempty"`
 	L2MinAccountAge       int64  `protobuf:"varint,19,opt,name=l2_min_account_age,json=l2MinAccountAge,proto3" json:"l2_min_account_age,omitempty"`
-	L2BudgetPerustate      string `protobuf:"bytes,20,opt,name=l2_budget_per_state,json=l2BudgetPerustate,proto3" json:"l2_budget_per_state,omitempty"`
+	L2BudgetPerState      string `protobuf:"bytes,20,opt,name=l2_budget_per_state,json=l2BudgetPerState,proto3" json:"l2_budget_per_state,omitempty"`
 	L2BudgetCap           int64  `protobuf:"varint,21,opt,name=l2_budget_cap,json=l2BudgetCap,proto3" json:"l2_budget_cap,omitempty"`
 	L2AbuseThreshold      int64  `protobuf:"varint,22,opt,name=l2_abuse_threshold,json=l2AbuseThreshold,proto3" json:"l2_abuse_threshold,omitempty"`
 	L2MutualReportPenalty string `protobuf:"bytes,23,opt,name=l2_mutual_report_penalty,json=l2MutualReportPenalty,proto3" json:"l2_mutual_report_penalty,omitempty"`
@@ -217,9 +217,9 @@ func (m *Params) GetL2MinAccountAge() int64 {
 	return 0
 }
 
-func (m *Params) GetL2BudgetPerustate() string {
+func (m *Params) GetL2BudgetPerState() string {
 	if m != nil {
-		return m.L2BudgetPerustate
+		return m.L2BudgetPerState
 	}
 	return ""
 }

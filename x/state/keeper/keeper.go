@@ -109,7 +109,7 @@ func (k Keeper) SetLastDailyRegCleanupDay(ctx sdk.Context, day int64) {
 	store.Set([]byte(types.LastDailyRegCleanupDayKey), types.Uint64ToBytes(uint64(day)))
 }
 
-func (k Keeper) shouldFreezeustateReputationDuringDeregister(ctx sdk.Context, address string) bool {
+func (k Keeper) shouldFreezeStateReputationDuringDeregister(ctx sdk.Context, address string) bool {
 	return k.IsV111UpgradeActivated(ctx) && k.HasDeregisterRequest(ctx, address)
 }
 
@@ -138,34 +138,34 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) Getustate(ctx sdk.Context, address string) (types.ustate, bool) {
+func (k Keeper) GetState(ctx sdk.Context, address string) (types.State, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.Keyustate(address))
+	bz := store.Get(types.KeyState(address))
 	if bz == nil {
-		return types.ustate{}, false
+		return types.State{}, false
 	}
-	var state types.ustate
+	var state types.State
 	k.cdc.MustUnmarshal(bz, &state)
 	return state, true
 }
 
-func (k Keeper) Setustate(ctx sdk.Context, state types.ustate) {
+func (k Keeper) SetState(ctx sdk.Context, state types.State) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&state)
-	store.Set(types.Keyustate(state.Address), bz)
+	store.Set(types.KeyState(state.Address), bz)
 }
 
-func (k Keeper) Deleteustate(ctx sdk.Context, address string) {
+func (k Keeper) DeleteState(ctx sdk.Context, address string) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.Keyustate(address))
+	store.Delete(types.KeyState(address))
 }
 
-func (k Keeper) Iterateustates(ctx sdk.Context, cb func(state types.ustate) bool) {
+func (k Keeper) IterateStates(ctx sdk.Context, cb func(state types.State) bool) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte(types.ustateKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte(types.StateKeyPrefix))
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var state types.ustate
+		var state types.State
 		k.cdc.MustUnmarshal(iterator.Value(), &state)
 		if cb(state) {
 			break
@@ -173,17 +173,17 @@ func (k Keeper) Iterateustates(ctx sdk.Context, cb func(state types.ustate) bool
 	}
 }
 
-func (k Keeper) GetAllustates(ctx sdk.Context) []types.ustate {
-	var states []types.ustate
-	k.Iterateustates(ctx, func(state types.ustate) bool {
+func (k Keeper) GetAllStates(ctx sdk.Context) []types.State {
+	var states []types.State
+	k.IterateStates(ctx, func(state types.State) bool {
 		states = append(states, state)
 		return false
 	})
 	return states
 }
 
-func (k Keeper) Isustate(ctx sdk.Context, address string) bool {
-	_, found := k.Getustate(ctx, address)
+func (k Keeper) IsState(ctx sdk.Context, address string) bool {
+	_, found := k.GetState(ctx, address)
 	return found
 }
 
@@ -247,8 +247,8 @@ func (k Keeper) ImportContractDeployers(ctx sdk.Context, deployers map[string]st
 func (k Keeper) RegisterFromPrecompile(ctx sdk.Context, msg *types.MsgRegister, fundsSource sdk.AccAddress) (*types.MsgRegisterResponse, error) {
 	params := k.GetParams(ctx)
 
-	if k.Isustate(ctx, msg.Sender) {
-		return nil, types.ErrustateAlreadyRegistered
+	if k.IsState(ctx, msg.Sender) {
+		return nil, types.ErrStateAlreadyRegistered
 	}
 
 	if msg.Stake.Denom != "aaxon" {
@@ -287,42 +287,42 @@ func (k Keeper) RegisterFromPrecompile(ctx sdk.Context, msg *types.MsgRegister, 
 		capabilities[i] = strings.TrimSpace(capabilities[i])
 	}
 
-	state := types.ustate{
+	state := types.State{
 		Address:          msg.Sender,
-		ustateId:          generateustateID(msg.Sender, ctx.BlockHeight()),
+		StateId:          generateStateID(msg.Sender, ctx.BlockHeight()),
 		Capabilities:     capabilities,
 		Model:            msg.Model,
 		Reputation:       params.InitialReputation,
-		Status:           types.ustateStatus_STATE_STATUS_ONLINE,
+		Status:           types.StateStatus_STATE_STATUS_ONLINE,
 		StakeAmount:      msg.Stake,
 		BurnedAtRegister: burnAmount,
 		RegisteredAt:     ctx.BlockHeight(),
 		LastHeartbeat:    ctx.BlockHeight(),
 	}
 
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 	k.BootstrapLegacyReputation(ctx, state.Address, state.Reputation)
 	k.IncrementDailyRegisterCount(ctx, msg.Sender)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		"state_registered",
 		sdk.NewAttribute("address", msg.Sender),
-		sdk.NewAttribute("state_id", state.ustateId),
+		sdk.NewAttribute("state_id", state.StateId),
 		sdk.NewAttribute("stake", msg.Stake.String()),
 		sdk.NewAttribute("burned", burnAmount.String()),
 		sdk.NewAttribute("reputation", fmt.Sprintf("%d", state.Reputation)),
 	))
 
-	return &types.MsgRegisterResponse{ustateId: state.ustateId}, nil
+	return &types.MsgRegisterResponse{StateId: state.StateId}, nil
 }
 
-func (k Keeper) AddStakeToustate(ctx sdk.Context, sender string, stake sdk.Coin, fundsSource sdk.AccAddress) (*types.MsgAddStakeResponse, error) {
-	state, found := k.Getustate(ctx, sender)
+func (k Keeper) AddStakeToState(ctx sdk.Context, sender string, stake sdk.Coin, fundsSource sdk.AccAddress) (*types.MsgAddStakeResponse, error) {
+	state, found := k.GetState(ctx, sender)
 	if !found {
-		return nil, types.ErrustateNotFound
+		return nil, types.ErrStateNotFound
 	}
-	if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
-		return nil, types.ErrustateSuspended
+	if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
+		return nil, types.ErrStateSuspended
 	}
 	if k.HasDeregisterRequest(ctx, sender) {
 		return nil, types.ErrDeregisterCooldown
@@ -340,7 +340,7 @@ func (k Keeper) AddStakeToustate(ctx sdk.Context, sender string, stake sdk.Coin,
 	}
 
 	state.StakeAmount = state.StakeAmount.Add(stake)
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		"state_stake_added",
@@ -352,15 +352,15 @@ func (k Keeper) AddStakeToustate(ctx sdk.Context, sender string, stake sdk.Coin,
 	return &types.MsgAddStakeResponse{TotalStake: state.StakeAmount}, nil
 }
 
-// ReduceStakeFromustate initiates a stake reduction with an unbonding period.
+// ReduceStakeFromState initiates a stake reduction with an unbonding period.
 // The reduced amount is locked until reduceUnlockHeight, then claimable.
-func (k Keeper) ReduceStakeFromustate(ctx sdk.Context, sender string, amount sdk.Coin) error {
-	state, found := k.Getustate(ctx, sender)
+func (k Keeper) ReduceStakeFromState(ctx sdk.Context, sender string, amount sdk.Coin) error {
+	state, found := k.GetState(ctx, sender)
 	if !found {
-		return types.ErrustateNotFound
+		return types.ErrStateNotFound
 	}
-	if state.Status == types.ustateStatus_STATE_STATUS_SUSPENDED {
-		return types.ErrustateSuspended
+	if state.Status == types.StateStatus_STATE_STATUS_SUSPENDED {
+		return types.ErrStateSuspended
 	}
 	if k.HasDeregisterRequest(ctx, sender) {
 		return types.ErrDeregisterCooldown
@@ -387,7 +387,7 @@ func (k Keeper) ReduceStakeFromustate(ctx sdk.Context, sender string, amount sdk
 	unlockHeight := ctx.BlockHeight() + types.DeregisterCooldownBlocks
 
 	state.StakeAmount = remaining
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 
 	k.setPendingReduce(ctx, sender, amount.Amount, unlockHeight)
 
@@ -435,7 +435,7 @@ func (k Keeper) ClaimReducedStake(ctx sdk.Context, sender string) error {
 
 // GetStakeInfo returns stake details for an state.
 func (k Keeper) GetStakeInfo(ctx sdk.Context, address string) (totalStake sdkmath.Int, pendingReduce sdkmath.Int, reduceUnlockHeight int64, found bool) {
-	state, stateFound := k.Getustate(ctx, address)
+	state, stateFound := k.GetState(ctx, address)
 	if !stateFound {
 		return sdkmath.ZeroInt(), sdkmath.ZeroInt(), 0, false
 	}
@@ -485,7 +485,7 @@ func (k Keeper) deletePendingReduce(ctx sdk.Context, address string) {
 }
 
 func (k Keeper) GetReputation(ctx sdk.Context, address string) uint64 {
-	state, found := k.Getustate(ctx, address)
+	state, found := k.GetState(ctx, address)
 	if !found {
 		return 0
 	}
@@ -493,7 +493,7 @@ func (k Keeper) GetReputation(ctx sdk.Context, address string) uint64 {
 }
 
 func (k Keeper) UpdateReputation(ctx sdk.Context, address string, delta int64) {
-	state, found := k.Getustate(ctx, address)
+	state, found := k.GetState(ctx, address)
 	if !found {
 		return
 	}
@@ -507,7 +507,7 @@ func (k Keeper) UpdateReputation(ctx sdk.Context, address string, delta int64) {
 		newRep = int64(params.MaxReputation)
 	}
 	state.Reputation = uint64(newRep)
-	k.Setustate(ctx, state)
+	k.SetState(ctx, state)
 }
 
 func (k Keeper) GetCurrentEpoch(ctx sdk.Context) uint64 {
@@ -518,7 +518,7 @@ func (k Keeper) GetCurrentEpoch(ctx sdk.Context) uint64 {
 	return uint64(ctx.BlockHeight()) / params.EpochLength
 }
 
-const walletKVPrefix = "ustateWallet/"
+const walletKVPrefix = "StateWallet/"
 
 func (k Keeper) ExportWalletData(ctx sdk.Context) map[string]string {
 	result := make(map[string]string)

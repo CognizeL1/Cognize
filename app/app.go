@@ -496,6 +496,15 @@ func NewCognizeApp(
 	channelstypes.RegisterCodec(app.LegacyAmino())
 	channelstypes.RegisterInterfaces(app.interfaceRegistry)
 
+	app.StateKeeper = statekeeper.NewKeeper(
+		appCodec,
+		keys[statetypes.StoreKey],
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	statetypes.RegisterCodec(app.LegacyAmino())
+	statetypes.RegisterInterfaces(app.interfaceRegistry)
+
 	app.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec, keys[evmtypes.StoreKey], oKeys[evmtypes.ObjectKey], nonTransientKeys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
