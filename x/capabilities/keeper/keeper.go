@@ -29,8 +29,14 @@ func NewKeeper(
 	}
 }
 
+func InitGenesis(ctx sdk.Context, keeper Keeper, data types.GenesisState) {
+}
+
+func ExportGenesis(ctx sdk.Context, keeper Keeper) types.GenesisState {
+	return types.DefaultGenesisState()
+}
+
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	// TODO: implement
 }
 
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {

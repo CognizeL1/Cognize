@@ -16,6 +16,16 @@ type Params struct {
 	MaxCapabilitiesPerAgent uint64
 }
 
+type GenesisState struct {
+	Params Params
+}
+
+func DefaultGenesisState() GenesisState {
+	return GenesisState{
+		Params: DefaultParams(),
+	}
+}
+
 func DefaultParams() Params {
 	return Params{
 		MaxCapabilitiesPerAgent: 10,
