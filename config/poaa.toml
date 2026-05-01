@@ -1,0 +1,42 @@
+# config/poaa.toml
+
+[node]
+keyfile          = "~/.cognize/node_key.json"
+datadir          = "~/.cognize/data"
+logfile          = "~/.cognize/poaa.log"
+loglevel         = "info"    # debug | info | warn | error
+
+[p2p]
+listen_quic      = "/ip4/0.0.0.0/udp/26650/quic-v1"
+listen_tcp       = "/ip4/0.0.0.0/tcp/26651"
+max_peers       = 50
+min_peers       = 5
+bootstrap_peers = [
+    "/ip4/seed1.cognize.ai/udp/26650/quic-v1/p2p/12D3Koo...",
+    "/ip4/seed2.cognize.ai/udp/26650/quic-v1/p2p/12D3Koo...",
+]
+
+[dag]
+max_pending_vertices = 100000
+tips_max_size        = 1000
+vertex_timeout_ms    = 10000
+archive_interval     = 300
+
+[consensus]
+layer_soft_k         = 1
+layer_fast_k         = 7
+layer_hard_k         = 15
+layer_archive_k      = 31
+threshold_pct        = 0.67
+min_active_agents    = 3
+vrf_epoch_blocks     = 100
+
+[rpc]
+listen_addr     = "0.0.0.0:26657"
+cors_origins    = ["*"]
+max_connections = 1000
+
+[agent]
+is_active_agent = true
+agent_address   = "cognize1abc..."
+bls_keyfile     = "~/.cognize/bls_key.json"

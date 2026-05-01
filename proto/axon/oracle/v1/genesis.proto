@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package axon.oracle.v1;
+
+option go_package = "github.com/cognize/axon/x/oracle/types";
+
+import "gogoproto/gogo.proto";
+
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

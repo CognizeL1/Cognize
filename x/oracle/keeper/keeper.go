@@ -1,0 +1,550 @@
+package keeper
+
+import (
+	"encoding/hex"
+	"fmt"
+	"math/big"
+	"strings"
+
+	sdkmath "cosmossdk.io/math"
+
+	"cosmossdk.io/log/v2"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cognize/axon/x/oracle/types"
+)
+
+type Keeper struct {
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
+
+	bankKeeper    types.BankKeeper
+	stakingKeeper types.StakingKeeper
+	privacyKeeper types.PrivacyKeeper
+}
+
+const (
+	mainnetChainID            = "axon_8210-1"
+	V110UpgradeHeight         = int64(259051)
+	V111UpgradeHeight         = int64(295500)
+	evidenceTxRetentionBlocks = dailyBlockWindow
+)
+
+func NewKeeper(
+	cdc codec.BinaryCodec,
+	storeKey storetypes.StoreKey,
+	bankKeeper types.BankKeeper,
+	stakingKeeper types.StakingKeeper,
+) Keeper {
+	return Keeper{
+		cdc:           cdc,
+		storeKey:      storeKey,
+		bankKeeper:    bankKeeper,
+		stakingKeeper: stakingKeeper,
+	}
+}
+
+func (k Keeper) StoreKey() storetypes.StoreKey {
+	return k.storeKey
+}
+
+func (k *Keeper) SetPrivacyKeeper(privacyKeeper types.PrivacyKeeper) {
+	k.privacyKeeper = privacyKeeper
+}
+
+func (k Keeper) IsV110UpgradeActivated(ctx sdk.Context) bool {
+	if ctx.ChainID() != mainnetChainID {
+		return true
+	}
+	return ctx.BlockHeight() >= V110UpgradeHeight
+}
+
+func (k Keeper) IsV111UpgradeActivated(ctx sdk.Context) bool {
+	if ctx.ChainID() != mainnetChainID {
+		return true
+	}
+	return ctx.BlockHeight() >= V111UpgradeHeight
+}
+
+func (k Keeper) RecordEvidenceTxHash(ctx sdk.Context, txHash common.Hash) {
+	if txHash == (common.Hash{}) {
+		return
+	}
+	store := ctx.KVStore(k.storeKey)
+	normalized := strings.ToLower(txHash.Hex()[2:])
+	store.Set([]byte(types.EvidenceTxKeyPrefix+normalized), types.Uint64ToBytes(uint64(ctx.BlockHeight())))
+	heightKey := append([]byte(types.EvidenceTxHeightKeyPrefix), types.Uint64ToBytes(uint64(ctx.BlockHeight()))...)
+	heightKey = append(heightKey, []byte("/"+normalized)...)
+	store.Set(heightKey, []byte{1})
+}
+
+func (k Keeper) HasEvidenceTxHash(ctx sdk.Context, txHash string) bool {
+	normalized, ok := normalizeEvidenceHash(txHash)
+	if !ok {
+		return false
+	}
+	store := ctx.KVStore(k.storeKey)
+	return store.Has([]byte(types.EvidenceTxKeyPrefix + normalized))
+}
+
+func (k Keeper) GetLastDailyRegCleanupDay(ctx sdk.Context) int64 {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte(types.LastDailyRegCleanupDayKey))
+	if bz == nil || len(bz) < 8 {
+		return -1
+	}
+	return int64(types.BytesToUint64(bz))
+}
+
+func (k Keeper) SetLastDailyRegCleanupDay(ctx sdk.Context, day int64) {
+	if day < 0 {
+		return
+	}
+	store := ctx.KVStore(k.storeKey)
+	store.Set([]byte(types.LastDailyRegCleanupDayKey), types.Uint64ToBytes(uint64(day)))
+}
+
+func (k Keeper) shouldFreezeOracleReputationDuringDeregister(ctx sdk.Context, address string) bool {
+	return k.IsV111UpgradeActivated(ctx) && k.HasDeregisterRequest(ctx, address)
+}
+
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k Keeper) GetParams(ctx sdk.Context) types.Params {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte(types.ParamsKey))
+	if bz == nil {
+		return types.DefaultParams()
+	}
+	var params types.Params
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
+}
+
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
+	if err := params.Validate(); err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&params)
+	store.Set([]byte(types.ParamsKey), bz)
+	return nil
+}
+
+func (k Keeper) GetOracle(ctx sdk.Context, address string) (types.Oracle, bool) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyOracle(address))
+	if bz == nil {
+		return types.Oracle{}, false
+	}
+	var oracle types.Oracle
+	k.cdc.MustUnmarshal(bz, &oracle)
+	return oracle, true
+}
+
+func (k Keeper) SetOracle(ctx sdk.Context, oracle types.Oracle) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&oracle)
+	store.Set(types.KeyOracle(oracle.Address), bz)
+}
+
+func (k Keeper) DeleteOracle(ctx sdk.Context, address string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.KeyOracle(address))
+}
+
+func (k Keeper) IterateOracles(ctx sdk.Context, cb func(oracle types.Oracle) bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte(types.OracleKeyPrefix))
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var oracle types.Oracle
+		k.cdc.MustUnmarshal(iterator.Value(), &oracle)
+		if cb(oracle) {
+			break
+		}
+	}
+}
+
+func (k Keeper) GetAllOracles(ctx sdk.Context) []types.Oracle {
+	var oracles []types.Oracle
+	k.IterateOracles(ctx, func(oracle types.Oracle) bool {
+		oracles = append(oracles, oracle)
+		return false
+	})
+	return oracles
+}
+
+func (k Keeper) IsOracle(ctx sdk.Context, address string) bool {
+	_, found := k.GetOracle(ctx, address)
+	return found
+}
+
+func (k Keeper) isActiveValidatorAddress(ctx sdk.Context, address string) bool {
+	if k.stakingKeeper == nil {
+		return false
+	}
+
+	accAddr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return false
+	}
+
+	validator, err := k.stakingKeeper.GetValidator(ctx, sdk.ValAddress(accAddr))
+	if err != nil {
+		return false
+	}
+
+	return validator.IsBonded() && !validator.IsJailed()
+}
+
+// Contract deployer tracking for contribution rewards
+
+func (k Keeper) SetContractDeployer(ctx sdk.Context, contractAddr, deployerAddr string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set([]byte("ContractDeployer/"+contractAddr), []byte(deployerAddr))
+}
+
+func (k Keeper) GetContractDeployer(ctx sdk.Context, contractAddr string) string {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("ContractDeployer/" + contractAddr))
+	if bz == nil {
+		return ""
+	}
+	return string(bz)
+}
+
+func (k Keeper) ExportContractDeployers(ctx sdk.Context) map[string]string {
+	result := make(map[string]string)
+	store := ctx.KVStore(k.storeKey)
+	prefix := []byte("ContractDeployer/")
+	iterator := storetypes.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		contractAddr := string(iterator.Key()[len(prefix):])
+		deployerAddr := string(iterator.Value())
+		result[contractAddr] = deployerAddr
+	}
+	return result
+}
+
+func (k Keeper) ImportContractDeployers(ctx sdk.Context, deployers map[string]string) {
+	for contractAddr, deployerAddr := range deployers {
+		k.SetContractDeployer(ctx, contractAddr, deployerAddr)
+	}
+}
+
+// RegisterFromPrecompile is like MsgServer.Register but deducts stake from
+// fundsSource (the precompile address that already received msg.value via EVM)
+// instead of from the oracle's own address, avoiding double deduction.
+func (k Keeper) RegisterFromPrecompile(ctx sdk.Context, msg *types.MsgRegister, fundsSource sdk.AccAddress) (*types.MsgRegisterResponse, error) {
+	params := k.GetParams(ctx)
+
+	if k.IsOracle(ctx, msg.Sender) {
+		return nil, types.ErrOracleAlreadyRegistered
+	}
+
+	if msg.Stake.Denom != "aaxon" {
+		return nil, fmt.Errorf("invalid stake denom: expected aaxon, got %s", msg.Stake.Denom)
+	}
+	minStakeInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.MinRegisterStake)), oneAxon))
+	minStake := sdk.NewCoin("aaxon", minStakeInt)
+	if msg.Stake.IsLT(minStake) {
+		return nil, types.ErrInsufficientStake
+	}
+
+	if k.GetDailyRegisterCount(ctx, msg.Sender) >= types.MaxDailyRegistrations {
+		return nil, types.ErrDailyRegisterLimitExceeded
+	}
+
+	stakeCoins := sdk.NewCoins(msg.Stake)
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundsSource, types.ModuleName, stakeCoins); err != nil {
+		return nil, err
+	}
+
+	burnInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.RegisterBurnAmount)), oneAxon))
+	burnAmount := sdk.NewCoin("aaxon", burnInt)
+	burnCoins := sdk.NewCoins(burnAmount)
+	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
+		return nil, err
+	}
+
+	if len(msg.Capabilities) > 1024 {
+		return nil, fmt.Errorf("capabilities too long: max 1024 bytes")
+	}
+	if len(msg.Model) > 256 {
+		return nil, fmt.Errorf("model name too long: max 256 bytes")
+	}
+	capabilities := strings.Split(msg.Capabilities, ",")
+	for i := range capabilities {
+		capabilities[i] = strings.TrimSpace(capabilities[i])
+	}
+
+	oracle := types.Oracle{
+		Address:          msg.Sender,
+		OracleId:          generateOracleID(msg.Sender, ctx.BlockHeight()),
+		Capabilities:     capabilities,
+		Model:            msg.Model,
+		Reputation:       params.InitialReputation,
+		Status:           types.OracleStatus_ORACLE_STATUS_ONLINE,
+		StakeAmount:      msg.Stake,
+		BurnedAtRegister: burnAmount,
+		RegisteredAt:     ctx.BlockHeight(),
+		LastHeartbeat:    ctx.BlockHeight(),
+	}
+
+	k.SetOracle(ctx, oracle)
+	k.BootstrapLegacyReputation(ctx, oracle.Address, oracle.Reputation)
+	k.IncrementDailyRegisterCount(ctx, msg.Sender)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		"oracle_registered",
+		sdk.NewAttribute("address", msg.Sender),
+		sdk.NewAttribute("oracle_id", oracle.OracleId),
+		sdk.NewAttribute("stake", msg.Stake.String()),
+		sdk.NewAttribute("burned", burnAmount.String()),
+		sdk.NewAttribute("reputation", fmt.Sprintf("%d", oracle.Reputation)),
+	))
+
+	return &types.MsgRegisterResponse{OracleId: oracle.OracleId}, nil
+}
+
+func (k Keeper) AddStakeToOracle(ctx sdk.Context, sender string, stake sdk.Coin, fundsSource sdk.AccAddress) (*types.MsgAddStakeResponse, error) {
+	oracle, found := k.GetOracle(ctx, sender)
+	if !found {
+		return nil, types.ErrOracleNotFound
+	}
+	if oracle.Status == types.OracleStatus_ORACLE_STATUS_SUSPENDED {
+		return nil, types.ErrOracleSuspended
+	}
+	if k.HasDeregisterRequest(ctx, sender) {
+		return nil, types.ErrDeregisterCooldown
+	}
+
+	if stake.Denom != "aaxon" {
+		return nil, types.ErrInvalidStakeDenom
+	}
+	if !stake.IsPositive() {
+		return nil, types.ErrStakeAmountMustBePositive
+	}
+
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundsSource, types.ModuleName, sdk.NewCoins(stake)); err != nil {
+		return nil, err
+	}
+
+	oracle.StakeAmount = oracle.StakeAmount.Add(stake)
+	k.SetOracle(ctx, oracle)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		"oracle_stake_added",
+		sdk.NewAttribute("address", sender),
+		sdk.NewAttribute("amount", stake.String()),
+		sdk.NewAttribute("total_stake", oracle.StakeAmount.String()),
+	))
+
+	return &types.MsgAddStakeResponse{TotalStake: oracle.StakeAmount}, nil
+}
+
+// ReduceStakeFromOracle initiates a stake reduction with an unbonding period.
+// The reduced amount is locked until reduceUnlockHeight, then claimable.
+func (k Keeper) ReduceStakeFromOracle(ctx sdk.Context, sender string, amount sdk.Coin) error {
+	oracle, found := k.GetOracle(ctx, sender)
+	if !found {
+		return types.ErrOracleNotFound
+	}
+	if oracle.Status == types.OracleStatus_ORACLE_STATUS_SUSPENDED {
+		return types.ErrOracleSuspended
+	}
+	if k.HasDeregisterRequest(ctx, sender) {
+		return types.ErrDeregisterCooldown
+	}
+	if amount.Denom != "aaxon" {
+		return types.ErrInvalidStakeDenom
+	}
+	if !amount.IsPositive() {
+		return types.ErrStakeAmountMustBePositive
+	}
+
+	params := k.GetParams(ctx)
+	minStakeInt := sdkmath.NewIntFromBigInt(new(big.Int).Mul(big.NewInt(int64(params.MinRegisterStake)), oneAxon))
+	minStake := sdk.NewCoin("aaxon", minStakeInt)
+	remaining := oracle.StakeAmount.Sub(amount)
+	if remaining.IsLT(minStake) {
+		return types.ErrBelowMinimumStake
+	}
+
+	if k.hasPendingReduce(ctx, sender) {
+		return types.ErrPendingReduceExists
+	}
+
+	unlockHeight := ctx.BlockHeight() + types.DeregisterCooldownBlocks
+
+	oracle.StakeAmount = remaining
+	k.SetOracle(ctx, oracle)
+
+	k.setPendingReduce(ctx, sender, amount.Amount, unlockHeight)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		"oracle_stake_reduce_initiated",
+		sdk.NewAttribute("address", sender),
+		sdk.NewAttribute("amount", amount.String()),
+		sdk.NewAttribute("unlock_height", fmt.Sprintf("%d", unlockHeight)),
+		sdk.NewAttribute("remaining_stake", remaining.String()),
+	))
+
+	return nil
+}
+
+// ClaimReducedStake releases funds after the unbonding period.
+func (k Keeper) ClaimReducedStake(ctx sdk.Context, sender string) error {
+	amount, unlockHeight, found := k.getPendingReduce(ctx, sender)
+	if !found {
+		return types.ErrNoReducePending
+	}
+	if ctx.BlockHeight() < unlockHeight {
+		return types.ErrReduceNotUnlocked
+	}
+
+	recipientAddr, err := sdk.AccAddressFromBech32(sender)
+	if err != nil {
+		return err
+	}
+
+	coins := sdk.NewCoins(sdk.NewCoin("aaxon", amount))
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipientAddr, coins); err != nil {
+		return err
+	}
+
+	k.deletePendingReduce(ctx, sender)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		"oracle_stake_reduce_claimed",
+		sdk.NewAttribute("address", sender),
+		sdk.NewAttribute("amount", amount.String()),
+	))
+
+	return nil
+}
+
+// GetStakeInfo returns stake details for an oracle.
+func (k Keeper) GetStakeInfo(ctx sdk.Context, address string) (totalStake sdkmath.Int, pendingReduce sdkmath.Int, reduceUnlockHeight int64, found bool) {
+	oracle, oracleFound := k.GetOracle(ctx, address)
+	if !oracleFound {
+		return sdkmath.ZeroInt(), sdkmath.ZeroInt(), 0, false
+	}
+	totalStake = oracle.StakeAmount.Amount
+	pendingReduce = sdkmath.ZeroInt()
+	reduceUnlockHeight = 0
+	amt, uh, hasPending := k.getPendingReduce(ctx, address)
+	if hasPending {
+		pendingReduce = amt
+		reduceUnlockHeight = uh
+	}
+	return totalStake, pendingReduce, reduceUnlockHeight, true
+}
+
+func (k Keeper) hasPendingReduce(ctx sdk.Context, address string) bool {
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(types.KeyPendingReduceStake(address))
+}
+
+func (k Keeper) setPendingReduce(ctx sdk.Context, address string, amount sdkmath.Int, unlockHeight int64) {
+	store := ctx.KVStore(k.storeKey)
+	amtBz, _ := amount.Marshal()
+	heightBz := types.Uint64ToBytes(uint64(unlockHeight))
+	value := append(amtBz, heightBz...)
+	store.Set(types.KeyPendingReduceStake(address), value)
+}
+
+func (k Keeper) getPendingReduce(ctx sdk.Context, address string) (sdkmath.Int, int64, bool) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPendingReduceStake(address))
+	if bz == nil || len(bz) < 9 {
+		return sdkmath.ZeroInt(), 0, false
+	}
+	amtBz := bz[:len(bz)-8]
+	heightBz := bz[len(bz)-8:]
+	var amount sdkmath.Int
+	if err := amount.Unmarshal(amtBz); err != nil {
+		return sdkmath.ZeroInt(), 0, false
+	}
+	unlockHeight := int64(types.BytesToUint64(heightBz))
+	return amount, unlockHeight, true
+}
+
+func (k Keeper) deletePendingReduce(ctx sdk.Context, address string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.KeyPendingReduceStake(address))
+}
+
+func (k Keeper) GetReputation(ctx sdk.Context, address string) uint64 {
+	oracle, found := k.GetOracle(ctx, address)
+	if !found {
+		return 0
+	}
+	return oracle.Reputation
+}
+
+func (k Keeper) UpdateReputation(ctx sdk.Context, address string, delta int64) {
+	oracle, found := k.GetOracle(ctx, address)
+	if !found {
+		return
+	}
+
+	params := k.GetParams(ctx)
+	newRep := int64(oracle.Reputation) + delta
+	if newRep < 0 {
+		newRep = 0
+	}
+	if newRep > int64(params.MaxReputation) {
+		newRep = int64(params.MaxReputation)
+	}
+	oracle.Reputation = uint64(newRep)
+	k.SetOracle(ctx, oracle)
+}
+
+func (k Keeper) GetCurrentEpoch(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	if params.EpochLength == 0 {
+		return 0
+	}
+	return uint64(ctx.BlockHeight()) / params.EpochLength
+}
+
+const walletKVPrefix = "OracleWallet/"
+
+func (k Keeper) ExportWalletData(ctx sdk.Context) map[string]string {
+	result := make(map[string]string)
+	store := ctx.KVStore(k.storeKey)
+	prefix := []byte(walletKVPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		keyHex := hex.EncodeToString(iterator.Key())
+		valHex := hex.EncodeToString(iterator.Value())
+		result[keyHex] = valHex
+	}
+	return result
+}
+
+func (k Keeper) ImportWalletData(ctx sdk.Context, data map[string]string) {
+	store := ctx.KVStore(k.storeKey)
+	for keyHex, valHex := range data {
+		key, err := hex.DecodeString(keyHex)
+		if err != nil {
+			continue
+		}
+		val, err := hex.DecodeString(valHex)
+		if err != nil {
+			continue
+		}
+		store.Set(key, val)
+	}
+}

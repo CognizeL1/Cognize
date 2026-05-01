@@ -139,6 +139,19 @@ import (
 	"github.com/cognize/axon/x/privacy"
 	privacykeeper "github.com/cognize/axon/x/privacy/keeper"
 	privacytypes "github.com/cognize/axon/x/privacy/types"
+
+	messaging "github.com/cognize/axon/x/messaging"
+	messagingkeeper "github.com/cognize/axon/x/messaging/keeper"
+	messagingtypes "github.com/cognize/axon/x/messaging/types"
+
+	verifykeeper "github.com/cognize/axon/x/verify/keeper"
+	verifytypes "github.com/cognize/axon/x/verify/types"
+
+	channelskeeper "github.com/cognize/axon/x/channels/keeper"
+	channelstypes "github.com/cognize/axon/x/channels/types"
+
+	statekeeper "github.com/cognize/axon/x/state/keeper"
+	statetypes "github.com/cognize/axon/x/state/types"
 )
 
 func init() {
@@ -194,8 +207,12 @@ type CognizeApp struct {
 	EVMMempool      *evmmempool.ExperimentalEVMMempool
 
 	// Cognize custom keepers
-	AgentKeeper   agentkeeper.Keeper
-	PrivacyKeeper privacykeeper.Keeper
+	AgentKeeper     agentkeeper.Keeper
+	PrivacyKeeper   privacykeeper.Keeper
+	MessagingKeeper messagingkeeper.Keeper
+	VerifyKeeper    verifykeeper.Keeper
+	ChannelsKeeper   channelskeeper.Keeper
+	StateKeeper     statekeeper.Keeper
 
 	ModuleManager      *module.Manager
 	BasicModuleManager module.BasicManager
@@ -452,6 +469,33 @@ func NewCognizeApp(
 	)
 	app.AgentKeeper.SetPrivacyKeeper(app.PrivacyKeeper)
 
+	app.MessagingKeeper = messagingkeeper.NewKeeper(
+		appCodec,
+		keys[messagingtypes.StoreKey],
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	messagingtypes.RegisterCodec(app.LegacyAmino())
+	messagingtypes.RegisterInterfaces(app.interfaceRegistry)
+
+	app.VerifyKeeper = verifykeeper.NewKeeper(
+		appCodec,
+		keys[verifytypes.StoreKey],
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	verifytypes.RegisterCodec(app.LegacyAmino())
+	verifytypes.RegisterInterfaces(app.interfaceRegistry)
+
+	app.ChannelsKeeper = channelskeeper.NewKeeper(
+		appCodec,
+		keys[channelstypes.StoreKey],
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	channelstypes.RegisterCodec(app.LegacyAmino())
+	channelstypes.RegisterInterfaces(app.interfaceRegistry)
+
 	app.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec, keys[evmtypes.StoreKey], oKeys[evmtypes.ObjectKey], nonTransientKeys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
@@ -539,6 +583,9 @@ func NewCognizeApp(
 	// ---- Privacy Module ----
 	privacyAppModule := privacy.NewAppModule(app.PrivacyKeeper)
 
+	// ---- Messaging Module ----
+	messagingAppModule := messaging.NewAppModule(app.MessagingKeeper)
+
 	// ---- Module Manager ----
 
 	app.ModuleManager = module.NewManager(
@@ -567,6 +614,7 @@ func NewCognizeApp(
 		// Cognize
 		agentAppModule,
 		privacyAppModule,
+		messagingAppModule,
 	)
 
 	app.BasicModuleManager = module.NewBasicManagerFromManager(

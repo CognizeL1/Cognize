@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package axon.oracle.v1;
+
+option go_package = "github.com/cognize/axon/x/oracle/types";
+
+import "gogoproto/gogo.proto";
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryFeedRequest {
+  string feed_id = 1;
+}
+
+message QueryFeedResponse {
+  OracleFeed feed = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryFeedsRequest {}
+
+message QueryFeedsResponse {
+  repeated OracleFeed feeds = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPriceRequest {
+  string feed_id = 1;
+}
+
+message QueryPriceResponse {
+  string price = 1;
+  uint64 height = 2;
+}
+
+message QueryReporterRequest {
+  string reporter = 1;
+}
+
+message QueryReporterResponse {
+  Reporter reporter = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReportsRequest {
+  string feed_id = 1;
+}
+
+message QueryReportsResponse {
+  repeated OracleReport reports = 1 [(gogoproto.nullable) = false];
+}
